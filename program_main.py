@@ -1704,7 +1704,7 @@ def add_cors_headers(response):
     return response
 
 if __name__ == '__main__':
-    init_db(reset=True)
+    init_db()
     train_model()
     print("🚀 Server running → http://localhost:5000")
     app.run(debug=False, port=5000)
