@@ -1535,7 +1535,7 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
 </div>
 
 <script>
-const API = 'http://localhost:5000';
+const API = window.location.origin;
 let pages = [], idx = 0, curUser = null, authMode = 'login', flipping = false;
 let currentRecs = null, currentTier = 'mild', currentEmotions = [];
 
@@ -1642,7 +1642,7 @@ function saveMailReminder() {
     }
 
     // Python Backend'e alarmı kurması için veri gönderiyoruz
-    fetch('http://localhost:5000/api/reminder/set', {
+    fetch(`${API}/api/reminder/set`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2228,14 +2228,21 @@ const renderGroup = (groupItems, title, icon, color) => {
         const cardTitle = `<div class="rec-card-title" style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">🍃 ${itemData.item} ${timeBadge}</div>`;
         const card = makeWhyCard('food-card', cardTitle, itemData.why, itemData.item);
         
-        if(itemData.url) {
-            const btnWrap = document.createElement('div');
-            btnWrap.style.margin = "8px 0";
-            btnWrap.innerHTML = `<a href="${itemData.url}" target="_blank" rel="noopener" class="action-btn" style="text-decoration:none; color:#823214; border-color:#823214; background:rgba(130,50,20,0.05); padding: 4px 10px;">
-              🔍 Search Recipe
-            </a>`;
-            const actionRow = card.querySelector('.card-action-row');
-            if(actionRow) card.insertBefore(btnWrap, actionRow);
+        // YEMEK TARİFİ ARAMA BUTONU BURADA EKLENİYOR
+        const btnWrap = document.createElement('div');
+        btnWrap.style.margin = "8px 0";
+        // Backend'den URL geldiyse onu kullan, gelmediyse Google'da aramaya zorla
+        const searchUrl = itemData.url ? itemData.url : `https://www.google.com/search?q=${encodeURIComponent(itemData.item + ' recipe')}`;
+        
+        btnWrap.innerHTML = `<a href="${searchUrl}" target="_blank" rel="noopener" class="action-btn" style="text-decoration:none; color:#823214; border-color:#823214; background:rgba(130,50,20,0.05); padding: 4px 10px;">
+            🔍 Search Recipe
+        </a>`;
+        
+        const actionRow = card.querySelector('.card-action-row');
+        if(actionRow) {
+            card.insertBefore(btnWrap, actionRow);
+        } else {
+            card.appendChild(btnWrap);
         }
         grid.appendChild(card);
      });
@@ -2266,6 +2273,7 @@ function buildShowsPane(shows){
       <div class="show-imdb">IMDB ${item.imdb||''}</div>
       ${item.why?`<div class="why-text open" style="background:transparent; border:none; padding:0; margin-top:4px;">${item.why}</div>`:''}
       <div style="margin-top:10px;">
+        <!-- HATA BURADAYDI, URL BAĞLANTISI EKLENDİ -->
         <a href="${item.url}" target="_blank" rel="noopener" class="action-btn" style="text-decoration:none; color:#4a2b28; border-color:#4a2b28; background:rgba(74,43,40,0.05); padding: 4px 10px;">
           🔍 Search on Google
         </a>
