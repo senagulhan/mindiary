@@ -1,0 +1,3357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mindiary — Wellness Journal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cinzel:wght@400;500;600&family=Raleway:wght@200;300;400;500&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════
+   RESET & ROOT VARIABLES
+══════════════════════════════════════════════════════════ */
+:root {
+  --walnut:#120a04; --walnut-mid:#1e0e06; --walnut-warm:#2e1a0a;
+  --parchment:#f2e8d4; --parchment-d:#e8d8bc; --parchment-dark:#d8c8a4;
+  --ink:#1a0e06; --ink-faded:#5a4030;
+  --gold:#c8a050; --gold-light:#e8c070; --gold-dim:#8a6830;
+  --accent:#3a6060; --accent-light:#5a8080;
+  --joy:#c89030; --sadness:#4868a8; --anger:#a83820;
+  --fear:#5a3878; --love:#a83858; --surprise:#3a8060; --neutral:#706050;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--walnut);font-family:'Cormorant Garamond',Georgia,serif;}
+
+/* ══ BACKGROUND BOOKCASE ══ */
+#bgScene{position:fixed;inset:0;z-index:0;overflow:hidden;
+  background:radial-gradient(ellipse 80% 70% at 50% 35%,#241408 0%,#100804 50%,#060402 100%);}
+#bgScene::before{content:'';position:absolute;inset:-50%;width:200%;height:200%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)' opacity='0.045'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:100;animation:grain 8s steps(10) infinite;}
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-3%,-2%)}50%{transform:translate(2%,3%)}75%{transform:translate(-2%,2%)}100%{transform:translate(0,0)}}
+#bgScene::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:99;
+  background:radial-gradient(ellipse 60% 60% at 50% 50%,transparent 20%,rgba(4,2,1,0.75) 100%);}
+.bg-shelf{position:absolute;left:0;right:0;height:22px;background:linear-gradient(to bottom,#5a3818,#3a2010);}
+.bg-books{position:absolute;left:0;right:0;display:flex;align-items:flex-end;}
+.bg-book{border-radius:1px 2px 2px 1px;}
+.bg-candle-glow{position:absolute;pointer-events:none;border-radius:50%;
+  background:radial-gradient(circle,rgba(240,180,50,.09) 0%,transparent 70%);
+  animation:glowPulse 2.5s ease-in-out infinite;}
+@keyframes glowPulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.2);opacity:1}}
+
+/* ══ LOGIN OVERLAY ══ */
+#loginOverlay{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;transition:opacity .9s ease;}
+#loginOverlay.hidden{opacity:0;pointer-events:none;}
+.login-card{position:relative;width:380px;
+  background:linear-gradient(155deg,#f4e8d0 0%,#ece0c0 50%,#e8d8b4 100%);
+  box-shadow:0 0 0 1px rgba(160,120,50,.25),8px 8px 0 rgba(30,15,5,.5),20px 20px 60px rgba(0,0,0,.8);
+  animation:cardRise .8s cubic-bezier(.16,1,.3,1) both;}
+@keyframes cardRise{from{opacity:0;transform:translateY(50px) rotate(-1.5deg)}to{opacity:1;transform:none}}
+.card-texture{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.5) 0px,rgba(0,0,0,.5) 1px,transparent 1px,transparent 4px);}
+.card-header{padding:30px 36px 20px;text-align:center;position:relative;}
+.card-header::after{content:'';position:absolute;bottom:0;left:36px;right:36px;height:1px;
+  background:linear-gradient(to right,transparent,rgba(160,100,40,.35),transparent);}
+.cinzel-title{font-family:'Cinzel',serif;font-size:30px;font-weight:600;color:var(--ink);letter-spacing:4px;margin-bottom:4px;}
+.card-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(60,40,20,.38);letter-spacing:2px;}
+.card-body{padding:24px 36px 30px;}
+.tab-row{display:flex;margin-bottom:20px;border-bottom:1px solid rgba(160,100,40,.2);}
+.ctab{flex:1;background:none;border:none;font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(60,40,20,.3);padding:8px;cursor:pointer;transition:all .2s;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.ctab.active{color:rgba(80,50,15,.8);border-bottom-color:rgba(140,90,30,.6);}
+.err-msg{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12.5px;color:#8a2010;
+  background:rgba(140,40,20,.06);border-left:2px solid rgba(140,40,20,.3);padding:7px 12px;
+  margin-bottom:14px;display:none;animation:shake .3s ease;}
+.err-msg.show{display:block;}
+@keyframes shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-4px)}70%{transform:translateX(4px)}}
+.field{margin-bottom:16px;}
+.field-label{font-family:'Raleway',sans-serif;font-size:8px;letter-spacing:4px;text-transform:uppercase;
+  color:rgba(60,40,20,.35);display:block;margin-bottom:6px;}
+.field-line{display:flex;align-items:center;gap:8px;border-bottom:1.5px solid rgba(120,80,30,.22);padding-bottom:5px;transition:border-color .2s;}
+.field-line:focus-within{border-color:rgba(100,65,20,.65);}
+.field-line input{background:transparent;border:none;outline:none;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--ink);width:100%;caret-color:#8a5020;}
+.field-line input::placeholder{color:rgba(60,40,20,.18);}
+.field-icon{color:rgba(100,70,30,.3);font-size:14px;flex-shrink:0;}
+.pw-eye{background:none;border:none;cursor:pointer;font-size:13px;color:rgba(60,40,20,.18);transition:color .2s;flex-shrink:0;}
+.pw-eye:hover{color:rgba(100,70,30,.6);}
+.submit-btn{width:100%;margin-top:8px;padding:12px;background:linear-gradient(to bottom,#2a1408,#1a0c04);
+  border:1px solid rgba(100,65,25,.3);color:rgba(230,210,160,.8);
+  font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:6px;text-transform:uppercase;
+  cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.submit-btn:hover{background:linear-gradient(to bottom,#3a2010,#241008);border-color:rgba(160,120,40,.4);}
+.switch-line{text-align:center;margin-top:14px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:rgba(60,40,20,.28);}
+.switch-line b{color:rgba(100,65,20,.55);cursor:pointer;font-weight:400;font-style:normal;transition:color .2s;}
+.switch-line b:hover{color:rgba(100,65,20,.9);}
+.wax{position:absolute;bottom:-18px;right:24px;width:46px;height:46px;border-radius:50%;
+  background:radial-gradient(circle at 38% 33%,#b04030,#6a1808 65%,#3a0c04);
+  box-shadow:0 4px 10px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:13px;color:rgba(255,200,160,.4);
+  transform:rotate(15deg);border:1px solid rgba(180,80,50,.2);}
+
+/* ══ JOURNAL MAIN ══ */
+#journal{position:fixed;inset:0;z-index:150;display:none;flex-direction:column;align-items:center;
+  padding:14px 16px 16px;background:rgba(6,3,1,.92);opacity:0;transition:opacity .6s ease;}
+#journal.show{display:flex;}
+#journal.visible{opacity:1;}
+
+/* Top bar */
+.topbar{width:100%;max-width:1320px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-shrink:0;}
+.user-info{display:flex;align-items:center;gap:12px;}
+.user-seal{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 38% 33%,#a03028,#601808);
+  border:1px solid rgba(180,80,50,.4);display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:22px;color:rgba(255,200,160,.8);box-shadow: 0 4px 10px rgba(0,0,0,0.3);}
+.user-name{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:rgba(230,210,160,.9); letter-spacing: 1px;}
+.topbar-right{display:flex;gap:8px;align-items:center;}
+.status-dot{font-family:'Raleway',sans-serif;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:8px;}
+.status-dot.on{background:rgba(40,70,40,.25);color:#80b080;border:1px solid rgba(40,70,40,.35);}
+.status-dot.off{background:rgba(60,30,10,.25);color:#b09060;border:1px solid rgba(60,30,10,.35);}
+.tbar-btn{background:transparent;border:1px solid rgba(200,160,70,.28);color:rgba(230,210,160,.65);
+  padding:5px 14px;font-family:'Raleway',sans-serif;font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  cursor:pointer;transition:all .2s;}
+.tbar-btn:hover{border-color:rgba(200,160,70,.38);color:rgba(230,210,160,.65);}
+
+/* ── MAIN LAYOUT ── */
+.main-layout{width:100%;max-width:1320px;flex:1;display:flex;min-height:0;overflow:hidden;}
+
+/* Open book */
+.open-book{flex:1;display:flex;overflow:hidden;border-radius:3px;filter:drop-shadow(0 30px 60px rgba(0,0,0,.9)); position:relative;}
+
+/* ══ VELVET BOOKMARK ══ */
+.bookmark {
+  position: absolute;
+  top: -15px;
+  left: calc(50% + 12px);
+  transform: translateX(-50%);
+  width: 50px;
+  height: 95%;
+  background: linear-gradient(to right, #7a0b0b, #a31515 50%, #7a0b0b);
+  z-index: 60;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 25px), 0 100%);
+  filter: drop-shadow(2px 0 10px rgba(0,0,0,0.5));
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.bookmark.pulled {
+  transform: translateX(-50%) translateY(-110%);
+}
+
+/* ══ BOOKMARK BUTTON ══ */
+.bookmark-btn {
+  position: absolute;
+  top: 0;
+  left: calc(50% + 12px);
+  transform: translateX(-50%);
+  width: 50px;
+  z-index: 65;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  cursor: pointer;
+  pointer-events: all;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: filter 0.25s;
+  height: 120px;
+}
+.bookmark-btn:hover { filter: brightness(1.25) drop-shadow(0 0 8px rgba(220,100,80,.45)); }
+.bookmark-btn:hover .bookmark-btn-ring { opacity: 1; transform: scale(1.08); }
+.bookmark-btn-ring {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 35%, rgba(255,160,130,.18), rgba(180,40,20,.28));
+  border: 1px solid rgba(255,180,150,.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 18px;
+  opacity: 0.85;
+  transition: all .25s;
+  animation: bookmarkPulse 3s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+}
+@keyframes bookmarkPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(220,80,60,.0); }
+  50% { box-shadow: 0 0 0 5px rgba(220,80,60,.15); }
+}
+.bookmark-btn-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+.bookmark-btn-label {
+  font-family: 'Raleway', sans-serif;
+  font-size: 5.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 200, 160, 0.5);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  line-height: 1;
+  margin-top: 8px;
+}
+
+/* ══ WELLNESS DASHBOARD OVERLAY ══ */
+#wellnessDash {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: none;
+  flex-direction: column;
+  background: linear-gradient(160deg, #0d0805 0%, #1a0e06 40%, #0d0805 100%);
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  overflow: hidden;
+}
+#wellnessDash.show { display: flex; }
+#wellnessDash.visible { opacity: 1; }
+
+/* Grain overlay */
+#wellnessDash::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  width: 200%; height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  animation: grain 8s steps(10) infinite;
+}
+
+/* Dashboard topbar */
+.dash-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px 12px;
+  border-bottom: 1px solid rgba(200,160,60,.1);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+.dash-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.dash-logo-mark {
+  width: 38px; height: 38px;
+  background: radial-gradient(circle at 38% 33%, #a31515, #601010);
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.dash-title {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  letter-spacing: 3px;
+  color: rgba(230,210,160,.88);
+}
+.dash-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 11px;
+  color: rgba(180,150,80,.45);
+  margin-top: 1px;
+}
+.dash-close-btn {
+  background: none;
+  border: 1px solid rgba(180,50,30,.35);
+  color: rgba(220,160,140,.7);
+  font-family: 'Raleway', sans-serif;
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dash-close-btn:hover { background: rgba(180,50,30,.1); border-color: rgba(180,50,30,.55); }
+
+/* Dashboard period tabs */
+.dash-period-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 10px 28px 0;
+  border-bottom: 1px solid rgba(200,160,60,.08);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+.dash-ptab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(180,150,80,.38);
+  font-family: 'Raleway', sans-serif;
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 6px 18px 10px;
+  cursor: pointer;
+  transition: all .2s;
+  margin-bottom: -1px;
+}
+.dash-ptab.active {
+  color: rgba(230,210,160,.85);
+  border-bottom-color: rgba(200,160,60,.55);
+}
+.dash-ptab:hover { color: rgba(200,180,120,.65); }
+
+/* Dashboard content */
+.dash-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 28px 28px;
+  position: relative;
+  z-index: 2;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(180,140,60,.15) transparent;
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 25px; /* Kutular arası boşluk açıldı */
+  max-width: 1400px; /* Ekran genişletildi */
+  margin: 0 auto;
+}
+.dash-grid.two-col { grid-template-columns: 1fr 1fr; }
+
+/* Dashboard cards */
+.dash-card {
+  background: rgba(255,255,255,.025);
+  border: 1px solid rgba(200,160,60,.1);
+  border-radius: 6px;
+  padding: 25px 30px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.dash-card:hover { border-color: rgba(200,160,60,.18); }
+.dash-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, rgba(200,160,60,.25), transparent);
+}
+.dash-card.span2 { grid-column: span 2; }
+.dash-card.span3 { grid-column: span 3; }
+
+.dash-card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  color: rgba(180,140,60,.6);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dash-card-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(180,140,60,.15), transparent);
+}
+
+/* Charts */
+.dash-chart-area {
+  position: relative;
+  height: 150px;
+  margin-bottom: 8px;
+}
+.dash-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Emotion bars in dash */
+.dash-emo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dash-emo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dash-emo-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  color: rgba(220,200,150,.75);
+  width: 72px;
+  flex-shrink: 0;
+}
+.dash-emo-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,.05);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.dash-emo-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .8s cubic-bezier(.4,0,.2,1);
+}
+.dash-emo-count {
+  font-family: 'Raleway', sans-serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: rgba(180,150,80,.5);
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Stat cards */
+.dash-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+}
+.dash-stat-num {
+  font-family: 'Cinzel', serif;
+  font-size: 48px; /* Rakamlar devasa ve şık yapıldı */
+  color: rgba(220,190,100,.95);
+  line-height: 1;
+}
+.dash-stat-label {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px; /* Okunabilir boyuta çekildi */
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(160,130,60,.45);
+}
+.dash-stat-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 11.5px;
+  color: rgba(180,155,90,.5);
+}
+
+/* Timeline */
+.dash-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 300px; /* Kaydırma alanını biraz büyüttük */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(180,140,60,.3) transparent;
+}
+.dash-tl-entry {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(200,160,60,.15); /* Çizgiyi belirginleştirdik */
+  align-items: flex-start;
+}
+.dash-tl-entry:last-child { border-bottom: none; }
+.dash-tl-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+  box-shadow: 0 0 8px currentColor;
+}
+.dash-tl-info { flex: 1; min-width: 0; }
+.dash-tl-date {
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px; /* Tarih boyutu büyütüldü */
+  letter-spacing: 2px;
+  color: rgba(200,170,100,.8); /* Daha parlak altın rengi */
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.dash-tl-emo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px; /* Duygu başlığı büyütüldü */
+  color: rgba(240,220,180, 1); /* Tamamen net ve parlak */
+  margin-bottom: 4px;
+}
+.dash-tl-snippet {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14.5px; /* Günlük yazısı çok rahat okunur hale geldi */
+  color: rgba(220,200,160,.85); /* Parlaklık artırıldı */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dash-tl-note {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13.5px;
+  color: rgba(160,220,180,.8);
+  font-style: italic;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Top items */
+.dash-top-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dash-top-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(200,160,60,.07);
+  padding: 8px 12px;
+}
+.dash-top-rank {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: rgba(180,140,60,.4);
+  width: 18px;
+  flex-shrink: 0;
+}
+.dash-top-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  color: rgba(220,195,145,.82);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dash-top-stars {
+  font-size: 10px;
+  color: #c8a030;
+  flex-shrink: 0;
+}
+
+/* Reminder card */
+.dash-reminder-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.dash-time-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.dash-time-btn {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(200,160,60,.12);
+  color: rgba(180,155,90,.6);
+  font-family: 'Raleway', sans-serif;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  padding: 10px 4px;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: center;
+  border-radius: 1px;
+}
+.dash-time-btn:hover { background: rgba(200,160,60,.07); border-color: rgba(200,160,60,.25); color: rgba(220,190,120,.85); }
+.dash-time-btn.selected { background: rgba(180,50,30,.15); border-color: rgba(180,50,30,.4); color: rgba(230,180,160,.9); }
+.dash-reminder-status {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(100,180,100,.7);
+  min-height: 20px;
+  margin-top: 8px;
+}
+.dash-set-btn {
+  width: 100%;
+  background: linear-gradient(to bottom, rgba(180,50,30,.25), rgba(140,30,15,.3));
+  border: 1px solid rgba(180,50,30,.3);
+  color: rgba(230,190,170,.8);
+  font-family: 'Raleway', sans-serif;
+  font-size: 8px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  padding: 10px;
+  cursor: pointer;
+  transition: all .25s;
+}
+.dash-set-btn:hover { background: linear-gradient(to bottom, rgba(180,50,30,.35), rgba(140,30,15,.42)); }
+
+/* Empty state */
+.dash-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  gap: 10px;
+  text-align: center;
+}
+.dash-empty-icon { font-size: 28px; opacity: .22; }
+.dash-empty-txt {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(180,150,80,.3);
+}
+
+/* Popup notification */
+#reminderPopup {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9999;
+  width: 300px;
+  background: linear-gradient(150deg, #f4e8d0, #e8d8b4);
+  border: 1px solid rgba(160,120,50,.3);
+  box-shadow: 6px 6px 0 rgba(30,15,5,.5), 0 20px 60px rgba(0,0,0,.7);
+  padding: 0;
+  display: none;
+  animation: popupSlide .4s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popupSlide { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+#reminderPopup.show { display: block; }
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid rgba(160,120,50,.15);
+}
+.popup-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: rgba(40,20,5,.8);
+}
+.popup-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  color: rgba(60,30,10,.3);
+  line-height: 1;
+  transition: color .2s;
+}
+.popup-close:hover { color: rgba(60,30,10,.7); }
+.popup-body {
+  padding: 12px 14px 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13.5px;
+  color: rgba(40,20,5,.78);
+  line-height: 1.6;
+}
+.popup-action {
+  width: 100%;
+  background: rgba(30,15,5,.85);
+  border: none;
+  color: rgba(230,210,160,.8);
+  font-family: 'Raleway', sans-serif;
+  font-size: 7px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  padding: 9px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.popup-action:hover { background: rgba(50,25,5,.95); }
+
+/* Parchment pages */
+.pg{background:linear-gradient(168deg,#f4e8d0 0%,#eee0c2 60%,#e8d4b0 100%);
+  position:relative;overflow:hidden;display:flex;flex-direction:column;}
+.pg::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(to bottom,transparent,transparent 28px,rgba(160,120,60,.09) 28px,rgba(160,120,60,.09) 29px);
+  background-position:0 68px;z-index:0;}
+.pg::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0.2'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");}
+.pg-left{width:50%;box-shadow:inset -6px 0 14px rgba(0,0,0,.08);}
+.gutter{width:24px;flex-shrink:0;background:linear-gradient(to right,#c4b484,#ddd0a8,#c4b484);
+  position:relative;z-index:5;box-shadow:0 0 16px rgba(0,0,0,.3);}
+.gutter::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(255,255,255,.08) 0%,transparent 20%,transparent 80%,rgba(0,0,0,.05) 100%);}
+.gutter-stitches{position:absolute;left:8px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-evenly;padding:20px 0;}
+.gs{width:8px;height:3px;background:rgba(80,50,20,.18);border-radius:1px;}
+.pg-right{flex:1;box-shadow:inset 6px 0 14px rgba(0,0,0,.06);}
+
+.pg-body{
+  padding:30px 40px 25px 45px; /* Boşluklar artırıldı */
+  position:relative;
+  z-index:1;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  overflow:hidden;
+}
+.pg-right .pg-body{padding-left:35px;padding-right:40px;}
+
+.pg-num{font-family:'Raleway',sans-serif;font-size:7.5px;letter-spacing:4px;color:rgba(110,75,25,.28);margin-bottom:8px;flex-shrink:0;}
+.pg-num-r{text-align:right;}
+.pg-head{text-align:center;margin-bottom:10px;padding-bottom:8px;
+  border-bottom:1px solid rgba(110,75,25,.12);position:relative;flex-shrink:0;}
+.pg-head::after{content:'✦';position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(168deg,#f4e8d0,#eee0c2);padding:0 7px;font-size:9px;color:rgba(110,75,25,.25);}
+.pg-eyebrow{font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:5px;text-transform:uppercase;color:rgba(110,75,25,.28);margin-bottom:4px;}
+.pg-title{font-family:'Cinzel',serif;font-size:19px;color:var(--ink);letter-spacing:1px;}
+.pg-date{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10.5px;color:rgba(70,45,15,.3);margin-top:3px;}
+
+/* Page navigation */
+.pg-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:6px;flex-shrink:0;}
+.pg-nav-btn{background:transparent;border:1px solid rgba(110,75,25,.16);color:rgba(70,45,15,.35);
+  padding:3px 10px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10.5px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.pg-nav-btn:hover:not(:disabled){border-color:rgba(110,75,25,.5);color:rgba(70,45,15,.7);}
+.pg-nav-btn:disabled{opacity:.18;cursor:not-allowed;}
+.page-tabs{display:flex;gap:3px;flex-wrap:wrap;}
+.ptab{width:20px;height:20px;border-radius:50%;background:rgba(190,170,130,.22);border:1px solid rgba(110,75,25,.15);
+  font-family:'Raleway',sans-serif;font-size:7.5px;color:rgba(70,45,15,.35);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;position:relative;}
+.ptab:hover{border-color:rgba(110,75,25,.45);color:rgba(70,45,15,.7);}
+.ptab.active{background:var(--ink);border-color:var(--ink);color:rgba(230,210,160,.75);}
+.ptab.has-entry::after{content:'';position:absolute;bottom:0;right:0;width:5px;height:5px;border-radius:50%;background:#8a3820;border:1px solid rgba(230,210,160,.5);}
+.new-tab{width:20px;height:20px;border-radius:50%;background:transparent;border:1px dashed rgba(110,75,25,.16);
+  font-size:12px;color:rgba(110,75,25,.16);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.new-tab:hover{border-color:rgba(40,80,40,.45);color:rgba(40,80,40,.55);}
+
+/* Section labels */
+.sec-label{font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:4px;text-transform:uppercase;
+  color:rgba(110,60,25,.48);display:flex;align-items:center;gap:9px;margin-bottom:5px;flex-shrink:0;}
+.sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(110,60,25,.25),transparent);}
+
+/* Write area */
+.write-area{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+.empty-hint{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;cursor:pointer;color:rgba(110,75,25,.18);gap:8px;transition:color .3s;}
+.empty-hint:hover{color:rgba(110,75,25,.38);}
+.hint-quill{font-size:22px;animation:quillHover 3s ease-in-out infinite;}
+@keyframes quillHover{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(-18deg) translateY(-5px)}}
+.hint-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12.5px;line-height:1.9;}
+textarea{width:100%;flex:1;min-height:160px;background:transparent;border:none;outline:none;resize:none;
+  font-family:'Cormorant Garamond',serif;font-size:18px; /* Font büyütüldü */
+  color:var(--ink);line-height:33px; /* Satır aralığı açıldı */
+  padding:0;caret-color:#7a3c14;}
+textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
+
+/* WORD COUNT & WARNING */
+.word-counter{
+  font-family:'Raleway',sans-serif;font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(110,75,25,.28);
+  text-align:right;margin-top:4px;transition:color .3s;flex-shrink:0;
+}
+.word-counter.ok{color:rgba(40,90,40,.55);}
+.word-counter.warn{color:rgba(130,50,20,.65);}
+.word-warning{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:12px;color:rgba(130,50,20,.75);
+  background:rgba(130,50,20,.06);border-left:2px solid rgba(130,50,20,.3);
+  padding:6px 10px;margin-top:6px;display:none;
+  animation:shake .3s ease;flex-shrink:0;
+}
+.word-warning.show{display:block;}
+
+.loc-row{display:flex;align-items:center;gap:7px;margin-top:8px;padding-top:8px;
+  border-top:1px dashed rgba(110,75,25,.12);flex-shrink:0;}
+.loc-row input{background:transparent;border:none;outline:none;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--ink);flex:1;
+  border-bottom:1px dashed rgba(110,75,25,.12);padding-bottom:2px;}
+.loc-row input::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
+.analyze-row{margin-top:10px;text-align:center;flex-shrink:0;}
+.analyze-btn{background:var(--ink);color:rgba(230,210,160,.8);border:none;padding:10px 28px;
+  font-family:'Raleway',sans-serif;font-size:8px;letter-spacing:5px;text-transform:uppercase;
+  cursor:pointer;box-shadow:3px 3px 0 rgba(100,50,15,.45);transition:all .22s;}
+.analyze-btn:hover{background:#2a1608;transform:translate(-1px,-1px);box-shadow:4px 4px 0 rgba(100,50,15,.55);}
+
+/* Entry view */
+.entry-view{display:none;flex-direction:column;gap:8px;flex:1;min-height:0;overflow:hidden;}
+.entry-view.show{display:flex;}
+.entry-text{font-family:'Cormorant Garamond',serif;font-size:14px;color:rgba(15,8,2,.95);line-height:29px;
+  white-space:pre-wrap;flex:1;overflow-y:auto;min-height:0;}
+.entry-tags{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;}
+.etag{font-family:'Raleway',sans-serif;font-size:7.5px;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(70,45,15,.35);background:rgba(160,130,70,.07);border:1px solid rgba(110,75,25,.12);padding:2px 7px;}
+.etag-rag{color:rgba(180,120,50,.85);background:rgba(200,140,50,.1);border-color:rgba(200,140,50,.3);
+  animation:ragPulse 2s ease-in-out 3;}
+@keyframes ragPulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.edit-btn{background:transparent;border:1px dashed rgba(110,75,25,.16);color:rgba(70,45,15,.25);
+  padding:4px 12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10.5px;
+  cursor:pointer;transition:all .2s;align-self:flex-start;flex-shrink:0;}
+.edit-btn:hover{border-color:rgba(70,45,15,.42);color:rgba(70,45,15,.6);}
+
+/* ── RIGHT PAGE SECTIONS ── */
+.right-idle{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;color:rgba(110,75,25,.18);}
+.right-idle p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;line-height:1.9;}
+
+.loading-area{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.loading-area.show{display:flex;}
+.loading-quill{font-size:22px;animation:qWrite 1.3s ease-in-out infinite;}
+@keyframes qWrite{0%,100%{transform:rotate(-18deg) translateY(0)}30%{transform:rotate(-22deg) translateY(-7px)}60%{transform:rotate(-14deg) translateY(0) translateX(3px)}}
+.loading-txt{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(110,75,25,.72);font-size:13px;}
+
+.results-area{
+  display:none;
+  flex-direction:column;
+  flex:1;
+  min-height:0;
+  overflow:hidden;
+  gap:8px;
+}
+.results-area.show{display:flex;}
+
+/* Emotion bars */
+.emo-bars{display:flex;flex-direction:column;gap:11px;flex-shrink:0;}
+.emo-row{display:flex;align-items:center;gap:8px;}
+.emo-rank{font-family:'Raleway',sans-serif;font-size:8px;color:rgba(110,75,25,.65);width:12px;flex-shrink:0;}
+.emo-label{font-family:'Raleway',sans-serif;font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(70,45,15,.78);width:65px;flex-shrink:0;}
+.bar-bg{flex:1;height:8px;background:rgba(160,130,70,.1);border-radius:4px;overflow:hidden;}
+.bar-fg{height:100%;border-radius:4px;width:0%;transition:width 1.5s cubic-bezier(.34,1.56,.64,1);}
+.emo-pct{font-family:'Raleway',sans-serif;font-size:9px;color:rgba(70,45,15,.8);width:30px;text-align:right;}
+.c-joy{background:linear-gradient(to right,#b07828,#c8a040);}
+.c-love{background:linear-gradient(to right,#904050,#a85060);}
+.c-anger{background:linear-gradient(to right,#8a3018,#a04028);}
+.c-sadness{background:linear-gradient(to right,#345080,#486098);}
+.c-fear{background:linear-gradient(to right,#44305e,#584070);}
+.c-surprise{background:linear-gradient(to right,#2e6050,#3a7860);}
+.c-neutral{background:linear-gradient(to right,#5e4e38,#706048);}
+
+.well-note{background:linear-gradient(130deg,rgba(248,240,218,.7),rgba(238,222,188,.5));
+  border-left:2px solid rgba(140,90,30,.35);padding:9px 12px;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11.5px;color:rgba(70,45,15,.75);
+  display:none;border-radius:0 2px 2px 0;line-height:1.6;flex-shrink:0;}
+.well-note.show{display:block;}
+.flourish{text-align:center;color:rgba(110,75,25,.16);font-size:10px;letter-spacing:8px;margin:2px 0;flex-shrink:0;}
+
+/* Tier badge */
+.tier-badge{font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:2px;text-transform:uppercase;
+  padding:2px 9px;border-radius:6px;display:inline-block;margin-bottom:10px;}
+.tier-badge.mild{background:rgba(40,70,40,.1);color:rgba(40,80,40,.7);border:1px solid rgba(40,70,40,.2);}
+.tier-badge.moderate{background:rgba(120,80,20,.1);color:rgba(110,70,15,.7);border:1px solid rgba(120,80,20,.2);}
+.tier-badge.intense{background:rgba(110,35,20,.1);color:rgba(100,35,20,.7);border:1px solid rgba(110,35,20,.2);}
+
+/* ── RECOMMENDATIONS PANEL ── */
+#recContent{
+  display:none;
+  flex-direction:column;
+  flex:1;
+  min-height:0;
+  overflow:hidden;
+}
+.rec-pg-header{flex-shrink:0;margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid rgba(110,75,25,.12);}
+.rec-pg-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:rgba(50,25,5,.9);margin-bottom:3px;}
+.rec-pg-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11.5px;color:rgba(70,45,10,.72);}
+.rec-header-emos{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
+.emo-chip{font-family:'Raleway',sans-serif;font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 9px;background:rgba(160,130,70,.14);border:1px solid rgba(110,75,25,.28);color:rgba(60,35,10,.82);}
+
+/* Category tabs */
+/* Category tabs */
+.cat-tabs {
+  display: flex;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(110,75,25,.14);
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: 0;
+  
+  /* --- YENİ EKLENEN YAPIŞKAN (STICKY) ÖZELLİKLER --- */
+  position: sticky;
+  top: -1px; /* Tam tepeye yapışır */
+  z-index: 50; /* Diğer kartların üstünde kalmasını sağlar */
+  background: #e3d5b8; /* Panelin arka plan rengiyle aynı, alttan geçenleri gizler */
+  padding-top: 10px; /* Yukarıdan biraz nefes payı */
+  padding-bottom: 5px;
+}
+.cat-tabs::-webkit-scrollbar { display:none; }
+.cat-tab{background:transparent;border:none;padding:5px 8px;
+  font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(80,50,15,.62);cursor:pointer;transition:all .2s;white-space:nowrap;
+  border-bottom:2px solid transparent;margin-bottom:-1px;flex-shrink:0;}
+.cat-tab:hover{color:rgba(100,65,20,.65);}
+.cat-tab.active{color:rgba(50,25,5,.95);border-bottom-color:rgba(110,75,25,.8);font-weight:600;}
+.cat-tab .cat-icon{margin-right:3px;font-size:9px;}
+
+.cat-panes{
+  flex:1;
+  overflow-y:auto;
+  min-height:0;
+  padding:0;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(110,75,25,.15) transparent;
+}
+.cat-panes::-webkit-scrollbar{width:3px;}
+.cat-panes::-webkit-scrollbar-thumb{background:rgba(110,75,25,.15);border-radius:2px;}
+.cat-pane{display:none;padding:10px 0 16px;}
+.cat-pane.active{display:block;}
+
+/* Recommendation cards */
+.rec-card{background:rgba(160,120,60,.05);border:1px solid rgba(110,75,25,.15);
+  padding:15px 18px;margin-bottom:7px;border-radius:4px;position:relative;overflow:hidden;}
+.rec-card::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;}
+.food-card::before{background:rgba(130,60,20,.4);}
+.activity-card::before{background:rgba(40,90,40,.4);}
+.social-card::before{background:rgba(110,70,20,.4);}
+.dev-card::before{background:rgba(30,80,70,.4);}
+.show-card::before{background:rgba(80,45,90,.35);}
+.rec-card-title{font-family:'Cormorant Garamond',serif;font-size:16px;color:rgba(30,15,5,.95);font-weight:600;}
+.rec-card-why{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(60,35,10,.72);line-height:1.5;margin-top:4px;}
+
+.why-toggle{background:none;border:1px solid rgba(110,75,25,.2);border-radius:50%;width:14px;height:14px;
+  font-size:7px;color:rgba(100,65,20,.4);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  padding:0;margin-left:5px;vertical-align:middle;transition:all .2s;flex-shrink:0;}
+.why-toggle:hover{background:rgba(110,75,25,.1);color:rgba(80,50,15,.7);}
+.why-text{display:none;margin-top:6px;font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:11.5px;color:rgba(40,20,5,.82);line-height:1.6;padding:7px 10px;
+  background:rgba(240,220,180,.35);border-left:3px solid rgba(110,75,25,.45);}
+.why-text.open{display:block;}
+
+/* Spotify cards */
+.spotify-card{background:rgba(29,185,84,.05);border-color:rgba(29,185,84,.15);}
+.spotify-card::before{background:#1DB954;}
+.spotify-link{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:7px 13px;
+  background:#1DB954;color:#000;border-radius:18px;text-decoration:none;
+  font-family:'Raleway',sans-serif;font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:500;
+  transition:all .2s;}
+.spotify-link:hover{background:#1ed760;transform:scale(1.02);}
+.sp-icon{font-size:12px;}
+.spotify-note{margin-top:10px;padding:9px 12px;background:rgba(29,185,84,.06);
+  border:1px solid rgba(29,185,84,.2);font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:11.5px;color:rgba(20,120,60,.72);line-height:1.6;}
+
+/* Places */
+.places-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(40,70,60,.88);margin-bottom:10px;line-height:1.6;}
+.places-types{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.place-type-tag{font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 8px;background:rgba(50,80,75,.12);border:1px solid rgba(50,80,75,.3);color:rgba(30,70,60,.85);}
+.map-section-label{font-family:'Raleway',sans-serif;font-size:7.5px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(200,160,60,.3);margin-bottom:8px;margin-top:12px;}
+.map-city-row{display:flex;gap:7px;margin-bottom:12px;}
+.city-input{background:rgba(160,120,60,.05);border:1px solid rgba(110,75,25,.18);
+  padding:7px 11px;color:rgba(50,30,10,.7);font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:13px;flex:1;outline:none;transition:border-color .2s;}
+.city-input::placeholder{color:rgba(110,75,25,.22);}
+.city-input:focus{border-color:rgba(110,75,25,.45);}
+.city-btn{background:rgba(110,75,25,.1);border:1px solid rgba(110,75,25,.22);
+  color:rgba(80,50,15,.65);padding:7px 12px;font-family:'Raleway',sans-serif;font-size:7px;
+  letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.city-btn:hover{background:rgba(110,75,25,.18);}
+.map-links{display:flex;flex-direction:column;gap:6px;}
+.map-link-card{display:flex;align-items:center;justify-content:space-between;
+  background:rgba(160,120,60,.05);border:1px solid rgba(110,75,25,.1);padding:9px 12px;
+  text-decoration:none;transition:all .2s;cursor:pointer;}
+.map-link-card:hover{background:rgba(110,75,25,.09);border-color:rgba(110,75,25,.22);}
+.map-link-label{font-family:'Cormorant Garamond',serif;font-size:13.5px;color:rgba(30,15,5,.88);}
+.map-link-icon{font-size:13px;opacity:.4;}
+.places-note{margin-top:14px;padding:9px 12px;background:rgba(58,96,96,.09);border:1px solid rgba(58,96,96,.25);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11.5px;color:rgba(30,80,70,.78);line-height:1.6;}
+
+/* Color swatches */
+.color-intro{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;
+  color:rgba(80,50,10,.75);margin-bottom:14px;line-height:1.7;}
+.color-grid{display:flex;flex-direction:column;gap:9px;}
+.color-swatch-card{display:flex;align-items:center;gap:11px;background:rgba(160,120,60,.04);
+  border:1px solid rgba(110,75,25,.09);padding:9px 11px;}
+.color-swatch{width:40px;height:40px;border-radius:2px;flex-shrink:0;
+  box-shadow:0 1px 5px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.1);}
+.color-name{font-family:'Cormorant Garamond',serif;font-size:14px;color:rgba(30,15,5,.92);font-weight:500;}
+.color-hex{font-family:'Courier New',monospace;font-size:10px;color:rgba(80,55,15,.72);}
+.color-why-btn{background:none;border:1px solid rgba(110,75,25,.2);
+  font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:1px;text-transform:uppercase;
+  color:rgba(90,60,20,.4);padding:2px 7px;cursor:pointer;margin-top:5px;transition:all .2s;}
+.color-why-btn:hover{background:rgba(110,75,25,.08);color:rgba(80,50,15,.7);}
+.color-why{display:none;margin-top:6px;font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:11.5px;color:rgba(40,20,5,.82);line-height:1.6;}
+.color-why.open{display:block;}
+.color-science{margin-top:14px;padding:9px 12px;background:rgba(120,48,104,.08);
+  border:1px solid rgba(120,48,104,.22);font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:11.5px;color:rgba(90,30,75,.78);line-height:1.6;}
+
+/* Shows / Movies */
+.show-intro{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;
+  color:rgba(80,50,10,.75);margin-bottom:12px;line-height:1.7;}
+.show-type-badge{font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:2px 7px;display:inline-block;margin-bottom:5px;}
+.show-type-badge.film{background:rgba(70,40,90,.08);color:rgba(90,50,120,.65);border:1px solid rgba(70,40,90,.18);}
+.show-type-badge.series{background:rgba(35,60,90,.08);color:rgba(40,70,120,.65);border:1px solid rgba(35,60,90,.18);}
+.show-title{font-family:'Cormorant Garamond',serif;font-size:14px;color:rgba(30,15,5,.92);font-weight:500;}
+.show-imdb{font-family:'Raleway',sans-serif;font-size:7.5px;letter-spacing:1px;color:rgba(110,75,25,.72);margin-bottom:4px;}
+
+/* Science note */
+.sci-note{margin-top:12px;padding:9px 12px;background:rgba(160,120,60,.09);
+  border:1px solid rgba(110,75,25,.25);font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:11.5px;color:rgba(60,35,5,.78);line-height:1.55;}
+
+/* Empty state */
+.empty-cat{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(160,120,60,.3);font-size:13px;padding:10px 0;}
+
+/* ══ ACTION BUTTONS ══ */
+.card-action-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center;}
+.action-btn{font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 10px;border:1px solid;cursor:pointer;transition:all .2s;border-radius:1px;background:transparent;}
+.action-btn.did-it{border-color:rgba(40,100,40,.35);color:rgba(40,90,40,.75);}
+.action-btn.did-it:hover{background:rgba(40,100,40,.1);border-color:rgba(40,100,40,.65);}
+.action-btn.did-it.active{background:rgba(40,100,40,.18);border-color:rgba(40,100,40,.7);color:rgba(20,80,20,.95);}
+.action-btn.didnt{border-color:rgba(130,50,20,.3);color:rgba(120,45,15,.6);}
+.action-btn.didnt:hover{background:rgba(130,50,20,.08);border-color:rgba(130,50,20,.55);}
+.action-btn.didnt.active{background:rgba(130,50,20,.12);border-color:rgba(130,50,20,.65);color:rgba(110,35,10,.9);}
+.rec-card.crossed-out .rec-card-title{text-decoration:line-through;opacity:.38;}
+.rec-card.crossed-out .rec-card-why{opacity:.28;}
+
+/* ══ STICKY NOTE ══ */
+.sticky-note-wrap{position:absolute;top:0;left:0;right:0;bottom:0;z-index:10;pointer-events:none;}
+/* ── SARI YAPIŞKAN NOTLAR (GERÇEK YAPIŞMA EFEKTİ) ── */
+.sticky-note {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 100%;
+  background: linear-gradient(145deg, #fff9c4 0%, #fff3a0 60%, #ffe97a 100%);
+  box-shadow: 2px 3px 8px rgba(0,0,0,.22), 0 1px 0 rgba(255,255,180,.6) inset;
+  padding: 10px 12px 12px;
+  pointer-events: all;
+  border-radius: 0 0 2px 2px;
+  display: flex;
+  flex-direction: column;
+  
+  /* İşte anlattığım o gerçek sihir: */
+  transform-origin: center center;
+  animation: stickySlap 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.25) both;
+}
+
+.sticky-feedback {
+  flex: 1;
+  min-height: 0; 
+}
+
+/* STICKER İÇİNDEKİ YENİ BAŞLIK VE ÇİZGİ */
+.item-title-display {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(60,45,0,.9);
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 6px;
+    line-height: 1.2;
+    padding: 0 10px;
+}
+
+.title-divider {
+    border: none;
+    border-top: 1px dashed rgba(140,110,0,.3);
+    width: 85%;
+    margin: 0 auto 10px auto;
+}
+
+@keyframes stickySlap {
+  0% {
+    transform: scale(1.6); /* Ekrandan devasa başlar */
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1); /* Tam yerine oturur */
+    opacity: 1;
+  }
+}
+.sticky-note::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:rgba(220,180,0,.35);border-radius:0;}
+.sticky-note::after{content:'';position:absolute;top:-4px;left:50%;transform:translateX(-50%);
+  width:20px;height:8px;background:rgba(200,160,0,.35);border-radius:0 0 2px 2px;}
+.sticky-close{position:absolute;top:5px;right:7px;background:none;border:none;cursor:pointer;
+  font-size:10px;color:rgba(100,80,0,.35);transition:color .2s;line-height:1;}
+.sticky-close:hover{color:rgba(100,80,0,.75);}
+.sticky-stars{display:flex;gap:3px;margin:6px 0 5px;}
+.sticky-star{font-size:16px;cursor:pointer;color:rgba(180,140,0,.25);transition:color .15s;line-height:1;}
+.sticky-star.lit{color:#e6a800;}
+.sticky-star:hover,.sticky-star.hover{color:#e6a800;}
+.sticky-label{font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(100,75,0,.45);margin-bottom:4px;}
+.sticky-feedback {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(140, 110, 0, .25);
+  outline: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.4; /* İşte o uçurumu kapatan satır aralığı kuralı */
+  color: rgba(60, 45, 0, .75);
+  resize: none;
+  height: 50px; /* Çok dar olmaması için biraz yükselttik */
+  padding: 2px 0;
+  caret-color: #9a7800;
+}
+.sticky-feedback::placeholder{color:rgba(120,95,0,.2);}
+.sticky-save{margin-top:7px;background:rgba(160,120,0,.12);border:1px solid rgba(160,120,0,.3);
+  color:rgba(100,75,0,.75);font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:2px;
+  text-transform:uppercase;padding:4px 10px;cursor:pointer;transition:all .2s;border-radius:1px;}
+.sticky-save:hover{background:rgba(160,120,0,.22);}
+
+/* ══ RAG BADGE ══ */
+.rag-badge{display:inline-flex;align-items:center;gap:3px;font-family:'Raleway',sans-serif;font-size:7px;
+  letter-spacing:1.5px;text-transform:uppercase;color:rgba(160,120,30,.85);
+  background:rgba(220,180,50,.12);border:1px solid rgba(200,160,40,.3);
+  padding:2px 7px;margin-bottom:5px;border-radius:8px;}
+.rag-badge .rag-star{font-size:9px;color:#c8a030;}
+
+/* ══ SCHEDULER PANEL ══ */
+#schedulerPanel{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:min(820px,96vw);
+  background:linear-gradient(160deg,#f4e8d0,#ece0c0);
+  border:1px solid rgba(140,100,40,.22);
+  border-bottom:none;
+  box-shadow:0 -6px 30px rgba(0,0,0,.35);
+  z-index:300;
+  border-radius:4px 4px 0 0;
+  transition:transform .4s cubic-bezier(.4,0,.2,1);
+  transform:translateX(-50%) translateY(100%);
+}
+#schedulerPanel.open{transform:translateX(-50%) translateY(0);}
+.sched-handle{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 8px;
+  cursor:pointer;border-bottom:1px solid rgba(140,100,40,.12);}
+.sched-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:rgba(50,25,5,.85);}
+.sched-toggle-btn{background:none;border:1px solid rgba(140,100,40,.2);color:rgba(80,55,15,.55);
+  font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:2px;text-transform:uppercase;
+  padding:3px 10px;cursor:pointer;transition:all .2s;}
+.sched-toggle-btn:hover{background:rgba(140,100,40,.08);}
+.sched-body{padding:14px 20px 18px;display:flex;gap:14px;flex-wrap:wrap;}
+.sched-card{flex:1;min-width:180px;background:rgba(160,120,60,.05);border:1px solid rgba(110,75,25,.1);
+  padding:12px 14px;border-radius:1px;}
+.sched-card-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:rgba(50,25,5,.8);margin-bottom:6px;}
+.sched-card p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11.5px;color:rgba(70,45,15,.72);line-height:1.55;margin-bottom:8px;}
+.sched-select{background:rgba(160,120,60,.06);border:1px solid rgba(110,75,25,.18);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12.5px;color:rgba(50,25,5,.8);
+  padding:5px 8px;outline:none;cursor:pointer;width:100%;}
+.sched-btn{margin-top:8px;width:100%;background:rgba(30,15,5,.85);color:rgba(230,210,160,.8);border:none;
+  font-family:'Raleway',sans-serif;font-size:7.5px;letter-spacing:3px;text-transform:uppercase;
+  padding:7px;cursor:pointer;transition:all .2s;}
+.sched-btn:hover{background:rgba(50,25,5,.95);}
+.sched-log{max-height:120px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;margin-top:4px;
+  scrollbar-width:thin;scrollbar-color:rgba(110,75,25,.15) transparent;}
+.sched-log-entry{background:rgba(160,120,60,.06);border:1px solid rgba(110,75,25,.08);
+  padding:6px 10px;font-family:'Cormorant Garamond',serif;font-size:11px;color:rgba(50,30,5,.75);}
+.sched-log-date{font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:1px;color:rgba(100,70,20,.45);margin-bottom:2px;}
+.mood-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;}
+.sched-floater{position:fixed;bottom:18px;right:18px;z-index:299;
+  background:linear-gradient(to bottom,#2a1408,#1a0c04);border:1px solid rgba(200,160,70,.22);
+  color:rgba(230,210,160,.75);font-family:'Raleway',sans-serif;font-size:8px;letter-spacing:3px;
+  text-transform:uppercase;padding:9px 16px;cursor:pointer;transition:all .25s;
+  box-shadow:3px 3px 0 rgba(100,50,15,.4);}
+.sched-floater:hover{background:linear-gradient(to bottom,#3a2010,#241008);}
+
+/* Flip animation */
+.flip-wrap{position:absolute;inset:0;pointer-events:none;z-index:50;display:none;}
+.flip-wrap.going{display:block;}
+.flip-page{position:absolute;top:0;right:0;width:50%;height:100%;transform-origin:left center;animation:fpFwd .65s cubic-bezier(.4,0,.2,1) forwards;}
+.flip-page.bwd{left:0;right:auto;transform-origin:right center;animation:fpBwd .65s cubic-bezier(.4,0,.2,1) forwards;}
+.fp-front,.fp-back{position:absolute;inset:0;background:linear-gradient(to left,#f0e0c0,#ebe0bc);backface-visibility:hidden;}
+.fp-back{background:linear-gradient(to right,#f0e0c0,#ebe0bc);transform:rotateY(180deg);}
+@keyframes fpFwd{0%{transform:perspective(1000px) rotateY(0)}50%{transform:perspective(1000px) rotateY(-90deg)}100%{transform:perspective(1000px) rotateY(-180deg)}}
+@keyframes fpBwd{0%{transform:perspective(1000px) rotateY(0)}50%{transform:perspective(1000px) rotateY(90deg)}100%{transform:perspective(1000px) rotateY(180deg)}}
+/* ══════════════════════════════════════════════════════════
+   ÖNERİ KARTLARINI KÜÇÜK VE ZARİF KARELERE BÖLME
+══════════════════════════════════════════════════════════ */
+
+.cat-pane > div {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important; /* Her zaman yan yana sabit 2 sütun */
+  gap: 20px;
+  align-content: start;
+}
+
+/* Rozetler ve başlıklar tam satır kalsın */
+.cat-pane > div > *:not(.rec-card):not(.color-grid):not(.map-links) {
+  grid-column: 1 / -1;
+}
+
+/* ── KARTLAR ── */
+.rec-card {
+  margin-bottom: 0 !important;
+  aspect-ratio: 1 / 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-height: 260px; /* Çok devasa olmasını kesin olarak engeller */
+}
+
+.rec-card .card-action-row {
+  margin-top: auto; 
+  justify-content: center;
+  padding-bottom: 4px;
+}
+
+/* ── RENKLER VE HARİTA KARTLARI ── */
+.color-grid, .map-links {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Her zaman yan yana sabit 2 sütun */
+  gap: 20px;
+}
+.color-swatch-card, .map-links > div {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 0 !important;
+  max-height: 260px;
+}
+.map-link-card {
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* ── SARI YAPIŞKAN NOTLAR ── */
+.sticky-note {
+  height: 100%; 
+  top: 0;
+  display: flex;
+  flex-direction: column;
+}
+.sticky-feedback {
+  flex: 1;
+  min-height: 0; 
+}
+/* ══════════════════════════════════════════════════════════
+   POST-IT EKRANDAN DÜMDÜZ YAPIŞMA ANİMASYONU
+══════════════════════════════════════════════════════════ */
+
+.sticky-note {
+  transform: none !important; /* Eski hafif eğikliği iptal eder, dümdüz yapar */
+  transform-origin: center center !important; /* Animasyonun merkezden başlamasını sağlar */
+  animation: stickySlap 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.2) both !important; 
+}
+
+@keyframes stickySlap {
+  0% {
+    transform: scale(1.5); /* Ekrandan (büyük) başlar */
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1); /* Tam yerine, orijinal boyutuna oturur */
+    opacity: 1;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ BACKGROUND ══ -->
+<div id="bgScene"></div>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <div class="card-texture"></div>
+    <div class="card-header">
+      <div class="cinzel-title">Mindiary</div>
+      <div class="card-tagline">— a wellness journal for your emotions —</div>
+    </div>
+    <div class="card-body">
+      <div class="tab-row">
+        <button class="ctab active" id="tabLogin" onclick="setAuthMode('login')">Sign In</button>
+        <button class="ctab" id="tabReg" onclick="setAuthMode('register')">New Account</button>
+      </div>
+      <div id="authErr" class="err-msg"></div>
+      <div class="field">
+        <label class="field-label">Username</label>
+        <div class="field-line">
+          <span class="field-icon">✒</span>
+          <input type="text" id="uIn" placeholder="your name" onkeydown="if(event.key==='Enter')pIn.focus()">
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Password</label>
+        <div class="field-line">
+          <span class="field-icon">🗝</span>
+          <input type="password" id="pIn" placeholder="your secret" onkeydown="if(event.key==='Enter')doAuth()">
+          <button class="pw-eye" onclick="togglePw()">👁</button>
+        </div>
+      </div>
+      <div class="field" id="cfField" style="display:none">
+        <label class="field-label">Confirm Password</label>
+        <div class="field-line">
+          <span class="field-icon">🗝</span>
+          <input type="password" id="cIn" placeholder="repeat" onkeydown="if(event.key==='Enter')doAuth()">
+        </div>
+      </div>
+      <button class="submit-btn" onclick="doAuth()"><span id="submitTxt">Open Mindiary</span></button>
+      <div class="switch-line" id="switchLine">First time? <b onclick="setAuthMode('register')">Create account</b></div>
+    </div>
+    
+  </div>
+</div>
+
+<!-- ══ JOURNAL ══ -->
+<div id="journal">
+  <div class="topbar">
+    <div class="user-info">
+      <div class="user-seal" id="userSeal">?</div>
+      <div class="user-name" id="userName">My Journal</div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-dot off" id="statusDot">⚫ offline</div>
+      <button class="tbar-btn" onclick="logout()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="main-layout">
+    <div class="open-book" id="openBook">
+
+      <!-- ── VELVET BOOKMARK ── -->
+      <div class="bookmark" id="bookmark"></div>
+
+      <!-- ── BOOKMARK BUTTON (clickable) ── -->
+      <button class="bookmark-btn" id="bookmarkBtn" onclick="openWellnessDash()" title="Open Wellness Dashboard" style="display:none;">
+        <div class="bookmark-btn-ring">
+          <span class="bookmark-btn-icon">📊</span>
+        </div>
+        <span class="bookmark-btn-label">Analytics</span>
+      </button>
+
+      <!-- ── LEFT PAGE ── -->
+      <div class="pg pg-left">
+        <div class="pg-body">
+          <div class="pg-num" id="pgNumL">i</div>
+          <div class="pg-head">
+            <div class="pg-title" id="pgTitle">Mindiary</div>
+            <div class="pg-date" id="pgDate">—</div>
+          </div>
+          <div class="pg-nav">
+            <button class="pg-nav-btn" id="prevBtn" onclick="doFlip(-1)">← prev</button>
+            <div class="page-tabs" id="pageTabs"></div>
+            <button class="pg-nav-btn" id="nextBtn" onclick="doFlip(1)">next →</button>
+          </div>
+
+          <!-- Write mode -->
+          <div id="writeMode" class="write-area">
+            <div class="sec-label">Today's entry</div>
+            <div class="empty-hint" id="emptyHint" onclick="openPen()">
+              <span class="hint-quill">🪶</span>
+              <p class="hint-text">Write what you feel.<br><span style="font-size:11px;opacity:.7">Click to begin writing… (at least 10 words)</span></p>
+            </div>
+            <textarea id="entryTA" style="display:none" placeholder="Dear diary, today I… (write at least 10 words)" oninput="onType()"></textarea>
+            <div class="word-warning" id="wordWarning"></div>
+            <div class="word-counter" id="wordCounter">0 / 10 words</div>
+            <div class="loc-row" id="locRow" style="display:none !important;">
+              <input type="hidden" id="locIn" value="" />
+            </div>
+            <div class="analyze-row" id="analyzeRow" style="display:none">
+              <button class="analyze-btn" onclick="doAnalyze()">✒ Read My Feelings</button>
+            </div>
+          </div>
+
+          <!-- Entry view (after analysis) -->
+          <div id="entryView" class="entry-view">
+            <div class="sec-label">Entry</div>
+            <div class="entry-text" id="entryText"></div>
+            <div class="entry-tags" id="entryTags"></div>
+            <button class="edit-btn" onclick="editEntry()">✎ Edit</button>
+          </div>
+        </div>
+        
+      </div>
+
+      <!-- ── GUTTER ── -->
+      <div class="gutter">
+        <div class="gutter-stitches"><div class="gs"></div><div class="gs"></div><div class="gs"></div><div class="gs"></div><div class="gs"></div></div>
+      </div>
+
+      <!-- ── RIGHT PAGE ── -->
+      <div class="pg pg-right">
+        <div class="pg-body">
+          <div class="pg-num pg-num-r" id="pgNumR">ii</div>
+
+          <!-- Idle state -->
+          <div class="right-idle" id="rightIdle">
+            <span style="font-size:22px;opacity:.25">🕯</span>
+            <p>Write something on the left page.<br></p>
+          </div>
+
+          <!-- Loading state -->
+          <div class="loading-area" id="loadingArea">
+            <div class="loading-quill">🪶</div>
+            <div class="loading-txt">Reading the ink of your heart…</div>
+          </div>
+
+          <!-- Results -->
+          <div class="results-area" id="resultsArea">
+            <div class="sec-label" style="flex-shrink:0;">Emotional landscape</div>
+            <div class="emo-bars" id="emoBars"></div>
+            <div class="well-note" id="wellNote"></div>
+            <div class="flourish">✦ ✧ ✦</div>
+
+            <div id="recContent">
+              <div class="rec-pg-header">
+                <div class="rec-pg-title">Wellness Suggestions</div>
+                <div class="rec-pg-sub" id="recHeaderSub"></div>
+                <div class="rec-header-emos" id="recHeaderEmos"></div>
+              </div>
+              <div class="cat-tabs" id="catTabs">
+                <button class="cat-tab active" onclick="showCat('food')" data-cat="food"><span class="cat-icon">🍵</span>Food</button>
+                <button class="cat-tab" onclick="showCat('activity')" data-cat="activity"><span class="cat-icon">🌿</span>Activity</button>
+                <button class="cat-tab" onclick="showCat('spotify_playlists')" data-cat="spotify_playlists"><span class="cat-icon">🎵</span>Music</button>
+                <button class="cat-tab" onclick="showCat('places')" data-cat="places"><span class="cat-icon">🗺</span>Places</button>
+                <button class="cat-tab" onclick="showCat('colors')" data-cat="colors"><span class="cat-icon">🎨</span>Colors</button>
+                <button class="cat-tab" onclick="showCat('shows_movies')" data-cat="shows_movies"><span class="cat-icon">🎬</span>Watch</button>
+                <button class="cat-tab" onclick="showCat('social')" data-cat="social"><span class="cat-icon">💬</span>Social</button>
+                <button class="cat-tab" onclick="showCat('personal_development')" data-cat="personal_development"><span class="cat-icon">✦</span>Growth</button>
+              </div>
+              <div class="cat-panes" id="catPanes">
+                <div class="cat-pane active" id="pane-food"><div id="food-content"></div></div>
+                <div class="cat-pane" id="pane-activity"><div id="activity-content"></div></div>
+                <div class="cat-pane" id="pane-spotify_playlists"><div id="spotify_playlists-content"></div></div>
+                <div class="cat-pane" id="pane-places"><div id="places-content"></div></div>
+                <div class="cat-pane" id="pane-colors"><div id="colors-content"></div></div>
+                <div class="cat-pane" id="pane-shows_movies"><div id="shows_movies-content"></div></div>
+                <div class="cat-pane" id="pane-social"><div id="social-content"></div></div>
+                <div class="cat-pane" id="pane-personal_development"><div id="personal_development-content"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:0;left:0;width:24px;height:24px;cursor:pointer;z-index:10;background:linear-gradient(225deg,transparent 50%,rgba(160,130,60,.15) 50%);" onclick="doFlip(-1)"></div>
+      </div>
+
+      <!-- Flip overlay -->
+      <div class="flip-wrap" id="flipWrap">
+        <div class="flip-page" id="flipPage">
+          <div class="fp-front"></div><div class="fp-back"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCHEDULER FLOATER ══ -->
+<button class="sched-floater" id="schedFloater" onclick="toggleScheduler()" style="display:none;">📅 Wellness Schedule</button>
+
+<!-- ══ REMINDER POPUP ══ -->
+<div id="reminderPopup">
+  <div class="popup-header">
+    <div class="popup-title">✦ Daily Reminder</div>
+    <button class="popup-close" onclick="closeReminderPopup()">✕</button>
+  </div>
+  <div class="popup-body" id="reminderPopupBody">
+    🕯 It's time to write in your Mindiary. 
+  </div>
+  <button class="popup-action" onclick="closeReminderPopup();openWellnessDash()">Open Wellness Dashboard →</button>
+</div>
+
+<!-- ══ WELLNESS DASHBOARD ══ -->
+<div id="wellnessDash">
+  <!-- Topbar -->
+  <div class="dash-topbar">
+    <div class="dash-logo">
+      <div class="dash-logo-mark">📊</div>
+      <div>
+        <div class="dash-title">Wellness Chronicle</div>
+        <div class="dash-subtitle">Your emotional journey, mapped over time</div>
+      </div>
+    </div>
+    <button class="dash-close-btn" onclick="closeWellnessDash()">
+      <span>✕</span> Return to Diary
+    </button>
+  </div>
+
+  <!-- Period tabs -->
+  <div class="dash-period-bar">
+    <button class="dash-ptab active" data-period="daily" onclick="switchDashPeriod('daily')">Daily</button>
+    <button class="dash-ptab" data-period="weekly" onclick="switchDashPeriod('weekly')">Weekly</button>
+    <button class="dash-ptab" data-period="monthly" onclick="switchDashPeriod('monthly')">Monthly</button>
+    <button class="dash-ptab" data-period="all" onclick="switchDashPeriod('all')">All Time</button>
+  </div>
+
+  <!-- Content -->
+  <div class="dash-content" id="dashContent">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<!-- ══ SCHEDULER PANEL ══ -->
+<div id="schedulerPanel">
+  <div class="sched-handle" onclick="toggleScheduler()">
+    <div class="sched-title">📅 Periodic Wellness Schedule</div>
+    <button class="sched-toggle-btn" id="schedHandleBtn">Close ↓</button>
+  </div>
+  <div class="sched-body">
+    <!-- Overall mood trend -->
+    <div class="sched-card" style="flex:2;min-width:220px;">
+      <div class="sched-card-title">Emotional Trend</div>
+      <p>Your overall emotional landscape across all journal entries.</p>
+      <div id="moodTrendArea"><div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:rgba(100,70,20,.35);">Write at least 2 entries to see trends.</div></div>
+    </div>
+    <!-- Daily reminder -->
+    <div class="sched-card">
+      <div class="sched-card-title">Daily Check-In</div>
+      <p>Set a daily reminder to write in your diary.</p>
+      
+      <!-- Kullanıcı istediği saati ve dakikayı özgürce seçebilir -->
+      <input type="time" class="sched-select" id="remTime" value="20:00" required style="margin-bottom: 8px; width: 100%; font-family: 'Raleway', sans-serif; letter-spacing: 2px;">
+      
+      <input type="email" id="remEmail" placeholder="your@email.com" style="width: 100%; padding: 6px; margin-bottom: 6px; border-radius: 4px; border: 1px solid rgba(110,75,25,.2); box-sizing: border-box; background: rgba(255,255,255,0.6); font-family: inherit;">
+      
+      <div style="margin-bottom: 12px; font-size: 13px; text-align: left;">
+        <input type="checkbox" id="remRememberMe"> 
+        <label for="remRememberMe" style="color: var(--ink-faded); cursor: pointer;">Remember my email</label>
+      </div>
+
+      <button class="sched-btn" onclick="saveMailReminder()">Set Reminder</button>
+      
+      <div id="dailyReminderStatus" style="margin-top:6px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(60,100,60,.7);"></div>
+    </div>
+    <!-- Weekly report -->
+    <div class="sched-card">
+      <div class="sched-card-title">Weekly Review</div>
+      <p>Generate a summary of your emotional week and top effective suggestions.</p>
+      <button class="sched-btn" onclick="generateWeeklyReport()">Generate Report</button>
+      <div id="weeklyReportArea" style="margin-top:8px;"></div>
+    </div>
+    <!-- Feedback history -->
+    <div class="sched-card" style="flex:1.5;min-width:200px;">
+      <div class="sched-card-title">What Worked For You</div>
+      <p>Suggestions you rated ★★★★☆ or above.</p>
+      <div class="sched-log" id="topFeedbackLog"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:5000';
+let pages = [], idx = 0, curUser = null, authMode = 'login', flipping = false;
+let currentRecs = null, currentTier = 'mild', currentEmotions = [];
+
+const EMOJI_MAP = {joy:'☀️',love:'🌹',anger:'🌋',sadness:'🌧️',fear:'🌙',surprise:'⭐',neutral:'🍃'};
+const CLS_MAP   = {joy:'c-joy',love:'c-love',anger:'c-anger',sadness:'c-sadness',fear:'c-fear',surprise:'c-surprise',neutral:'c-neutral'};
+
+// ════════════════════════════════════════════════════════════
+// RAG FEEDBACK STORE  (localStorage per user)
+// ════════════════════════════════════════════════════════════
+
+function guessCategory(card) {
+  if(!card) return 'general';
+  if(card.classList.contains('food-card')) return 'food';
+  if(card.classList.contains('activity-card')) return 'activity';
+  if(card.classList.contains('spotify-card')) return 'spotify_playlists';
+  if(card.classList.contains('social-card')) return 'social';
+  if(card.classList.contains('dev-card')) return 'personal_development';
+  if(card.classList.contains('show-card')) return 'shows_movies';
+  if(card.closest('#places-content')) return 'places';
+  if(card.closest('#colors-content')) return 'colors';
+  return 'general';
+}
+
+async function serverSaveFeedback(itemText, category, didIt, stars, feedbackText, emotion) {
+  if(!curUser) return;
+  try {
+    await fetch(`${API}/feedback`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        username: curUser, item_text: itemText, category: category,
+        did_it: didIt, stars: stars, feedback_text: feedbackText, emotion: emotion
+      })
+    });
+  } catch (e) { console.error("Feedback error:", e); }
+}
+
+async function syncCardFeedbackToServer(page_number, cardFeedback) {
+  if(!curUser) return;
+  try {
+    await fetch(`${API}/pages/${curUser}/${page_number}/card_feedback`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ cardFeedback: cardFeedback })
+    });
+  } catch (e) { console.error("Card sync error:", e); }
+}
+
+function ragKey(){ return `rag-${curUser}`; }
+
+function loadRag(){
+  try{ return JSON.parse(localStorage.getItem(ragKey())||'{}'); } catch{ return {}; }
+}
+function saveRag(db){ try{ localStorage.setItem(ragKey(), JSON.stringify(db)); } catch{} }
+
+function ragNorm(text){ return text.toLowerCase().replace(/[^\w ]/g,'').trim().slice(0,80); }
+
+function ragRecord(itemText, didIt, stars, feedback, emotion){
+  if(!curUser) return;
+  const db = loadRag();
+  const key = ragNorm(itemText);
+  if(!db[key]) db[key] = { label: itemText, count:0, totalStars:0, feedback:[], lastEmotion: emotion||'neutral' };
+  if(didIt){
+    db[key].count++;
+    db[key].totalStars += (stars||0);
+    db[key].lastEmotion = emotion||'neutral';
+    if(feedback) db[key].feedback.push({ text:feedback, date: new Date().toLocaleDateString() });
+  }
+  saveRag(db);
+}
+
+// Sayfa yüklendiğinde kullanıcının eski maili varsa kutuya otomatik yazar
+document.addEventListener('DOMContentLoaded', () => {
+    const savedEmail = localStorage.getItem('mindiary_saved_email');
+    if(savedEmail) {
+        const emailInput = document.getElementById('remEmail');
+        const rememberCheck = document.getElementById('remRememberMe');
+        if(emailInput) emailInput.value = savedEmail;
+        if(rememberCheck) rememberCheck.checked = true;
+    }
+});
+
+// Kur ve Kaydet butonuna basıldığında çalışır
+function saveMailReminder() {
+    if (!curUser) {
+        alert("Hatırlatıcı kurmak için önce giriş yapmalısınız.");
+        return;
+    }
+
+    const timeVal = document.getElementById('remTime').value; // Örn: "21:30"
+    const emailVal = document.getElementById('remEmail').value;
+    const rememberMe = document.getElementById('remRememberMe').checked;
+
+    if (!timeVal || !emailVal) {
+        alert("Lütfen saat ve geçerli bir e-posta adresi girin.");
+        return;
+    }
+
+    // "Beni Hatırla" seçiliyse tarayıcı hafızasına (localStorage) kaydet, değilse sil.
+    if (rememberMe) {
+        localStorage.setItem('mindiary_saved_email', emailVal);
+    } else {
+        localStorage.removeItem('mindiary_saved_email');
+    }
+
+    // Python Backend'e alarmı kurması için veri gönderiyoruz
+    fetch('http://localhost:5000/api/reminder/set', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: curUser, // BUG BURADAYDI: curUser.username yerine sadece curUser olmalı
+            email: emailVal,
+            time: timeVal
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'ok') {
+            alert(`Harika! Her gün saat ${timeVal}'da ${emailVal} adresine hatırlatıcı gönderilecek.`);
+            // Arayüzdeki alt metni de güncellemek istersen:
+            const statusEl = document.getElementById('dailyReminderStatus');
+            if(statusEl) statusEl.textContent = `✓ Reminder set for ${timeVal} daily.`;
+        } else {
+            alert("Bir hata oluştu: " + data.error);
+        }
+    })
+    .catch(err => console.error("Hatırlatıcı hatası:", err));
+}
+function ragGetScore(itemText){
+  if(!curUser) return null;
+  const db = loadRag();
+  const key = ragNorm(itemText);
+  if(!db[key]||db[key].count===0) return null;
+  const avg = db[key].totalStars / db[key].count;
+  return { avg, count: db[key].count };
+}
+
+function ragTopItems(n){
+  const db = loadRag();
+  return Object.values(db)
+    .filter(v=>v.count>0)
+    .sort((a,b)=> (b.totalStars/b.count) - (a.totalStars/a.count))
+    .slice(0, n||10);
+}
+
+function ragContextString(){
+  const top = ragTopItems(6);
+  if(!top.length) return '';
+  return 'Previous user feedback on wellness suggestions:\n' +
+    top.map(v=>`- "${v.label}" (avg ★ ${(v.totalStars/v.count).toFixed(1)}/5, tried ${v.count}x, emotion: ${v.lastEmotion})`).join('\n');
+}
+
+(function buildBg(){
+  const scene = document.getElementById('bgScene');
+  const COLORS = [
+    ['#3a5060','#2a4050'],['#4a6070','#3a5060'],['#5a5048','#4a4038'],
+    ['#483820','#382810'],['#604830','#483820'],['#705840','#584830'],
+    ['#3a4a28','#2a3a18'],['#4a5830','#3a4820'],['#2a3848','#1a2838'],
+    ['#6a4028','#503018'],['#5a5030','#484020'],['#384050','#283040'],
+  ];
+  const shelves = [{y:'72%',n:24},{y:'45%',n:20},{y:'18%',n:22}];
+  shelves.forEach(({y,n})=>{
+    const back = document.createElement('div');
+    back.style.cssText=`position:absolute;left:0;right:0;top:calc(${y} - 100px);bottom:calc(100% - ${y});background:linear-gradient(to bottom,#0c0604,#140a04);`;
+    const board = document.createElement('div'); board.className='bg-shelf';
+    board.style.cssText=`position:absolute;left:0;right:0;top:${y};`;
+    scene.appendChild(back); scene.appendChild(board);
+    const bw = document.createElement('div'); bw.className='bg-books';
+    bw.style.cssText=`position:absolute;left:40px;right:40px;bottom:calc(100% - ${y});align-items:flex-end;`;
+    for(let i=0;i<n;i++){
+      const c=COLORS[Math.floor(Math.random()*COLORS.length)];
+      const w=14+Math.floor(Math.random()*20), h=100+Math.floor(Math.random()*80);
+      const b=document.createElement('div'); b.className='bg-book';
+      b.style.cssText=`width:${w}px;height:${h}px;background:linear-gradient(to right,${dk(c[0],.8)},${c[0]},${c[1]},${c[0]},${dk(c[0],.8)});margin-right:${1+Math.floor(Math.random()*3)}px;transform:rotate(${(Math.random()-.5)*4}deg);border-radius:1px 2px 2px 1px;`;
+      bw.appendChild(b);
+    }
+    scene.appendChild(bw);
+  });
+  const glow=document.createElement('div'); glow.className='bg-candle-glow';
+  glow.style.cssText='position:absolute;width:200px;height:200px;top:36%;right:15%;';
+  scene.appendChild(glow);
+})();
+function dk(hex,f){try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgb(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)})`;}catch{return hex;}}
+
+function setAuthMode(m){
+  authMode=m; const isReg=m==='register';
+  document.getElementById('tabLogin').classList.toggle('active',!isReg);
+  document.getElementById('tabReg').classList.toggle('active',isReg);
+  document.getElementById('cfField').style.display=isReg?'block':'none';
+  document.getElementById('submitTxt').textContent=isReg?'Create Mindiary ':'Open Mindiary';
+  document.getElementById('switchLine').innerHTML=isReg
+    ?'Already a member? <b onclick="setAuthMode(\'login\')">Sign in</b>'
+    :'First time? <b onclick="setAuthMode(\'register\')">Create account</b>';
+  document.getElementById('authErr').classList.remove('show');
+}
+function showAuthErr(msg){const e=document.getElementById('authErr');e.textContent=msg;e.classList.remove('show');void e.offsetWidth;e.classList.add('show');}
+
+async function doAuth(){
+  const u=document.getElementById('uIn').value.trim();
+  const p=document.getElementById('pIn').value;
+  if(!u||!p){showAuthErr('Please fill in all fields.');return;}
+  const btn=document.querySelector('.submit-btn'); btn.disabled=true;
+  try{
+    if(authMode==='register'){
+      const c=document.getElementById('cIn').value;
+      if(p!==c){showAuthErr("Passwords don't match.");return;}
+      if(p.length<4){showAuthErr('Need at least 4 characters.');return;}
+      const r=await fetch(`${API}/auth/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+      const d=await r.json(); if(!r.ok){showAuthErr(d.error||'Registration failed.');return;}
+    }else{
+      const r=await fetch(`${API}/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+      const d=await r.json(); if(!r.ok){showAuthErr(d.error||'Wrong username or password.');return;}
+    }
+    openJournal(u);
+  }catch(e){
+    const lu=JSON.parse(localStorage.getItem('dlv4')||'{}');
+    if(authMode==='register'){
+      const c=document.getElementById('cIn').value;
+      if(p!==c){showAuthErr("Passwords don't match.");return;}
+      if(lu[u]){showAuthErr('Username already taken.');return;}
+      lu[u]={h:btoa(p)};localStorage.setItem('dlv4',JSON.stringify(lu));
+    }else{
+      if(!lu[u]||btoa(p)!==lu[u].h){showAuthErr('Wrong username or password.');return;}
+    }
+    openJournal(u);
+  }finally{btn.disabled=false;}
+}
+function togglePw(){const i=document.getElementById('pIn'),e=document.querySelector('.pw-eye');if(i.type==='password'){i.type='text';e.textContent='🙈';}else{i.type='password';e.textContent='👁';}}
+
+function openJournal(username){
+  curUser=username;
+  const d=username.charAt(0).toUpperCase()+username.slice(1);
+  document.getElementById('pgTitle').textContent=d+"'s Diary";
+  document.getElementById('userName').textContent=d+"'s Journal";
+  document.getElementById('userSeal').textContent=d.charAt(0);
+  document.title=d+"'s Diary";
+  document.getElementById('loginOverlay').classList.add('hidden');
+  const j=document.getElementById('journal');
+  j.classList.add('show'); requestAnimationFrame(()=>j.classList.add('visible'));
+  const sf = document.getElementById('schedFloater');
+  if(sf) sf.style.display='block';
+  const bb = document.getElementById('bookmarkBtn');
+  if(bb) bb.style.display='flex';
+  loadPages(); pingServer();
+  try {
+    const saved = localStorage.getItem(`sched-daily-${username}`);
+    if (saved) { reminderTime = parseTimeStr(saved); scheduleReminderCheck(); }
+  } catch {}
+}
+function logout(){
+  curUser=null; pages=[];
+  if(reminderInterval){ clearInterval(reminderInterval); reminderInterval=null; }
+  const j=document.getElementById('journal');
+  j.classList.remove('visible'); setTimeout(()=>j.classList.remove('show'),600);
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('uIn').value=''; document.getElementById('pIn').value='';
+  const sf = document.getElementById('schedFloater');
+  if(sf) sf.style.display='none';
+  const bb = document.getElementById('bookmarkBtn');
+  if(bb) bb.style.display='none';
+  const sp = document.getElementById('schedulerPanel');
+  if(sp) sp.classList.remove('open');
+  closeWellnessDash();
+  setAuthMode('login');
+}
+
+function freshPage(){
+  const d=new Date(); if(pages.length) d.setDate(d.getDate()+pages.length);
+  return{page_number:pages.length+1,date:d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}),location:'',text:'',emotions:[],recommendations:{},wellness_note:null,analyzed:false,tier:'mild',cardFeedback:{}};
+}
+async function loadPages(){
+  try{
+    const r=await fetch(`${API}/pages/${curUser}`,{headers:{'Accept':'application/json'}});
+    if(r.ok){
+      const d=await r.json();
+      pages=d.pages.map(p=>({
+        page_number:p.page_number,date:p.date,location:p.location||'',text:p.text||'',
+        emotions:p.emotions||[],recommendations:p.recommendations||{},
+        wellness_note:p.wellness_note||null,analyzed:p.analyzed,tier:p.tier||'mild',
+        cardFeedback:p.cardFeedback||{}
+      }));
+      setStatus(true);
+    } else if(r.status===404){
+      pages=[];
+      setStatus(true);
+    } else {
+      throw new Error('pages_error_'+r.status);
+    }
+  }catch(e){
+    const isNetworkError = e instanceof TypeError || e.message==='Failed to fetch';
+    try{pages=JSON.parse(localStorage.getItem(`dp4-${curUser}`)||'[]');}catch{pages=[];}
+    if(isNetworkError) setStatus(false);
+  }
+  if(!pages.length) pages=[freshPage()];
+  idx=0; renderAll();
+}
+function saveLocal(){try{localStorage.setItem(`dp4-${curUser}`,JSON.stringify(pages));}catch{}}
+
+function renderAll() {
+  const page = pages[idx];
+  
+  if (page && page.analyzed && page.emotions && page.emotions.length > 0) {
+    currentRecs = page.recommendations;
+    currentEmotions = page.emotions;
+    let topScore = page.emotions[0]?.score || 0.5;
+    currentTier = page.tier || (topScore >= 0.65 ? 'intense' : (topScore >= 0.35 ? 'moderate' : 'mild'));
+  }
+
+  renderTabs();
+  renderLeft();
+  renderRight();
+  renderRecPanel(); // Bu fonksiyon artık güncel değişkenlerle çalışacak
+  updateNums();
+}
+function toRoman(n){const v=['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'],d2=[1000,900,500,400,100,90,50,40,10,9,5,4,1];let r='';for(let i=0;i<d2.length;i++)while(n>=d2[i]){r+=v[i];n-=d2[i];}return r.toLowerCase();}
+
+function renderTabs(){
+  const el=document.getElementById('pageTabs'); el.innerHTML='';
+  pages.forEach((p,i)=>{
+    const b=document.createElement('button'); b.className='ptab'+(i===idx?' active':'')+(p.text?' has-entry':'');
+    b.textContent=i+1; b.title=p.date; b.onclick=()=>{if(i!==idx)doFlip(i>idx?1:-1,i);};
+    el.appendChild(b);
+  });
+  const a=document.createElement('button'); a.className='new-tab'; a.textContent='+'; a.title='New page'; a.onclick=addPage; el.appendChild(a);
+  document.getElementById('prevBtn').disabled=idx===0;
+  document.getElementById('nextBtn').disabled=idx===pages.length-1;
+}
+
+function renderLeft(){
+  const page=pages[idx];
+  const wm=document.getElementById('writeMode'), ev=document.getElementById('entryView');
+  if(page.analyzed&&page.emotions.length){
+    wm.style.display='none'; ev.classList.add('show');
+    document.getElementById('entryText').textContent=page.text;
+    
+  }else{
+    ev.classList.remove('show'); wm.style.display='flex';
+    document.getElementById('entryTA').value=page.text||'';
+    document.getElementById('locIn').value=page.location||'';
+    if(page.text){
+      openPen();
+      const wc=(page.text||'').trim().split(/\s+/).filter(w=>w.length>0).length;
+      const counter=document.getElementById('wordCounter');
+      if(counter){
+        counter.textContent=wc+' / 10 words';
+        counter.className='word-counter '+(wc>=10?'ok':'warn');
+      }
+    } else {
+      resetPen();
+    }
+  }
+}
+function renderRight(){
+  const page = pages[idx];
+  const idle = document.getElementById('rightIdle');
+  const res = document.getElementById('resultsArea');
+  const load = document.getElementById('loadingArea');
+
+  load.classList.remove('show');
+  res.classList.remove('show');
+  idle.style.display = 'none';
+
+  if (page && page.analyzed && page.emotions && page.emotions.length > 0) {
+    res.classList.add('show');
+    drawEmoBars(page.emotions);
+    drawWellNote(page.wellness_note);
+  } else {
+    idle.style.display = 'flex';
+  }
+}
+
+function renderRecPanel() {
+  const page = pages[idx];
+  const rc = document.getElementById('recContent');
+  
+  const hasData = page && page.analyzed && page.recommendations && Object.keys(page.recommendations).length > 0;
+
+  if (hasData) {
+    rc.style.display = 'flex';
+    rc.style.flexDirection = 'column';
+
+    drawRecHeader(page.emotions, currentTier);
+    buildAllPanes(page.recommendations, page.location || '');
+    
+    showCat('food'); 
+  } else {
+    rc.style.display = 'none';
+  }
+}
+
+function updateNums(){}
+
+function openPen(){
+  document.getElementById('emptyHint').style.display='none';
+  document.getElementById('entryTA').style.display='block';
+  document.getElementById('locRow').style.display='flex';
+  document.getElementById('analyzeRow').style.display='block';
+  document.getElementById('wordCounter').style.display='block';
+  document.getElementById('entryTA').focus();
+}
+function resetPen(){
+  document.getElementById('emptyHint').style.display='flex';
+  document.getElementById('entryTA').style.display='none';
+  document.getElementById('locRow').style.display='none';
+  document.getElementById('analyzeRow').style.display='none';
+  document.getElementById('wordCounter').style.display='none';
+  document.getElementById('wordWarning').classList.remove('show');
+}
+
+function onType(){
+  const text = document.getElementById('entryTA').value;
+  pages[idx].text = text;
+  saveLocal();
+  const wc = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+  const counter = document.getElementById('wordCounter');
+  if(counter){
+    counter.textContent = wc + ' / 10 words';
+    counter.className = 'word-counter ' + (wc >= 10 ? 'ok' : 'warn');
+  }
+  if(wc >= 10) hideWordWarning();
+}
+
+function showWordWarning(needed){
+  const el = document.getElementById('wordWarning');
+  if(!el) return;
+  el.textContent = needed === 1
+    ? 'Please write just 1 more word for a meaningful analysis.'
+    : 'Please write at least ' + needed + ' more words for a meaningful analysis.';
+  el.classList.add('show');
+}
+
+function hideWordWarning(){
+  const el = document.getElementById('wordWarning');
+  if(el) el.classList.remove('show');
+}
+
+function editEntry(){const p=pages[idx];p.analyzed=false;p.emotions=[];p.recommendations={};p.wellness_note=null;p.tier='mild';saveLocal();renderAll();}
+
+// ════════════════════════════════════════════════════════════
+// FLIP (ANIMASYON VE KURDELE GÜNCELLEMESİ)
+// ════════════════════════════════════════════════════════════
+function doFlip(dir, target){
+  if(flipping) return;
+  const ni=target!==undefined?target:idx+dir;
+  if(ni<0||ni>=pages.length) return;
+  
+  flipping=true;
+  const fp=document.getElementById('flipPage'), fw=document.getElementById('flipWrap');
+  const bm=document.getElementById('bookmark'); 
+
+  if(bm) bm.classList.add('pulled'); 
+
+  fp.className='flip-page'+(dir<0?' bwd':''); 
+  fw.classList.add('going');
+
+  setTimeout(()=>{
+    fw.classList.remove('going');
+    idx=ni;
+    renderAll();
+    
+    setTimeout(() => {
+      if(bm) bm.classList.remove('pulled');
+      flipping=false;
+    }, 150);
+    
+  }, 650);
+}
+function addPage(){pages.push(freshPage());saveLocal();doFlip(1,pages.length-1);}
+
+async function doAnalyze(){
+  const text=document.getElementById('entryTA').value.trim();
+  const loc=(document.getElementById('locIn').value.trim())||'';
+  if(!text) return;
+
+  const wordCount = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+  if(wordCount < 10){
+    const ta = document.getElementById('entryTA');
+    ta.style.outline='1px solid rgba(130,50,20,.5)';
+    const needed = 10 - wordCount;
+    showWordWarning(needed);
+    setTimeout(()=>{ ta.style.outline=''; hideWordWarning(); }, 3000);
+    return;
+  }
+
+  const page=pages[idx]; page.text=text; page.location=loc;
+
+  document.getElementById('rightIdle').style.display='none';
+  document.getElementById('resultsArea').classList.remove('show');
+  document.getElementById('loadingArea').classList.add('show');
+  document.getElementById('recContent').style.display='none';
+
+  let result;
+  let serverReachable = false;
+  let ragActive = false;
+  try{
+    const r=await fetch(`${API}/analyze`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({username:curUser,text,location:loc,
+        page_number:page.page_number||(idx+1),
+        entry_date:new Date().toISOString().split('T')[0],
+      })
+    });
+    serverReachable = true;
+    const d=await r.json();
+    if(d.emotions && d.recommendations){
+      result={emotions:d.emotions,recommendations:d.recommendations,
+              wellness_note:d.wellness_note,tier:d.tier||'mild'};
+      ragActive = d.rag_active || false;
+      setStatus(true);
+    } else {
+      setStatus(true);
+      throw new Error('bad_response');
+    }
+  }catch(err){
+    if(!serverReachable){
+      setStatus(false);
+    }
+    const emos=kwFallback(text);
+    await new Promise(r=>setTimeout(r,900));
+    result={
+      emotions:emos.map(([n,s])=>({name:n,score:s})),
+      recommendations:offlineRecs(emos),
+      wellness_note:offlineNote(text),
+      tier:'mild'
+    };
+  }
+
+  page.emotions=result.emotions;
+  page.recommendations=result.recommendations;
+  page.wellness_note=result.wellness_note;
+  page.tier=result.tier||'mild';
+  page.analyzed=true;
+  page.ragActive=ragActive;
+  saveLocal();
+
+  document.getElementById('writeMode').style.display='none';
+  document.getElementById('entryView').classList.add('show');
+  document.getElementById('entryText').textContent=text;
+document.getElementById('entryTags').innerHTML =
+    `<span class="etag">📅 ${pages[idx].date}</span>`
+    + (ragActive ? `<span class="etag etag-rag" title="Recommendations personalized based on your history">✦ Personalized</span>` : '');
+  document.getElementById('loadingArea').classList.remove('show');
+  document.getElementById('resultsArea').classList.add('show');
+  drawEmoBars(result.emotions);
+  drawWellNote(result.wellness_note);
+
+  currentRecs=result.recommendations;
+  currentTier=result.tier||'mild';
+  currentEmotions=result.emotions;
+  const rc=document.getElementById('recContent');
+  rc.style.display='flex';
+  rc.style.flexDirection='column';
+  drawRecHeader(result.emotions, result.tier||'mild');
+  buildAllPanes(result.recommendations, loc);
+  showCat('food');
+  renderTabs();
+}
+
+function drawEmoBars(emotions){
+  const el=document.getElementById('emoBars'); el.innerHTML='';
+  const top3=emotions.slice(0,3);
+  const total=top3.reduce((s,e)=>s+(e.score!==undefined?e.score:e[1]),0)||1;
+  ['①','②','③'].forEach((rank,i)=>{
+    if(!top3[i]) return;
+    const e=top3[i], name=e.name||e[0], score=e.score!==undefined?e.score:e[1];
+    const pct=Math.round(score/total*100);
+    const row=document.createElement('div'); row.className='emo-row';
+    row.innerHTML=`<div class="emo-rank">${rank}</div><div class="emo-label">${EMOJI_MAP[name]||'◆'} ${name}</div><div class="bar-bg"><div class="bar-fg ${CLS_MAP[name]||'c-neutral'}" data-p="${pct}"></div></div><div class="emo-pct">${pct}%</div>`;
+    el.appendChild(row);
+  });
+  setTimeout(()=>document.querySelectorAll('.bar-fg').forEach(b=>b.style.width=b.dataset.p+'%'),80);
+}
+
+function drawWellNote(note){
+  // "A gentle note" özelliğini tamamen iptal ettik
+  const el = document.getElementById('wellNote');
+  if(el) {
+      el.classList.remove('show');
+      el.style.display = 'none'; 
+  }
+}
+
+function drawRecHeader(emotions, tier){
+  const top3=emotions.slice(0,3);
+  document.getElementById('recHeaderSub').textContent=
+    `${tier.charAt(0).toUpperCase()+tier.slice(1)} intensity · ${top3.length} dominant emotion${top3.length!==1?'s':''}`;
+  const ec=document.getElementById('recHeaderEmos'); ec.innerHTML='';
+  top3.forEach(e=>{
+    const name=e.name||e[0];
+    const chip=document.createElement('div'); chip.className='emo-chip';
+    chip.textContent=`${EMOJI_MAP[name]||''} ${name}`;
+    ec.appendChild(chip);
+  });
+}
+
+function buildAllPanes(recs, location){
+  buildFoodPane(recs.food||[]);
+  buildActivityPane(recs.activity||[]);
+  buildMusicPane(recs.spotify_playlists||[]);
+  buildPlacesPane(recs.places||{}, location);
+  buildColorsPane(recs.colors||[]);
+  buildShowsPane(recs.shows_movies||[]);
+  buildSocialPane(recs.social||[]);
+  buildDevPane(recs.personal_development||[]);
+}
+
+function makeTierBadge(tier){
+  const d=document.createElement('div');
+  d.style.display = 'none';
+  return d;
+}
+
+function makeWhyCard(cssClass, titleHTML, why, itemText){
+  const c=document.createElement('div'); c.className=`rec-card ${cssClass}`;
+  c.style.position='relative'; c.style.overflow='hidden';
+
+  const ragScore = itemText ? ragGetScore(itemText) : null;
+  let ragBadgeHTML = '';
+  if(ragScore && ragScore.avg >= 3){
+    const stars = '★'.repeat(Math.round(ragScore.avg)) + '☆'.repeat(5-Math.round(ragScore.avg));
+    ragBadgeHTML = `<div class="rag-badge"><span class="rag-star">✦</span> Tried ${ragScore.count}x · ${stars}</div>`;
+  }
+
+  let html = ragBadgeHTML;
+  html += `<div class="card-header-row" style="display:flex;align-items:flex-start;gap:6px;">${titleHTML}`;
+  if(why) html+=`<button class="why-toggle" onclick="toggleWhy(this)" title="Show science">?</button>`;
+  html+=`</div>`;
+  if(why) html+=`<div class="why-text">${why}</div>`;
+
+  const safeText = (itemText||'').replace(/'/g,"\\'");
+  html += `<div class="card-action-row">
+    <button class="action-btn did-it" onclick="cardDidIt(this,'${safeText}')">✓ I did it</button>
+    <button class="action-btn didnt" onclick="cardDidntDo(this,'${safeText}')">✗ I didn't do it</button>
+  </div>`;
+
+  html += `<div class="sticky-note-wrap" id="snw-${CSS.escape(ragNorm(itemText||''))}"></div>`;
+
+  c.innerHTML=html;
+  setTimeout(()=>restoreCardState(c, itemText||''), 0);
+  return c;
+}
+// Updated buildFoodPane with English labels and groupings
+function buildFoodPane(items){
+  const el = document.getElementById('food-content'); 
+  el.innerHTML = '';
+  el.appendChild(makeTierBadge(currentTier));
+  
+  if(!items.length){
+    el.innerHTML += '<div class="empty-cat">No food suggestions available.</div>';
+    return;
+  }
+
+  const easy = items.filter(i => i.difficulty === 'easy');
+  const hard = items.filter(i => i.difficulty === 'hard');
+  const other = items.filter(i => !i.difficulty);
+
+const renderGroup = (groupItems, title, icon, color) => {
+     if(!groupItems.length) return;
+     
+     const secTitle = document.createElement('div');
+     secTitle.style.cssText = `
+        margin-top: 10px; /* Üstteki devasa boşluğu yarı yarıya indirdik */
+        margin-bottom: 8px; /* Alt boşluğu daralttık */
+        font-family: 'Cinzel', serif; 
+        font-size: 12px; 
+        font-weight: 600; 
+        letter-spacing: 2px; 
+        color: ${color}; 
+        border-bottom: 1px solid ${color}25; 
+        padding-bottom: 4px; /* Çizgiyle yazı arasındaki boşluğu kıstık */
+        text-transform: uppercase; 
+        display: flex; 
+        align-items: center; 
+        gap: 8px;
+     `;
+     secTitle.innerHTML = `<span style="font-size: 14px;">${icon}</span> ${title}`;
+     el.appendChild(secTitle);
+
+     // Kartların dizildiği Grid yapısı
+     const grid = document.createElement('div');
+     /* auto-fill yerine "1fr 1fr" yazarak 2 sütuna kilitliyoruz */
+     grid.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px; align-content:start;';
+     groupItems.forEach(i => {
+        const itemData = typeof i === 'string' ? {item: i, why: ''} : i;
+        const timeBadge = itemData.time 
+            ? `<div style="display:inline-flex; align-items:center; margin-left:6px; font-family:'Raleway',sans-serif; font-size:8px; letter-spacing:1px; background:rgba(0,0,0,0.06); padding:3px 6px; border-radius:4px; font-weight:bold; color:#553311;"><span style="font-size:10px; margin-right:3px;">⏱</span> ${itemData.time} min</div>` 
+            : '';
+            
+        const cardTitle = `<div class="rec-card-title" style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">🍃 ${itemData.item} ${timeBadge}</div>`;
+        const card = makeWhyCard('food-card', cardTitle, itemData.why, itemData.item);
+        
+        if(itemData.url) {
+            const btnWrap = document.createElement('div');
+            btnWrap.style.margin = "8px 0";
+            btnWrap.innerHTML = `<a href="${itemData.url}" target="_blank" rel="noopener" class="action-btn" style="text-decoration:none; color:#823214; border-color:#823214; background:rgba(130,50,20,0.05); padding: 4px 10px;">
+              🔍 Search Recipe
+            </a>`;
+            const actionRow = card.querySelector('.card-action-row');
+            if(actionRow) card.insertBefore(btnWrap, actionRow);
+        }
+        grid.appendChild(card);
+     });
+     el.appendChild(grid);
+  };
+
+  if(easy.length || hard.length) {
+      renderGroup(easy, 'Quick & Effortless (Low Energy)', '⚡', '#a85020');
+      renderGroup(hard, 'Immersive Therapy (Mindful Focus)', '🧘', '#a85020');
+  } 
+  renderGroup(other, 'Recommended Recipes', '🍃', 'rgba(100, 60, 20, 0.85)');
+}
+
+// Ensure buildShowsPane also uses English labels
+function buildShowsPane(shows){
+  const el=document.getElementById('shows_movies-content'); el.innerHTML='';
+  el.appendChild(makeTierBadge(currentTier));
+  if(!shows.length){el.innerHTML+='<div class="empty-cat">No viewing suggestions available.</div>';return;}
+  
+  shows.forEach(item=>{
+    const c=document.createElement('div'); c.className='rec-card show-card'; c.style.position='relative';
+    const isTV = (item.why && item.why.includes('tv')) || item.type === 'series';
+    const typeLabel = isTV ? '📺 TV Show' : '🎬 Movie';
+    
+    c.innerHTML=`
+      <div class="show-type-badge ${isTV?'series':'film'}">${typeLabel}</div>
+      <div class="show-title">${item.title||''}</div>
+      <div class="show-imdb">IMDB ${item.imdb||''}</div>
+      ${item.why?`<div class="why-text open" style="background:transparent; border:none; padding:0; margin-top:4px;">${item.why}</div>`:''}
+      <div style="margin-top:10px;">
+        <a href="${item.url}" target="_blank" rel="noopener" class="action-btn" style="text-decoration:none; color:#4a2b28; border-color:#4a2b28; background:rgba(74,43,40,0.05); padding: 4px 10px;">
+          🔍 Search on Google
+        </a>
+      </div>`;
+    el.appendChild(c);
+  });
+}
+
+
+function buildActivityPane(items){
+  const el=document.getElementById('activity-content'); el.innerHTML='';
+  el.appendChild(makeTierBadge(currentTier));
+  if(!items.length){el.innerHTML+='<div class="empty-cat">No activity suggestions available.</div>';return;}
+  items.forEach(item=>{
+    const i=typeof item==='string'?{item,why:''}:item;
+    el.appendChild(makeWhyCard('activity-card',`<div class="rec-card-title">🌿 ${i.item}</div>`,i.why,i.item));
+  });
+}
+
+function buildMusicPane(playlists){
+  const el=document.getElementById('spotify_playlists-content'); el.innerHTML='';
+  el.appendChild(makeTierBadge(currentTier));
+  if(!playlists.length){
+    el.innerHTML+='<div class="empty-cat">No playlists available.</div>'; return;
+  }
+  const intro=document.createElement('p'); intro.className='show-intro';
+  intro.textContent='Curated playlists matched to your emotional state using the ISO Principle — starting where you are, guiding you gently toward balance.';
+  el.appendChild(intro);
+  playlists.forEach(pl=>{
+    if(typeof pl!=='object') return;
+    const c=document.createElement('div'); c.className='rec-card spotify-card'; c.style.position='relative'; c.style.overflow='hidden';
+    const itemText = pl.name||'Playlist';
+    const ragScore = ragGetScore(itemText);
+    let ragBadge = '';
+    if(ragScore && ragScore.avg>=3){
+      const stars='★'.repeat(Math.round(ragScore.avg))+'☆'.repeat(5-Math.round(ragScore.avg));
+      ragBadge=`<div class="rag-badge"><span class="rag-star">✦</span> Tried ${ragScore.count}x · ${stars}</div>`;
+    }
+    const safeText = itemText.replace(/'/g,"\\'");
+    c.innerHTML=`${ragBadge}
+      <div style="font-size:20px;margin-bottom:6px;">${pl.cover_emoji||'🎵'}</div>
+      <div class="rec-card-title">${pl.name||'Playlist'}</div>
+      <div class="rec-card-why">${pl.description||''}</div>
+      <a href="${pl.url||'https://open.spotify.com'}" target="_blank" rel="noopener" class="spotify-link">
+        <span class="sp-icon">🎵</span> Open in Spotify
+      </a>
+      <div class="card-action-row">
+        <button class="action-btn did-it" onclick="cardDidIt(this,'${safeText}')">✓ I listened</button>
+        <button class="action-btn didnt" onclick="cardDidntDo(this,'${safeText}')">✗ Skipped</button>
+      </div>
+      <div class="sticky-note-wrap"></div>`;
+    el.appendChild(c);
+    setTimeout(()=>restoreCardState(c, itemText), 0);
+  });
+  const note=document.createElement('div'); note.className='spotify-note';
+  note.innerHTML='<strong style="font-style:normal;">Science:</strong> Music activates the limbic system and releases dopamine at moments of peak pleasure. The ISO Principle (Altshuler, 1948) recommends matching music to your current state, then gradually shifting toward the desired state.';
+  el.appendChild(note);
+}
+
+function buildPlacesPane(placesData, location){
+  const el=document.getElementById('places-content'); el.innerHTML='';
+  el.appendChild(makeTierBadge(currentTier));
+  const desc=document.createElement('p'); desc.className='places-desc';
+  desc.textContent=placesData.description||'Find a place that supports your emotional wellbeing.';
+  el.appendChild(desc);
+  if(placesData.types&&placesData.types.length){
+    const wrap=document.createElement('div'); wrap.className='places-types';
+    placesData.types.forEach(t=>{
+      const tag=document.createElement('div'); tag.className='place-type-tag'; tag.textContent=t;
+      wrap.appendChild(tag);
+    });
+    el.appendChild(wrap);
+  }
+  const label=document.createElement('div'); label.className='map-section-label'; label.textContent='SEARCH IN YOUR CITY';
+  el.appendChild(label);
+  const cityRow=document.createElement('div'); cityRow.className='map-city-row';
+  cityRow.innerHTML=`
+    <input type="text" class="city-input" id="cityInput"
+      placeholder="Enter city (e.g. Istanbul, London…)"
+      value="${(placesData.location||location)||''}">
+    <button class="city-btn" onclick="updatePlacesCity()">🗺 Find</button>`;
+  el.appendChild(cityRow);
+  const mapLinks=placesData.maps_search||[];
+  if(mapLinks.length){
+    const ml=document.createElement('div'); ml.className='map-links'; ml.id='mapLinksContainer';
+    mapLinks.forEach(link=>{
+      const wrap=document.createElement('div'); wrap.style.position='relative'; wrap.style.overflow='hidden';
+      const a=document.createElement('a'); a.className='map-link-card'; a.href=link.url; a.target='_blank'; a.rel='noopener';
+      a.innerHTML=`<div class="map-link-label">🗺 ${link.label}</div><div class="map-link-icon">→</div>`;
+      const safeLabel=(link.label||'').replace(/'/g,"\\'");
+      const actionRow=document.createElement('div'); actionRow.className='card-action-row'; actionRow.style.padding='0 12px 8px';
+      actionRow.innerHTML=`<button class="action-btn did-it" onclick="cardDidIt(this,'${safeLabel}')">✓ I visited</button><button class="action-btn didnt" onclick="cardDidntDo(this,'${safeLabel}')">✗ Didn't go</button>`;
+      const snw=document.createElement('div'); snw.className='sticky-note-wrap';
+      wrap.appendChild(a); wrap.appendChild(actionRow); wrap.appendChild(snw);
+      ml.appendChild(wrap);
+      setTimeout(()=>restoreCardState(wrap, link.label||''), 0);
+    });
+    el.appendChild(ml);
+  }else{
+    el.innerHTML+=`<div id="mapLinksContainer" class="map-links"></div>`;
+  }
+  const note=document.createElement('div'); note.className='places-note';
+  note.innerHTML='<strong style="font-style:normal;">Science:</strong> Nature exposure reduces cortisol by ~12% after 15 minutes. Blue space (proximity to water) independently increases wellbeing scores. Matched using Attentional Restoration Theory (Kaplan, 1989).';
+  el.appendChild(note);
+}
+
+async function updatePlacesCity(){
+  const cityInput=document.getElementById('cityInput');
+  const city=cityInput?cityInput.value.trim():'';
+  if(!city||!currentEmotions.length) return;
+  const emoName=(currentEmotions[0].name||currentEmotions[0][0]);
+  const mc=document.getElementById('mapLinksContainer');
+  if(mc) mc.innerHTML='<div class="empty-cat">Searching…</div>';
+  try{
+    const r=await fetch(`${API}/places/suggest`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({emotion:emoName,tier:currentTier,location:city})});
+    if(!r.ok) throw 0;
+    const d=await r.json();
+    if(mc){
+      mc.innerHTML='';
+      (d.maps_links||[]).forEach(link=>{
+        const a=document.createElement('a'); a.className='map-link-card'; a.href=link.url; a.target='_blank'; a.rel='noopener';
+        a.innerHTML=`<div class="map-link-label">🗺 ${link.label} in ${city}</div><div class="map-link-icon">→</div>`;
+        mc.appendChild(a);
+      });
+    }
+  }catch{
+    if(mc){
+      mc.innerHTML='';
+      const queries=currentRecs&&currentRecs.places&&currentRecs.places.search_queries
+        ?currentRecs.places.search_queries:['park','cafe','nature walk'];
+      queries.slice(0,3).forEach(q=>{
+        const url=`https://www.google.com/maps/search/${encodeURIComponent(q+' in '+city)}`;
+        const a=document.createElement('a'); a.className='map-link-card'; a.href=url; a.target='_blank'; a.rel='noopener';
+        a.innerHTML=`<div class="map-link-label">🗺 ${q.charAt(0).toUpperCase()+q.slice(1)} in ${city}</div><div class="map-link-icon">→</div>`;
+        mc.appendChild(a);
+      });
+    }
+  }
+}
+
+function buildColorsPane(colors){
+  const el=document.getElementById('colors-content'); el.innerHTML='';
+  el.appendChild(makeTierBadge(currentTier));
+  if(!colors.length){el.innerHTML+='<div class="empty-cat">No color suggestions available.</div>';return;}
+  const intro=document.createElement('p'); intro.className='color-intro';
+  intro.textContent='These colors are scientifically matched to your emotional state. Wear them, surround yourself with them, or use them in your creative environment.';
+  el.appendChild(intro);
+  const grid=document.createElement('div'); grid.className='color-grid';
+  colors.forEach(item=>{
+    if(typeof item!=='object') return;
+    const card=document.createElement('div'); card.className='color-swatch-card'; card.style.flexDirection='column'; card.style.alignItems='flex-start'; card.style.position='relative'; card.style.overflow='hidden';
+    const itemText = item.name||'';
+    const ragScore = ragGetScore(itemText);
+    let ragBadge = '';
+    if(ragScore && ragScore.avg>=3){
+      const stars='★'.repeat(Math.round(ragScore.avg))+'☆'.repeat(5-Math.round(ragScore.avg));
+      ragBadge=`<div class="rag-badge" style="margin-bottom:6px;"><span class="rag-star">✦</span> Used ${ragScore.count}x · ${stars}</div>`;
+    }
+    const safeText = itemText.replace(/'/g,"\\'");
+    card.innerHTML=`${ragBadge}<div style="display:flex;align-items:center;gap:11px;width:100%;">
+        <div class="color-swatch" style="background-color:${item.hex||'#888'};"></div>
+        <div style="flex:1;">
+          <div class="color-name">${item.name||''}</div>
+          <div class="color-hex">${item.hex||''}</div>
+          ${item.why?`<button class="color-why-btn" onclick="toggleColorWhy(this)">? Why this color</button><div class="color-why">${item.why}</div>`:''}
+        </div>
+      </div>
+      <div class="card-action-row">
+        <button class="action-btn did-it" onclick="cardDidIt(this,'${safeText}')">✓ I used this</button>
+        <button class="action-btn didnt" onclick="cardDidntDo(this,'${safeText}')">✗ Didn't try</button>
+      </div>
+      <div class="sticky-note-wrap"></div>`;
+    grid.appendChild(card);
+    setTimeout(()=>restoreCardState(card, itemText), 0);
+  });
+  el.appendChild(grid);
+  const sci=document.createElement('div'); sci.className='color-science';
+  sci.innerHTML='<strong style="font-style:normal;">Science:</strong> Color activates emotional processing regions before conscious recognition (Elliot & Maier, 2014). Warm colors elevate physiological arousal; cool colors reduce cortisol. Recommendations apply chromotherapy principles grounded in environmental psychology.';
+  el.appendChild(sci);
+}
+
+
+
+
+
+function buildSocialPane(items){
+  const el=document.getElementById('social-content'); el.innerHTML='';
+  el.appendChild(makeTierBadge(currentTier));
+  if(!items.length){el.innerHTML+='<div class="empty-cat">No social suggestions available.</div>';return;}
+  const intro=document.createElement('p'); intro.className='show-intro';
+  intro.textContent='Social relationships are the strongest predictor of wellbeing. Different emotional states benefit from different types of connection.';
+  el.appendChild(intro);
+  items.forEach(item=>{
+    const i=typeof item==='string'?{item,why:''}:item;
+    el.appendChild(makeWhyCard('social-card',`<div class="rec-card-title">💬 ${i.item}</div>`,i.why,i.item));
+  });
+}
+
+function buildDevPane(items){
+  const el=document.getElementById('personal_development-content'); el.innerHTML='';
+  el.appendChild(makeTierBadge(currentTier));
+  if(!items.length){el.innerHTML+='<div class="empty-cat">No growth suggestions available.</div>';return;}
+  const intro=document.createElement('p'); intro.className='show-intro';
+  intro.textContent='Each emotional state creates unique conditions for personal growth. These activities are specifically optimized for your current emotional intensity.';
+  el.appendChild(intro);
+  items.forEach(item=>{
+    const i=typeof item==='string'?{item,why:''}:item;
+    el.appendChild(makeWhyCard('dev-card',`<div class="rec-card-title">✦ ${i.item}</div>`,i.why,i.item));
+  });
+}
+
+function showCat(cat){
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.toggle('active',t.dataset.cat===cat));
+  document.querySelectorAll('.cat-pane').forEach(p=>p.classList.toggle('active',p.id===`pane-${cat}`));
+  const panes=document.getElementById('catPanes');
+  if(panes) panes.scrollTop=0;
+}
+
+function toggleWhy(btn){
+  const card = btn.closest('.rec-card');
+  const tip = card ? card.querySelector('.why-text') : null;
+  if(!tip) return;
+  
+  const isOpen = tip.classList.contains('open');
+  
+  // Sadece tıklanan kutuyu aç veya kapat (Diğerlerine dokunma)
+  if(isOpen){
+    tip.classList.remove('open');
+    btn.textContent = '?';
+  } else {
+    tip.classList.add('open');
+    btn.textContent = '×';
+  }
+}
+
+function toggleColorWhy(btn){
+  const tip = btn.nextElementSibling;
+  const isOpen = tip.classList.contains('open');
+  
+  // Sadece tıklanan renk kutusunu aç veya kapat
+  if(isOpen){
+    tip.classList.remove('open');
+    btn.textContent = '? Why this color';
+  } else {
+    tip.classList.add('open');
+    btn.textContent = '✕ Hide';
+  }
+}
+
+const offDB={
+  joy:{
+    food:[{item:'Fresh fruit plate',why:'Bright colors signal nutritional variety; reward circuits enhance flavor perception.'},{item:'Dark chocolate (70%+)',why:'Serotonin and endorphin release; flavonoids improve cerebral blood flow.'},{item:'Fresh-squeezed lemonade',why:'Citrus scent and vitamin C are independently linked to elevated mood.'}],
+    activity:[{item:'Dance to your favorite song',why:'Movement + music amplifies positive emotion through dopamine and endorphin release.'},{item:'Share good news with someone',why:'Sharing positive emotions (capitalisation) doubles their intensity and duration.'},{item:'Write 3 things in a gratitude journal',why:'Gratitude journaling extends positive emotional states and builds resilience.'}],
+    spotify_playlists:[{name:'Happy Hits!',url:'https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC',description:'Feel-good pop anthems to match your bright mood',cover_emoji:'☀️'},{name:'Mood Booster',url:'https://open.spotify.com/playlist/37i9dQZF1DX3rxVfibe1L0',description:'Uplifting tracks across genres',cover_emoji:'⚡'}],
+    colors:[{name:'Sunshine Yellow',hex:'#FFD700',why:'Highest luminosity color; triggers serotonin and activates left prefrontal cortex.'},{name:'Coral Orange',hex:'#FF7043',why:'Combines red energy with yellow warmth; increases perceived approachability.'},{name:'Turquoise',hex:'#00BCD4',why:'Lowers blood pressure while maintaining positive arousal.'}],
+    shows_movies:[{type:'film',title:'La La Land (2016)',imdb:'8.0/10',why:'Musical celebration of dreams and joy.'},{type:'series',title:'Ted Lasso',imdb:'8.8/10',why:'Relentlessly optimistic coaching comedy.'},{type:'film',title:'Amélie (2001)',imdb:'8.3/10',why:'Whimsical delight about creating happiness for others.'}],
+    social:[{item:'Call the friends who make you happy',why:'Happiness is amplified by emotional resonance.'},{item:'Reach out to someone you haven\'t spoken to in a while',why:'Positive states reduce social anxiety — ideal for reconnection.'}],
+    personal_development:[{item:'Start learning a new skill',why:'Happy states expand cognitive breadth — optimal for learning.'},{item:'Set a long-term goal',why:'Broaden-and-build: positive emotions expand vision of what\'s possible.'}]
+  },
+  sadness:{
+    food:[{item:'Warm chamomile tea',why:'Apigenin binds GABA receptors; warmth activates social safety circuits.'},{item:'Oatmeal + banana',why:'Complex carbs stabilize blood sugar; banana provides tryptophan — a direct serotonin precursor.'},{item:'Dark chocolate',why:'Serotonin and endorphin release shifts reward circuitry.'}],
+    activity:[{item:'15-minute walk in sunlight',why:'Sunlight boosts serotonin and regulates circadian rhythm — proven antidepressant effect.'},{item:'Write about your feelings for 10 minutes',why:'Expressive writing reduces amygdala reactivity (Pennebaker, 1997).'},{item:'Restorative yoga',why:'Activates parasympathetic nervous system; increases GABA.'}],
+    spotify_playlists:[{name:'Sad Songs',url:'https://open.spotify.com/playlist/37i9dQZF1DX7qK8ma5wgG1',description:'Emotional ballads that hold space for your feelings',cover_emoji:'🌧️'},{name:'Peaceful Piano',url:'https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO',description:'Gentle piano for heavy emotions',cover_emoji:'🎹'}],
+    colors:[{name:'Soft Coral Pink',hex:'#FF8A80',why:'Soft coral provides warmth without overstimulation.'},{name:'Sage Green',hex:'#8BC34A',why:'Nature\'s most healing color; reduces physiological burden of sadness.'},{name:'Warm Terracotta',hex:'#E64A19',why:'Earthy tones activate primal safety and belonging.'}],
+    shows_movies:[{type:'film',title:'Inside Out (2015)',imdb:'8.1/10',why:'Validates the necessity and value of sadness itself.'},{type:'film',title:'About Time (2013)',imdb:'7.8/10',why:'Bittersweet meditation on presence and love.'},{type:'series',title:'After Life (Ricky Gervais)',imdb:'8.0/10',why:'Honest depiction of grief with warmth.'}],
+    social:[{item:'Message a trusted friend',why:'Social connection is the single strongest predictor of emotional recovery.'},{item:'Be quietly around others rather than alone',why:'Presence without demand allows emotional processing.'}],
+    personal_development:[{item:'Write a deep journal entry',why:'Sad states provide access to psychological material rich for self-knowledge.'},{item:'Do a self-compassion exercise',why:'Treating yourself as you\'d treat a good friend is more effective than self-esteem.'}]
+  },
+  anger:{
+    food:[{item:'Cold water (large glass)',why:'Hydration reduces physical arousal; cold activates dive reflex slowing heart rate.'},{item:'Green tea (L-theanine)',why:'L-theanine promotes alpha brainwave activity — calm alertness.'},{item:'Crunchy carrots or celery',why:'Crunching provides physical outlet for jaw tension.'}],
+    activity:[{item:'10-minute fast walk or run',why:'Movement metabolizes adrenaline and cortisol.'},{item:'4-7-8 breathing exercise',why:'Extended exhale activates vagus nerve; parasympathetic activation interrupts anger within 90 seconds.'},{item:'Write it all out (do not send!)',why:'Uninhibited anger writing reduces limbic activation — catharsis with zero collateral.'}],
+    spotify_playlists:[{name:'Beast Mode',url:'https://open.spotify.com/playlist/37i9dQZF1DWWjGdmHm4h6P',description:'Channel your energy into controlled power',cover_emoji:'⚡'},{name:'Metal Classics',url:'https://open.spotify.com/playlist/37i9dQZF1DWWOaP4H0w5b0',description:'Heavy metal catharsis',cover_emoji:'🎸'}],
+    colors:[{name:'Calm Navy Blue',hex:'#1565C0',why:'Most calming color; navy reduces heart rate and cortisol.'},{name:'Forest Green',hex:'#2E7D32',why:'Deep natural green activates parasympathetic system.'},{name:'Stone Gray',hex:'#78909C',why:'Neutral gray creates psychological distance from anger\'s heat.'}],
+    shows_movies:[{type:'film',title:'The Dark Knight (2008)',imdb:'9.0/10',why:'Channels moral rage into principled action.'},{type:'series',title:'Breaking Bad',imdb:'9.5/10',why:'Cathartic study of what happens when anger goes unchecked.'}],
+    social:[{item:'Do NOT contact the person you are angry at yet',why:'Hot cognition impairs perspective-taking.'},{item:'Call a calm friend — just to be heard',why:'Seek presence, not vengeance-validation.'}],
+    personal_development:[{item:'Write down which of your values was violated',why:'Anger signals a violated value or need.'},{item:'Research assertiveness training',why:'Assertiveness is the preventive skill for chronic anger accumulation.'}]
+  },
+  fear:{
+    food:[{item:'Chamomile tea',why:'Apigenin binds GABA receptors, producing mild anxiolytic effect.'},{item:'Green tea (L-theanine)',why:'L-theanine promotes alpha brainwave activity — calm alertness without drowsiness.'},{item:'Avocado + spinach',why:'Magnesium-rich; deficiency directly linked to heightened anxiety sensitivity.'}],
+    activity:[{item:'4-7-8 breathing exercise',why:'Slow exhalation activates vagus nerve; parasympathetic activation within 2-3 breaths.'},{item:'5-4-3-2-1 grounding exercise',why:'Redirects attention from threat anticipation to present reality.'},{item:'Guided meditation (10–20 minutes)',why:'MBSR has the strongest evidence base for anxiety reduction.'}],
+    spotify_playlists:[{name:'Deep Focus',url:'https://open.spotify.com/playlist/37i9dQZF1DWZeKCadgRdKQ',description:'Calm instrumental to ground your mind',cover_emoji:'🧘'},{name:'Nature Sounds',url:'https://open.spotify.com/playlist/37i9dQZF1DX4PP3DA4J0N8',description:'Restorative natural soundscapes',cover_emoji:'🌿'}],
+    colors:[{name:'Soft Baby Blue',hex:'#B3E5FC',why:'Lightest blues most effectively activate the parasympathetic system.'},{name:'Warm Peach',hex:'#FFCCBC',why:'Skin-adjacent tones activate social safety perceptions pre-cognitively.'},{name:'Pale Yellow',hex:'#FFF9C4',why:'Low-saturation yellow provides luminosity without overstimulating hyperaroused systems.'}],
+    shows_movies:[{type:'film',title:'My Neighbor Totoro (1988)',imdb:'8.2/10',why:'Gentle and safe — specifically designed to reset the nervous system.'},{type:'series',title:'The Good Place',imdb:'8.2/10',why:'Light, philosophical and deeply reassuring.'}],
+    social:[{item:'Call the person you trust most',why:'Hearing a familiar calm voice activates the safe social engagement system.'},{item:'Tell someone your fear — out loud',why:'Voicing fear to a trusted other is one of the most effective fear-reduction strategies.'}],
+    personal_development:[{item:'Write out your fear to make it concrete',why:'Writing externalizes internal threats; reduces catastrophizing.'},{item:'Build a fear hierarchy and approach it step by step',why:'Gold-standard CBT: systematic graduated approach reduces future fear.'}]
+  },
+  love:{
+    food:[{item:'Dark chocolate',why:'Phenylethylamine — the love chemical — is naturally present in cacao.'},{item:'Strawberries',why:'Associated with romance; vitamin C supports cardiovascular health.'},{item:'Honey yogurt',why:'Sweetness mirrors emotional warmth.'}],
+    activity:[{item:'Leave a handwritten note for someone you love',why:'Handwritten notes activate more emotional circuits than digital messages.'},{item:'Cook together',why:'Collaborative creation is one of the highest-quality bonding activities; increases oxytocin.'},{item:'Hug for 20 seconds',why:'A 20-second hug floods both people with oxytocin and measurably reduces cortisol.'}],
+    spotify_playlists:[{name:'Acoustic Love',url:'https://open.spotify.com/playlist/37i9dQZF1DX9xiNkB9tzZt',description:'Soft acoustic ballads for tender feelings',cover_emoji:'🌹'},{name:'Timeless Love Songs',url:'https://open.spotify.com/playlist/37i9dQZF1DWXnj6nqeniqP',description:'Classic love songs across eras',cover_emoji:'💕'}],
+    colors:[{name:'Blush Pink',hex:'#F8BBD9',why:'Activates nurturing care responses; decreases aggression.'},{name:'Deep Rose Red',hex:'#E91E63',why:'Red enhances romantic attraction.'},{name:'Warm Gold',hex:'#FFC107',why:'Activates implicit associations of preciousness and being valued.'}],
+    shows_movies:[{type:'film',title:'When Harry Met Sally (1989)',imdb:'7.7/10',why:'Definitive romantic comedy.'},{type:'series',title:'Normal People',imdb:'8.2/10',why:'Most honest portrayal of young love on television.'}],
+    social:[{item:'Directly express your feelings to the person you love',why:'Love unexpressed creates emotional distance.'},{item:'Call someone who loves you — right now',why:'Love state is optimal for deepening existing bonds.'}],
+    personal_development:[{item:'Practice loving-kindness meditation',why:'Enlarges capacity for love and reduces implicit bias.'},{item:'Research your attachment style',why:'Understanding your attachment style provides a map for becoming a more secure partner.'}]
+  },
+  surprise:{
+    food:[{item:'Try a new flavor or food',why:'Novelty matches surprise state; trying something new encodes positive memory.'},{item:'Exotic fruit (kiwi, mango, papaya)',why:'Unusual yet refreshing; novel-yet-familiar is cognitively satisfying during surprise.'},{item:'A snack from a different cuisine',why:'Cultural novelty extends surprise\'s openness to new experience.'}],
+    activity:[{item:'Immediately follow the curiosity that surprise brings',why:'Surprise opens a brief window of cognitive openness.'},{item:'Make a spontaneous decision',why:'Surprise state reduces overthinking; spontaneous decisions are often most honest.'},{item:'Write 50 wild ideas in 10 minutes',why:'Surprised brain has loosened cognitive constraints — optimal time for radical ideation.'}],
+    spotify_playlists:[{name:'Discover Weekly',url:'https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M',description:'Personalized new music discoveries',cover_emoji:'🔭'},{name:'Fresh Finds',url:'https://open.spotify.com/playlist/37i9dQZF1DX2pSTOxoPbx9',description:'Emerging independent artists',cover_emoji:'✨'}],
+    colors:[{name:'Electric Teal',hex:'#00BFA5',why:'Associated with creative thinking and openness to new experiences.'},{name:'Vivid Orange',hex:'#FF6D00',why:'High-saturation orange activates approach motivation.'},{name:'Bright White',hex:'#F5F5F5',why:'Blank canvas effect — visual openness mirrors cognitive openness.'}],
+    shows_movies:[{type:'film',title:'Inception (2010)',imdb:'8.8/10',why:'Mind-bending narrative mirrors the surprise state.'},{type:'series',title:'Black Mirror',imdb:'8.8/10',why:'Consistently surprising technology morality tales.'}],
+    social:[{item:'Share the surprise with someone — now',why:'Surprise shared is surprise doubled.'},{item:'Talk to someone from a different culture or background',why:'Surprise opens mind to genuine otherness.'}],
+    personal_development:[{item:'Reflect and write about why you did not expect this',why:'Metafeedback on your own surprise builds epistemic awareness.'},{item:'Research something you have long been curious about',why:'Surprised brain is maximally open to new information.'}]
+  },
+  neutral:{
+    food:[{item:'Balanced plate (protein + vegetables + carbs)',why:'Nutritional completeness supports stable mood.'},{item:'Green tea',why:'L-theanine supports calm focus; gentle caffeine maintains alertness.'},{item:'Avocado toast',why:'Healthy fat + complex carb — sustained energy without blood sugar swings.'}],
+    activity:[{item:'Plan and organize your tasks',why:'Neutral states are ideal for decision-making.'},{item:'Learn a new skill',why:'Neutral arousal is optimal for skill acquisition and retention.'},{item:'Write three things in a gratitude journal',why:'Gratitude practice during neutral states builds positive resilience.'}],
+    spotify_playlists:[{name:'Lo-Fi Beats',url:'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',description:'Gentle background music for focused neutral days',cover_emoji:'☕'},{name:'Deep Focus',url:'https://open.spotify.com/playlist/37i9dQZF1DWZeKCadgRdKQ',description:'Flow state music for productive days',cover_emoji:'🎯'}],
+    colors:[{name:'Warm Sand',hex:'#F5DEB3',why:'Warm neutral creates comfortable focus without emotional loading.'},{name:'Sage Green',hex:'#8BC34A',why:'Activates restorative attention without emotional arousal.'},{name:'Soft Blue',hex:'#90CAF9',why:'Most focus-enhancing color; activates sustained attention.'}],
+    shows_movies:[{type:'series',title:'Downton Abbey',imdb:'8.7/10',why:'Rich, safe world — engaging without emotional demands.'},{type:'series',title:'Abstract: The Art of Design',imdb:'8.5/10',why:'Inspiring documentary activates aspiration during productive neutral state.'}],
+    social:[{item:'Offer to help someone',why:'Helping others improves wellbeing more reliably than self-directed pleasure.'},{item:'Call someone you haven\'t connected with in a long time',why:'Neutral states ideal for relationship maintenance.'}],
+    personal_development:[{item:'Review your long-term goals',why:'Neutral state provides cognitive distance needed for strategic thinking.'},{item:'Audit your sleep and exercise routine',why:'Sleep is the most underrated mood regulator.'}]
+  }
+};
+
+function offlineRecs(emos){
+  const primary=(Array.isArray(emos[0])?emos[0][0]:emos[0].name)||'neutral';
+  const db=offDB[primary]||offDB.neutral;
+  return{
+    food:db.food||[],activity:db.activity||[],spotify_playlists:db.spotify_playlists||[],
+    colors:db.colors||[],shows_movies:db.shows_movies||[],social:db.social||[],
+    personal_development:db.personal_development||[],
+    places:{description:'Find a peaceful outdoor space near you.',types:['park','cafe','nature walk','library'],
+      search_queries:['park','cafe','nature walk'],location:'',maps_search:[]}
+  };
+}
+function offlineNote(t){
+  t=t.toLowerCase();
+  if(t.includes('fail')) return 'A stumble is not the end — it is part of the journey.';
+  if(t.includes('tired')||t.includes('exhaust')) return 'Rest is not laziness. Your body is asking for kindness.';
+  if(t.includes('alone')||t.includes('lonely')) return 'Even the quietest moments hold a kind of company — your own.';
+  return null;
+}
+function kwFallback(text){
+  const t=text.toLowerCase().replace(/[^a-z0-9' ]/g,' ');
+  const tokens=t.split(/\s+/).filter(Boolean);
+  const KW={
+    joy:['feel calm','feel at peace','feel good','feel great','feel happy','feel better',
+      'feeling calm','feeling good','feeling great','feeling happy','feeling better',
+      'calm down','calmed down','made me smile','made me happy','cheered me up',
+      'at peace','at ease','doing well','doing great','going well',
+      'happy','joyful','cheerful','delighted','excited','thrilled','grateful',
+      'wonderful','amazing','awesome','peaceful','calm','relaxed','relieved',
+      'beautiful','lovely','sunshine','good','great','nice','fine'],
+    sadness:['feel bad','feel terrible','feel awful','feel horrible','feel sick',
+      'feel down','feel low','feel lonely','feel empty','feel lost','feel broken',
+      'feel numb','feel hopeless','feel worthless','feel tired','feel exhausted',
+      'feel depressed','feel miserable','feeling bad','feeling sad','feeling down',
+      'i cried','i am crying','miss her','miss him','miss them','i miss',
+      'so sad','i am sad','hurts so much','not good','not well','not okay',
+      'sad','unhappy','depressed','miserable','grief','heartbroken',
+      'cry','crying','tears','lonely','hurt','devastated','disappointed',
+      'bad','terrible','awful','horrible','dreadful','down'],
+    anger:['feel angry','feeling angry','feel mad','feeling mad','feel furious',
+      'so angry','so mad','i am angry','i am mad','i hate','i despise',
+      'so frustrated','drives me crazy','pissed off','fed up','so unfair',
+      'angry','anger','mad','furious','rage','hate','annoyed','irritated','frustrated'],
+    fear:['feel anxious','feeling anxious','feel scared','feel nervous',
+      'feel worried','feel stressed','feeling stressed','feel overwhelmed',
+      'i am scared','i am afraid','i am anxious','i am nervous','i am worried',
+      'so stressed','heart is pounding','freaking out','on edge',
+      'afraid','scared','terrified','anxious','anxiety','nervous','worried',
+      'dread','panic','stressed','spiraling','overthinking'],
+    love:['i love you','love you','i adore','in love with','love of my life',
+      'feel loved','feeling loved','so in love','love','adore','cherish'],
+    surprise:['cannot believe','i was shocked','totally shocked','out of nowhere',
+      'did not expect','blown away','mind blown','caught off guard',
+      'surprised','shocked','astonished','amazed','stunned','wow','unexpected'],
+    neutral:['just went','just stayed','normal day','nothing special','as usual',
+      'regular day','ordinary day','did not do much','pretty uneventful',
+      'routine','ordinary','uneventful','typical'],
+  };
+  const NEGATIONS=new Set(['not','no','never',"isn't","aren't","wasn't","weren't",
+    "don't","doesn't","didn't","can't","cannot","couldn't","won't"]);
+  const BOOSTERS={'very':1.8,'so':1.6,'really':1.7,'extremely':2.0,'super':1.6};
+  const CALM_BEFORE=new Set(['calm','calmed','slow','slowed','cool','wind','settle','ease']);
+
+  function negated(i){for(let j=Math.max(0,i-3);j<i;j++)if(NEGATIONS.has(tokens[j]))return true;return false;}
+  function boost(i){let m=1.0;for(let j=Math.max(0,i-3);j<i;j++)if(BOOSTERS[tokens[j]])m=Math.max(m,BOOSTERS[tokens[j]]);return m;}
+
+  const scores={joy:0,sadness:0,anger:0,fear:0,love:0,surprise:0,neutral:0};
+  const consumed=new Set();
+
+  for(const emo of Object.keys(KW)){
+    const phrases=KW[emo].filter(k=>k.includes(' ')).sort((a,b)=>b.length-a.length);
+    for(const phrase of phrases){
+      const pt=phrase.split(' ');
+      for(let s=0;s<=tokens.length-pt.length;s++){
+        if(pt.every((p,j)=>tokens[s+j]===p)){
+          let overlap=false;
+          for(let j=0;j<pt.length;j++)if(consumed.has(s+j)){overlap=true;break;}
+          if(overlap)continue;
+          const w=boost(s);
+          scores[emo]+=negated(s)?-w*0.5:w;
+          for(let j=0;j<pt.length;j++)consumed.add(s+j);
+        }
+      }
+    }
+  }
+  for(const emo of Object.keys(KW)){
+    const singles=KW[emo].filter(k=>!k.includes(' '));
+    for(const kw of singles){
+      for(let i=0;i<tokens.length;i++){
+        if(consumed.has(i))continue;
+        if(tokens[i]===kw){
+          if(kw==='down'&&emo==='sadness'){
+            let n=false;
+            for(let j=Math.max(0,i-2);j<i;j++)if(CALM_BEFORE.has(tokens[j])){n=true;break;}
+            if(n)continue;
+          }
+          const w=boost(i);
+          scores[emo]+=negated(i)?-w*0.5:w;
+        }
+      }
+    }
+  }
+  const pos=Object.entries(scores).map(([k,v])=>[k,Math.max(0,v)]).filter(([,v])=>v>0).sort(([,a],[,b])=>b-a);
+  if(!pos.length)return[['neutral',0.7],['sadness',0.2],['joy',0.1]];
+  const seen=new Set(),top3=[];
+  for(const[e,v]of pos){if(!seen.has(e)){seen.add(e);top3.push([e,v]);}if(top3.length===3)break;}
+  const pad=top3[top3.length-1][1]*0.06;
+  for(const e of['sadness','fear','neutral','anger','joy','love','surprise']){
+    if(top3.length>=3)break;
+    if(!seen.has(e)){seen.add(e);top3.push([e,pad]);}
+  }
+  const total=top3.reduce((a,[,v])=>a+v,0)||1;
+  return top3.map(([k,v])=>[k,Math.round(v/total*1000)/1000]);
+}
+
+function setStatus(on){
+  const b=document.getElementById('statusDot');
+  b.className='status-dot '+(on?'on':'off');
+  b.textContent=on?'🟢 model online':'⚫ offline mode';
+}
+async function pingServer(){
+  try{
+    const r=await fetch(`${API}/health`,{method:'GET',signal:AbortSignal.timeout(3000),headers:{'Accept':'application/json'}});
+    setStatus(r.ok);
+  }catch{
+    try{const r2=await fetch(`${API}/debug/predict?text=test`,{signal:AbortSignal.timeout(3000)});setStatus(r2.ok);}
+    catch{setStatus(false);}
+  }
+}
+
+function getCardContainer(btn){
+  return btn.closest('.rec-card') || btn.closest('.color-swatch-card') || btn.closest('div[style*="position"]') || btn.parentElement.parentElement;
+}
+
+function cardStateKey(itemText){ return ragNorm(itemText); }
+
+function saveCardState(itemText, patch){
+  if(!pages[idx]) return;
+  if(!pages[idx].cardFeedback) pages[idx].cardFeedback = {};
+  const key = cardStateKey(itemText);
+  pages[idx].cardFeedback[key] = Object.assign({}, pages[idx].cardFeedback[key]||{}, patch);
+  saveLocal();
+  syncCardFeedbackToServer(pages[idx].page_number, pages[idx].cardFeedback); // EKLENEN SATIR
+}
+
+function getCardState(itemText){
+  if(!pages[idx]||!pages[idx].cardFeedback) return {};
+  return pages[idx].cardFeedback[cardStateKey(itemText)] || {};
+}
+
+function restoreCardState(card, itemText){
+  const state = getCardState(itemText);
+  if(!state.action) return;
+  const didItBtn = card.querySelector('.action-btn.did-it');
+  const didntBtn = card.querySelector('.action-btn.didnt');
+  if(state.action === 'didnt'){
+    if(didntBtn) didntBtn.classList.add('active');
+    card.classList.add('crossed-out');
+  } else if(state.action === 'didit'){
+    if(didItBtn) didItBtn.classList.add('active');
+    // Restore sticky note
+    showStickyNote(card, itemText, state);
+  }
+}
+
+function cardDidIt(btn, itemText){
+  const card = getCardContainer(btn);
+  const didntBtn = card.querySelector('.action-btn.didnt');
+  if(didntBtn){ didntBtn.classList.remove('active'); card.classList.remove('crossed-out'); }
+  btn.classList.toggle('active');
+  if(btn.classList.contains('active')){
+    saveCardState(itemText, {action:'didit'});
+    showStickyNote(card, itemText, getCardState(itemText));
+  } else {
+    saveCardState(itemText, {action:null});
+    hideStickyNote(card, itemText);
+  }
+}
+
+function cardDidntDo(btn, itemText){
+  const card = getCardContainer(btn);
+  const didItBtn = card.querySelector('.action-btn.did-it');
+  if(didItBtn){ didItBtn.classList.remove('active'); }
+  hideStickyNote(card, itemText);
+  btn.classList.toggle('active');
+  const active = btn.classList.contains('active');
+  card.classList.toggle('crossed-out', active);
+  saveCardState(itemText, {action: active ? 'didnt' : null});
+  if(active){
+    ragRecord(itemText, false, 0, '', currentEmotions[0]?.name||'neutral');
+    serverSaveFeedback(itemText, guessCategory(card), false, 0, '', currentEmotions[0]?.name||'neutral');
+  }
+}
+
+function showStickyNote(card, itemText, savedState){
+  const snw = card.querySelector('.sticky-note-wrap');
+  if(!snw) return;
+  const existing = snw.querySelector('.sticky-note');
+  if(existing) existing.remove();
+
+  const saved = savedState || {};
+  const savedStars = saved.stars || 0;
+  const savedFeedback = saved.feedback || '';
+  const savedDone = saved.saved || false;
+
+  const note = document.createElement('div');
+  note.className = 'sticky-note';
+  note.innerHTML = `
+    <button class="sticky-close" onclick="stickyClose(this,'${itemText.replace(/'/g,"\\'")}')">✕</button>
+    
+    <div class="item-title-display">${itemText}</div>
+    <hr class="title-divider">
+    
+    <div class="sticky-label">How well did it work?</div>
+    <div class="sticky-stars" data-selected="${savedStars}">
+      ${[1,2,3,4,5].map(n=>`<span class="sticky-star${n<=savedStars?' lit':''}" data-val="${n}" onmouseover="starHover(this,${n})" onmouseout="starOut(this)" onclick="starClick(this,${n},'${itemText.replace(/'/g,"\\'")}')">
+        ${n<=savedStars?'★':'☆'}
+      </span>`).join('')}
+    </div>
+    <div class="sticky-label" style="margin-top:4px;">Leave a note (optional)</div>
+    <textarea class="sticky-feedback" spellcheck="false" placeholder="e.g. felt calmer after…" rows="2">${savedFeedback}</textarea>
+    ${savedDone
+      ? `<button class="sticky-save" style="background:rgba(40,100,40,.18);border-color:rgba(40,100,40,.4);color:rgba(20,80,20,.9);" disabled>✓ Saved!</button>`
+      : `<button class="sticky-save" onclick="stickySave(this,'${itemText.replace(/'/g,"\\'")}')">Save Feedback</button>`
+    }
+  `;
+  snw.appendChild(note);
+  snw.style.pointerEvents = 'all';
+}
+
+function hideStickyNote(card, itemText){
+  const snw = card.querySelector('.sticky-note-wrap');
+  if(snw){ const sn = snw.querySelector('.sticky-note'); if(sn) sn.remove(); snw.style.pointerEvents='none'; }
+}
+
+function stickyClose(btn, itemText){
+  const card = getCardContainer(btn);
+  hideStickyNote(card, itemText);
+  const didItBtn = card.querySelector('.action-btn.did-it');
+  if(didItBtn) didItBtn.classList.remove('active');
+  saveCardState(itemText, {action: null});
+}
+
+function starHover(el, val){
+  const stars = el.parentElement.querySelectorAll('.sticky-star');
+  stars.forEach((s,i)=>{ s.textContent = i<val?'★':'☆'; s.classList.toggle('hover', i<val); });
+}
+function starOut(el){
+  const stars = el.parentElement.querySelectorAll('.sticky-star');
+  const cur = parseInt(el.parentElement.dataset.selected||0);
+  stars.forEach((s,i)=>{ s.textContent = i<cur?'★':'☆'; s.classList.toggle('lit', i<cur); s.classList.remove('hover'); });
+}
+function starClick(el, val, itemText){
+  el.parentElement.dataset.selected = val;
+  const stars = el.parentElement.querySelectorAll('.sticky-star');
+  stars.forEach((s,i)=>{ s.textContent = i<val?'★':'☆'; s.classList.toggle('lit', i<val); });
+  saveCardState(itemText, {stars: val});
+}
+
+function stickySave(btn, itemText){
+  const note = btn.closest('.sticky-note');
+  const starsEl = note.querySelector('.sticky-stars');
+  const stars = parseInt(starsEl?.dataset.selected||0);
+  const feedback = note.querySelector('.sticky-feedback')?.value.trim()||'';
+  const emotion = currentEmotions[0]?.name||'neutral';
+  ragRecord(itemText, true, stars, feedback, emotion);
+
+  saveCardState(itemText, {stars, feedback, saved: true, action: 'didit'});
+
+  const card = btn.closest('.rec-card') || btn.closest('.color-swatch-card') || btn.closest('div');
+  serverSaveFeedback(itemText, guessCategory(card), true, stars, feedback, emotion);
+
+  btn.textContent = '✓ Saved!';
+  btn.style.background = 'rgba(40,100,40,.18)';
+  btn.style.borderColor = 'rgba(40,100,40,.4)';
+  btn.style.color = 'rgba(20,80,20,.9)';
+  btn.disabled = true;
+
+  refreshSchedulerData();
+}
+
+function toggleScheduler(){
+  const panel = document.getElementById('schedulerPanel');
+  const isOpen = panel.classList.toggle('open');
+  document.getElementById('schedHandleBtn').textContent = isOpen ? 'Close ↓' : 'Open ↑';
+  if(isOpen) refreshSchedulerData();
+}
+
+function refreshSchedulerData(){
+  drawMoodTrend();
+  drawTopFeedback();
+}
+
+function drawMoodTrend(){
+  const el = document.getElementById('moodTrendArea');
+  if(!pages || pages.length < 2){
+    el.innerHTML = '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:12px;color:rgba(100,70,20,.35);">Write at least 2 entries to see trends.</div>';
+    return;
+  }
+  const analyzed = pages.filter(p=>p.analyzed && p.emotions && p.emotions.length);
+  if(analyzed.length < 2){ el.innerHTML = '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:12px;color:rgba(100,70,20,.35);">Analyze at least 2 entries to see trends.</div>'; return; }
+  const EMO_COLORS = {joy:'#c8a040',love:'#a85060',anger:'#a04028',sadness:'#486098',fear:'#584070',surprise:'#3a7860',neutral:'#706048'};
+  let html = '<div style="display:flex;flex-direction:column;gap:6px;">';
+  analyzed.forEach((p,i)=>{
+    const top = p.emotions[0]; const name = top?.name||top?.[0]||'neutral';
+    const color = EMO_COLORS[name]||'#888';
+    html += `<div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-family:'Raleway',sans-serif;font-size:7px;letter-spacing:1px;color:rgba(80,55,20,.45);width:20px;">${i+1}</span>
+      <span class="mood-dot" style="background:${color};"></span>
+      <span style="font-family:'Cormorant Garamond',serif;font-size:12px;color:rgba(50,30,5,.8);">${EMOJI_MAP[name]||''} ${name}</span>
+      <span style="font-family:'Raleway',sans-serif;font-size:7px;color:rgba(90,65,20,.35);margin-left:auto;">${p.date?.split(',')[0]||''}</span>
+    </div>`;
+  });
+  const freq = {};
+  analyzed.forEach(p=>{ const n=p.emotions[0]?.name||p.emotions[0]?.[0]||'neutral'; freq[n]=(freq[n]||0)+1; });
+  const dominant = Object.entries(freq).sort(([,a],[,b])=>b-a)[0];
+  html += `</div><div style="margin-top:10px;padding:8px 10px;background:rgba(160,120,60,.07);border:1px solid rgba(110,75,25,.1);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11.5px;color:rgba(60,40,5,.75);">
+    Dominant mood: ${EMOJI_MAP[dominant[0]]||''} <strong style="font-style:normal;">${dominant[0]}</strong> (${dominant[1]} of ${analyzed.length} entries)
+  </div>`;
+  el.innerHTML = html;
+}
+
+function drawTopFeedback(){
+  const el = document.getElementById('topFeedbackLog');
+  const top = ragTopItems(8).filter(v=>(v.totalStars/v.count)>=3);
+  if(!top.length){
+    el.innerHTML = '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:11px;color:rgba(100,70,20,.35);padding:6px 0;">Rate suggestions with ★★★ or above to see them here.</div>';
+    return;
+  }
+  el.innerHTML = top.map(v=>{
+    const avg = (v.totalStars/v.count).toFixed(1);
+    const stars = '★'.repeat(Math.round(v.totalStars/v.count));
+    return `<div class="sched-log-entry">
+      <div class="sched-log-date">${stars} ${avg}/5 · tried ${v.count}x</div>
+      ${v.label}
+    </div>`;
+  }).join('');
+}
+
+function setDailyReminder(){
+  const time = document.getElementById('dailyTimeSelect')?.value || '08:00 PM';
+  const statusEl = document.getElementById('dailyReminderStatus');
+  // Store preference
+  try{ localStorage.setItem(`sched-daily-${curUser}`, time); } catch{}
+  if(statusEl) statusEl.textContent = `✓ Reminder set for ${time} daily.`;
+}
+
+function generateWeeklyReport(){
+  const el = document.getElementById('weeklyReportArea');
+  const analyzed = pages.filter(p=>p.analyzed && p.emotions && p.emotions.length);
+  if(!analyzed.length){ el.innerHTML = '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:11px;color:rgba(130,50,20,.6);">No analyzed entries yet.</div>'; return; }
+  const freq = {};
+  analyzed.forEach(p=>{ const n=p.emotions[0]?.name||p.emotions[0]?.[0]||'neutral'; freq[n]=(freq[n]||0)+1; });
+  const sorted = Object.entries(freq).sort(([,a],[,b])=>b-a);
+  const top = ragTopItems(3).filter(v=>(v.totalStars/v.count)>=3);
+  el.innerHTML = `<div style="background:rgba(240,228,190,.55);border:1px solid rgba(140,100,40,.18);padding:10px 12px;font-family:'Cormorant Garamond',serif;font-size:12px;color:rgba(50,30,5,.8);line-height:1.65;">
+    <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;margin-bottom:6px;color:rgba(50,25,5,.7);">WEEKLY SUMMARY</div>
+    <div><strong style="font-style:normal;">Emotions logged:</strong> ${sorted.map(([k,v])=>`${EMOJI_MAP[k]||''} ${k} (${v}×)`).join(' · ')}</div>
+    ${top.length?`<div style="margin-top:5px;"><strong style="font-style:normal;">What helped most:</strong> ${top.map(v=>v.label).join(' · ')}</div>`:''}
+    <div style="margin-top:5px;font-style:italic;font-size:11px;color:rgba(80,55,15,.6);">Generated ${new Date().toLocaleDateString()}</div>
+  </div>`;
+}
+
+let dashPeriod = 'daily';
+let reminderInterval = null;
+let reminderTime = null; // { h, m } in 24h
+let lastReminderFired = null; // track "YYYY-MM-DD HH:MM" so we only fire once per minute
+
+const EMO_COLORS_DASH = {
+  joy: '#c8a040', love: '#a85060', anger: '#a04028',
+  sadness: '#486098', fear: '#584070', surprise: '#3a7860', neutral: '#706048'
+};
+
+function openWellnessDash() {
+  const el = document.getElementById('wellnessDash');
+  el.classList.add('show');
+  setTimeout(() => { el.classList.add('visible'); renderDash(); }, 10);
+  try {
+    const saved = localStorage.getItem(`sched-daily-${curUser}`);
+    if (saved) {
+      reminderTime = parseTimeStr(saved);
+      highlightSelectedTime(saved);
+    }
+  } catch {}
+}
+
+function closeWellnessDash() {
+  const el = document.getElementById('wellnessDash');
+  el.classList.remove('visible');
+  setTimeout(() => el.classList.remove('show'), 460);
+}
+
+function switchDashPeriod(p) {
+  dashPeriod = p;
+  document.querySelectorAll('.dash-ptab').forEach(t => t.classList.toggle('active', t.dataset.period === p));
+  renderDash();
+}
+
+function getFilteredPages() {
+  if (!pages || !pages.length) return [];
+  const now = new Date();
+  return pages.filter(p => {
+    if (!p.date) return dashPeriod === 'all';
+    const d = new Date(p.date);
+    if (isNaN(d)) return dashPeriod === 'all';
+    const diff = (now - d) / (1000 * 60 * 60 * 24);
+    if (dashPeriod === 'daily') return diff < 1;
+    if (dashPeriod === 'weekly') return diff < 7;
+    if (dashPeriod === 'monthly') return diff < 30;
+    return true;
+  });
+}
+
+function renderDash() {
+  const content = document.getElementById('dashContent');
+  const filtered = getFilteredPages();
+  const analyzed = filtered.filter(p => p.analyzed && p.emotions && p.emotions.length);
+  const allAnalyzed = (pages || []).filter(p => p.analyzed && p.emotions && p.emotions.length);
+
+  // Emotion frequency for period
+  const freq = {};
+  analyzed.forEach(p => {
+    (p.emotions || []).forEach(e => {
+      const n = e.name || e[0] || 'neutral';
+      freq[n] = (freq[n] || 0) + (e.score || 1);
+    });
+  });
+  const sortedEmo = Object.entries(freq).sort((a,b) => b[1]-a[1]);
+  const totalEmoScore = sortedEmo.reduce((s,[,v]) => s+v, 0) || 1;
+  const dominant = sortedEmo[0]?.[0] || 'neutral';
+
+  // Top wellness items
+// Seçili zaman dilimine (Günlük/Haftalık/Aylık vb.) ait sayfaların verilerini tarıyoruz
+  const periodFeedback = {};
+  filtered.forEach(p => {
+    if (p.cardFeedback) {
+      const labels = {};
+      // Önerilerin ekrandaki orijinal metinlerini (label) yakalıyoruz
+      if (p.recommendations) {
+        Object.entries(p.recommendations).forEach(([cat, catData]) => {
+          if (cat === 'places' && catData && catData.maps_search) {
+            catData.maps_search.forEach(l => { if (l.label) labels[ragNorm(l.label)] = l.label; });
+          } else if (Array.isArray(catData)) {
+            catData.forEach(item => {
+              const text = typeof item === 'string' ? item : (item.item || item.name || item.title || '');
+              if (text) labels[ragNorm(text)] = text;
+            });
+          }
+        });
+      }
+      
+      // Sadece o sayfanın yazıldığı tarih aralığındaki geri bildirimleri hesaplıyoruz
+      Object.entries(p.cardFeedback).forEach(([key, data]) => {
+        if (data.action === 'didit' && data.stars > 0) {
+          if (!periodFeedback[key]) periodFeedback[key] = { label: labels[key] || key, count: 0, totalStars: 0 };
+          periodFeedback[key].count++;
+          periodFeedback[key].totalStars += data.stars;
+        }
+      });
+    }
+  });
+
+  // Ortalaması 3 yıldız ve üzeri olanları en yüksekten düşüğe sıralayıp ilk 5'i alıyoruz
+  const topItems = Object.values(periodFeedback)
+    .filter(v => (v.totalStars / v.count) >= 3)
+    .sort((a, b) => (b.totalStars / b.count) - (a.totalStars / a.count))
+    .slice(0, 5);  const periodLabel = { daily: 'Today', weekly: 'This Week', monthly: 'This Month', all: 'All Time' }[dashPeriod];
+
+  const historyEntries = [...(pages || [])].reverse();
+
+  content.innerHTML = `
+    <!-- ── ROW 1: Stats ── -->
+    <div class="dash-grid" style="margin-bottom:16px;">
+      <div class="dash-card">
+        <div class="dash-card-title">📖 Entries — ${periodLabel}</div>
+        <div class="dash-stat">
+          <div class="dash-stat-num">${filtered.length}</div>
+          <div class="dash-stat-label">Journal Pages</div>
+          <div class="dash-stat-sub">${analyzed.length} analyzed · ${(pages||[]).length} total ever</div>
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">🌡 Dominant Mood</div>
+        <div class="dash-stat">
+          <div class="dash-stat-num" style="font-size:42px;">${EMOJI_MAP[dominant]||'🍃'}</div>
+          <div class="dash-stat-label">${dominant}</div>
+          <div class="dash-stat-sub">${analyzed.length ? Math.round((freq[dominant]||0)/totalEmoScore*100)+'% of entries' : 'No data yet'}</div>
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">🔥 Writing Streak</div>
+        <div class="dash-stat">
+          <div class="dash-stat-num">${calcStreak()}</div>
+          <div class="dash-stat-label">Days in a Row</div>
+          <div class="dash-stat-sub">${calcLongestStreak()} day best streak</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ROW 2: Emotion landscape + mood chart ── -->
+    <div class="dash-grid" style="margin-bottom:16px;">
+      <div class="dash-card span2">
+        <div class="dash-card-title">🎭 Emotional Landscape — ${periodLabel}</div>
+        ${analyzed.length ? renderEmoBreakdown(sortedEmo, totalEmoScore) : renderEmpty('Write and analyze entries to see your emotional landscape.')}
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">📈 Mood Over Time</div>
+        ${allAnalyzed.length >= 2 ? renderSparkline(allAnalyzed) : renderEmpty('Analyze at least 2 entries to see your mood trend.')}
+      </div>
+    </div>
+
+    <!-- ── ROW 3: History + Top items + Reminder ── -->
+    <div class="dash-grid" style="margin-bottom:16px;">
+      <div class="dash-card span2">
+        <div class="dash-card-title">📜 Entry History — All Outputs</div>
+        ${historyEntries.length ? renderHistory(historyEntries) : renderEmpty('Your journal entries will appear here after you write.')}
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">⭐ What Helped You</div>
+        ${topItems.length ? renderTopItems(topItems) : renderEmpty('Rate suggestions ★★★+ to track what helps you most.')}
+      </div>
+    </div>
+  `;
+
+  try {
+    const saved = localStorage.getItem(`sched-daily-${curUser}`);
+    if (saved) highlightSelectedTime(saved);
+  } catch {}
+
+  setTimeout(() => {
+    document.querySelectorAll('.dash-emo-bar').forEach(b => {
+      const w = b.dataset.width;
+      if (w) b.style.width = w + '%';
+    });
+  }, 80);
+}
+
+function renderEmoBreakdown(sortedEmo, total) {
+  if (!sortedEmo.length) return renderEmpty('No emotions detected yet.');
+  return `<div class="dash-emo-list">` +
+    sortedEmo.map(([name, score]) => {
+      const pct = Math.round(score / total * 100);
+      const color = EMO_COLORS_DASH[name] || '#888';
+      return `<div class="dash-emo-row">
+        <div class="dash-emo-name">${EMOJI_MAP[name]||''} ${name}</div>
+        <div class="dash-emo-bar-wrap">
+          <div class="dash-emo-bar" data-width="${pct}" style="width:0%;background:${color};opacity:.75;"></div>
+        </div>
+        <div class="dash-emo-count">${pct}%</div>
+      </div>`;
+    }).join('') + `</div>`;
+}
+
+function renderHistory(entries) {
+  if (!entries.length) return renderEmpty('No entries yet.');
+  return `<div class="dash-timeline">` +
+    entries.map((p, i) => {
+      const emo = p.analyzed && p.emotions && p.emotions[0];
+      const name = emo ? (emo.name || emo[0] || 'neutral') : null;
+      const color = name ? (EMO_COLORS_DASH[name] || '#888') : 'rgba(150,120,60,.3)';
+      const emoEmoji = name ? (EMOJI_MAP[name] || '') : '';
+      const snippet = (p.text || '').trim().slice(0, 90) + ((p.text||'').length > 90 ? '…' : '');
+      const note = p.wellness_note ? `<div class="dash-tl-note">${p.wellness_note.slice(0,100)}${p.wellness_note.length>100?'…':''}</div>` : '';
+      const recsCount = p.recommendations ? Object.values(p.recommendations).reduce((s,arr) => s+(Array.isArray(arr)?arr.length:0), 0) : 0;
+      return `<div class="dash-tl-entry">
+        <div class="dash-tl-dot" style="background:${color};color:${color};"></div>
+        <div class="dash-tl-info">
+          <div class="dash-tl-date">${p.date || 'Entry ' + (p.page_number||i+1)}</div>
+          <div class="dash-tl-emo">${emoEmoji ? `${emoEmoji} <strong style="font-style:normal;font-weight:500;">${name}</strong>` : '<span style="opacity:.35;font-style:italic;">Not analyzed yet</span>'}</div>
+          ${snippet ? `<div class="dash-tl-snippet">${snippet}</div>` : ''}
+          ${note}
+          ${recsCount ? `<div style="margin-top:6px;font-family:'Raleway',sans-serif;font-size:10.5px;letter-spacing:1.5px;color:rgba(200,170,100,.75); font-weight:600;">${recsCount} wellness suggestion${recsCount>1?'s':''} received</div>` : ''}
+        </div>
+      </div>`;
+    }).join('') + `</div>`;
+}
+
+function renderSparkline(analyzed) {
+  const VALENCE = { joy: 5, love: 4.5, surprise: 3.5, neutral: 3, fear: 2, sadness: 1.5, anger: 1 };
+  const points = analyzed.map(p => {
+    const n = p.emotions[0]?.name || p.emotions[0]?.[0] || 'neutral';
+    return { name: n, v: VALENCE[n] || 3, color: EMO_COLORS_DASH[n] || '#888' };
+  }).slice(-20); // last 20
+
+  if (points.length < 2) return renderEmpty('Need at least 2 analyzed entries.');
+
+  const W = 320, H = 100, padX = 12, padY = 10;
+  const iW = W - padX*2, iH = H - padY*2;
+  const step = iW / (points.length - 1);
+
+  const coords = points.map((p, i) => {
+    const x = padX + i * step;
+    const y = padY + iH - ((p.v - 1) / 4) * iH;
+    return { x, y, ...p };
+  });
+
+  let pathD = `M ${coords[0].x},${coords[0].y}`;
+  for (let i = 0; i < coords.length - 1; i++) {
+    const p0 = coords[Math.max(i-1, 0)];
+    const p1 = coords[i];
+    const p2 = coords[i+1];
+    const p3 = coords[Math.min(i+2, coords.length-1)];
+    const cp1x = p1.x + (p2.x - p0.x) / 6;
+    const cp1y = p1.y + (p2.y - p0.y) / 6;
+    const cp2x = p2.x - (p3.x - p1.x) / 6;
+    const cp2y = p2.y - (p3.y - p1.y) / 6;
+    pathD += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`;
+  }
+  const areaD = pathD + ` L ${coords[coords.length-1].x},${H} L ${coords[0].x},${H} Z`;
+
+  const dots = coords.map((c, i) => 
+    `<circle cx="${c.x}" cy="${c.y}" r="${i===coords.length-1 ? 4.5 : 3}" fill="${c.color}" opacity="${i===coords.length-1 ? 1 : 0.7}" stroke="rgba(20,10,4,.5)" stroke-width="1">
+      <title>${c.name}</title>
+    </circle>`
+  ).join('');
+
+  const yLabels = [
+    { v:5, label:'joy/love' },
+    { v:3, label:'neutral' },
+    { v:1, label:'anger' }
+  ].map(l => {
+    const y = padY + iH - ((l.v - 1) / 4) * iH;
+    return `<text x="2" y="${y+3}" fill="rgba(160,130,60,.3)" font-size="7" font-family="Raleway, sans-serif">${l.label}</text>`;
+  }).join('');
+
+  const lastEmo = points[points.length-1];
+
+  return `
+    <div style="margin-bottom:8px;">
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:110px;" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+        <defs>
+          <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${lastEmo.color}" stop-opacity="0.18"/>
+            <stop offset="100%" stop-color="${lastEmo.color}" stop-opacity="0.01"/>
+          </linearGradient>
+        </defs>
+        <!-- Grid lines -->
+        ${[1,3,5].map(v => {
+          const y = padY + iH - ((v-1)/4)*iH;
+          return `<line x1="${padX}" y1="${y}" x2="${W-padX}" y2="${y}" stroke="rgba(180,150,70,.07)" stroke-width="1" stroke-dasharray="3,3"/>`;
+        }).join('')}
+        ${yLabels}
+        <!-- Area fill -->
+        <path d="${areaD}" fill="url(#sparkGrad)"/>
+        <!-- Line -->
+        <path d="${pathD}" fill="none" stroke="${lastEmo.color}" stroke-width="1.8" opacity="0.65" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Dots -->
+        ${dots}
+      </svg>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(160,130,60,.45);">oldest</div>
+      <div style="font-family:'Raleway',sans-serif;font-size:7.5px;letter-spacing:1.5px;color:rgba(160,130,60,.45);">LAST ${points.length} ENTRIES</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(160,130,60,.45);">latest</div>
+    </div>`;
+}
+
+function calcLongestStreak() {
+  if (!pages || !pages.length) return 0;
+  const dates = pages
+    .filter(p => p.date)
+    .map(p => { const d = new Date(p.date); return isNaN(d) ? null : d.toDateString(); })
+    .filter(Boolean);
+  const unique = [...new Set(dates)].map(d => new Date(d)).sort((a,b) => a-b);
+  let best = 0, cur = 1;
+  for (let i = 1; i < unique.length; i++) {
+    const diff = Math.round((unique[i] - unique[i-1]) / 86400000);
+    if (diff === 1) { cur++; best = Math.max(best, cur); }
+    else { cur = 1; }
+  }
+  return Math.max(best, unique.length ? 1 : 0);
+}
+
+function renderTopItems(items) {
+  return `<div class="dash-top-list">` +
+    items.map((v, i) => {
+      const avg = (v.totalStars / v.count).toFixed(1);
+      const stars = '★'.repeat(Math.round(v.totalStars / v.count)) + '☆'.repeat(5 - Math.round(v.totalStars / v.count));
+      return `<div class="dash-top-item">
+        <div class="dash-top-rank">${i+1}</div>
+        <div class="dash-top-label">${v.label}</div>
+        <div class="dash-top-stars" title="${avg}/5 — tried ${v.count}x">${stars}</div>
+      </div>`;
+    }).join('') + `</div>`;
+}
+
+function renderEmpty(msg) {
+  return `<div class="dash-empty">
+    <div class="dash-empty-icon">🕯</div>
+    <div class="dash-empty-txt">${msg}</div>
+  </div>`;
+}
+
+function calcStreak() {
+  if (!pages || !pages.length) return 0;
+  const dates = pages
+    .filter(p => p.date)
+    .map(p => {
+      const d = new Date(p.date);
+      return isNaN(d) ? null : d.toDateString();
+    })
+    .filter(Boolean);
+  const unique = [...new Set(dates)].sort((a,b) => new Date(b) - new Date(a));
+  let streak = 0;
+  let check = new Date();
+  check.setHours(0,0,0,0);
+  for (const ds of unique) {
+    const d = new Date(ds);
+    d.setHours(0,0,0,0);
+    const diff = Math.round((check - d) / 86400000);
+    if (diff <= 1) { streak++; check = d; }
+    else break;
+  }
+  return streak;
+}
+
+const TIME_OPTIONS = [
+  '07:00 AM','08:00 AM','09:00 AM','10:00 AM',
+  '12:00 PM','02:00 PM','06:00 PM','08:00 PM',
+  '09:00 PM','10:00 PM','11:00 PM','12:00 AM'
+];
+
+function selectTime(t) {
+  document.querySelectorAll('.dash-time-btn').forEach(b => b.classList.remove('selected'));
+  const btn = document.querySelector(`.dash-time-btn[data-time="${t}"]`);
+  if (btn) btn.classList.add('selected');
+}
+
+function highlightSelectedTime(t) {
+  document.querySelectorAll('.dash-time-btn').forEach(b => b.classList.remove('selected'));
+  const btn = document.querySelector(`.dash-time-btn[data-time="${t}"]`);
+  if (btn) btn.classList.add('selected');
+}
+
+function parseTimeStr(str) {
+  const m = str.match(/(\d+):(\d+)\s*(AM|PM)/i);
+  if (!m) return null;
+  let h = parseInt(m[1]), min = parseInt(m[2]);
+  const ap = m[3].toUpperCase();
+  if (ap === 'PM' && h !== 12) h += 12;
+  if (ap === 'AM' && h === 12) h = 0;
+  return { h, m: min };
+}
+
+function scheduleReminderCheck() {
+  if (reminderInterval) clearInterval(reminderInterval);
+  reminderInterval = setInterval(() => {
+    if (!reminderTime || !curUser) return;
+    const now = new Date();
+    const key = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}`;
+    if (now.getHours() === reminderTime.h && now.getMinutes() === reminderTime.m && lastReminderFired !== key) {
+      lastReminderFired = key;
+      showReminderPopup();
+    }
+  }, 15000); // check every 15 seconds
+}
+
+function showReminderPopup() {
+  const userName = document.getElementById('userName')?.textContent || 'dear one';
+  const popup = document.getElementById('reminderPopup');
+  document.getElementById('reminderPopupBody').textContent =
+    `🕯 ${userName}, it's time to write in your wellness diary. Your feelings deserve a home today.`;
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 20000);
+}
+
+function closeReminderPopup() {
+  document.getElementById('reminderPopup').classList.remove('show');
+}
+
+setTimeout(()=>document.getElementById('uIn').focus(),400);
+</script>
+</body>
+</html>

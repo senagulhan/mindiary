@@ -1,0 +1,2083 @@
+{
+  "emotions": {
+    "joy": {
+      "mild": {
+        "spotify_playlists": [
+          {
+            "name": "Happy Hits!",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC",
+            "description": "Feel-good pop anthems to match your bright mood",
+            "cover_emoji": "☀️"
+          },
+          {
+            "name": "Mood Booster",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX3rxVfibe1L0",
+            "description": "Uplifting tracks across genres — pure positive energy",
+            "cover_emoji": "⚡"
+          }
+        ],
+        "food": [
+          {
+            "item": "Fresh fruit plate",
+            "why": "Bright colors signal nutritional variety; eating joyfully enhances flavor perception through reward circuits."
+          },
+          {
+            "item": "Dark chocolate (70%+)",
+            "why": "Triggers endorphin and serotonin release; flavonoids improve cerebral blood flow (Salimpoor et al., 2011)."
+          },
+          {
+            "item": "Avocado toast",
+            "why": "Folate in avocado supports dopamine synthesis; healthy fats improve brain membrane function."
+          },
+          {
+            "item": "Fresh-squeezed lemonade",
+            "why": "Citrus scent and vitamin C are independently linked to elevated mood and reduced cortisol."
+          }
+        ],
+        "places": {
+          "description": "Lively outdoor spaces and social spots to amplify your joy",
+          "types": [
+            "roof bar",
+            "outdoor market",
+            "botanical garden",
+            "waterfront promenade",
+            "park with live music"
+          ],
+          "search_queries": [
+            "rooftop cafe",
+            "outdoor market",
+            "botanical garden",
+            "waterfront park"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Dance to your favorite song",
+            "why": "Movement + music amplifies positive emotion through dopamine and endorphin release simultaneously."
+          },
+          {
+            "item": "Share good news with someone or call them",
+            "why": "Sharing positive emotions (capitalisation) doubles their intensity and duration (Langston, 1994)."
+          },
+          {
+            "item": "Start a creative project",
+            "why": "Flow states are most accessible when baseline mood is positive — best time to start something new."
+          },
+          {
+            "item": "Write 3 things in a gratitude journal",
+            "why": "Gratitude journaling extends positive emotional states and builds resilience (Emmons & McCullough, 2003)."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Sunshine Yellow",
+            "hex": "#FFD700",
+            "why": "Yellow has the highest luminosity visible to humans, triggering serotonin and activating left prefrontal cortex (positive affect hemisphere)."
+          },
+          {
+            "name": "Coral Orange",
+            "hex": "#FF7043",
+            "why": "Combines red's energy with yellow's warmth. Shown to increase perceived approachability by 23% in social settings (Hemphill, 1996)."
+          },
+          {
+            "name": "Turquoise",
+            "hex": "#00BCD4",
+            "why": "Combines calming blue with energizing yellow. Lowers blood pressure while maintaining positive arousal — ideal for sustained happiness."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "La La Land (2016)",
+            "imdb": "8.0/10",
+            "why": "Musical celebration of dreams and joy; vibrant colors and music amplify existing positive state."
+          },
+          {
+            "type": "film",
+            "title": "Amélie (2001)",
+            "imdb": "8.3/10",
+            "why": "Whimsical French delight about creating happiness for others — mirrors joy's prosocial quality."
+          },
+          {
+            "type": "series",
+            "title": "Ted Lasso",
+            "imdb": "8.8/10",
+            "why": "Relentlessly optimistic coaching comedy; the warmest, most joy-affirming show on television."
+          },
+          {
+            "type": "series",
+            "title": "The Great British Bake Off",
+            "imdb": "8.6/10",
+            "why": "Warm, competitive, and wholesome — the emotional antithesis of toxic competition."
+          }
+        ],
+        "social": [
+          {
+            "item": "Call the friends who make you happy",
+            "why": "Happiness is amplified by emotional resonance — share with those who respond with active, constructive engagement."
+          },
+          {
+            "item": "Reach out to someone you haven't spoken to in a while",
+            "why": "Positive states reduce social anxiety; happy days are ideal for relationship maintenance and reconnection."
+          },
+          {
+            "item": "Surprise-visit a friend",
+            "why": "Group activities during positive states create shared memories that strengthen social bonds long-term."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Start learning a new skill",
+            "why": "Happy states expand cognitive breadth and are optimal for innovation and creative thinking (Ashby et al., 1999)."
+          },
+          {
+            "item": "Set a long-term goal",
+            "why": "Broaden-and-build cycle: positive emotions literally expand the vision of what's possible (Fredrickson, 2001)."
+          },
+          {
+            "item": "Express gratitude to someone",
+            "why": "Expressing gratitude during positive states creates lasting relational bonds and deepens meaning."
+          }
+        ]
+      },
+      "moderate": {
+        "spotify_playlists": [
+          {
+            "name": "Feel Good Friday",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX2MyUCsl25eb",
+            "description": "Weekend energy to ride your happiness wave",
+            "cover_emoji": "🎉"
+          },
+          {
+            "name": "Summer Hits",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DXaXB8fQg7xof",
+            "description": "High-energy seasonal anthems for peak joy",
+            "cover_emoji": "🌊"
+          }
+        ],
+        "food": [
+          {
+            "item": "Pizza or favorite meal with friends",
+            "why": "Celebratory eating with preferred foods reinforces the positive state and creates memory anchors."
+          },
+          {
+            "item": "Ice cream (your favorite flavor)",
+            "why": "Cold + sweet triggers rapid dopamine response; treat foods are amplified by joy state."
+          },
+          {
+            "item": "Smoothie bowl (colorful and nutrient-dense)",
+            "why": "Aesthetic food preparation increases mindful savoring; anthocyanins support continued dopaminergic activity."
+          }
+        ],
+        "places": {
+          "description": "Social venues and exciting spaces to celebrate your happiness",
+          "types": [
+            "concert venue",
+            "theme park",
+            "night market",
+            "beach",
+            "outdoor festival"
+          ],
+          "search_queries": [
+            "concert hall",
+            "amusement park",
+            "beach",
+            "night market"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Meet friends and celebrate",
+            "why": "Moderate joy is the optimal state for social bonding — connections made now are deeper and more lasting."
+          },
+          {
+            "item": "Plan a trip",
+            "why": "Anticipation of positive events extends happiness before they even occur (Gilbert, 2006)."
+          },
+          {
+            "item": "Go to a concert or event",
+            "why": "Shared positive experiences in crowds create collective joy amplification through emotional contagion."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Lime Green",
+            "hex": "#76FF03",
+            "why": "Nature green activates biophilic responses and promotes feelings of vitality and growth."
+          },
+          {
+            "name": "Hot Pink",
+            "hex": "#E91E8C",
+            "why": "High saturation pink energizes and signals playfulness — perfect amplifier for moderate joy."
+          },
+          {
+            "name": "Electric Blue",
+            "hex": "#2979FF",
+            "why": "Energizing yet stable — prevents joy from tipping into anxiety while amplifying positive arousal."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "The Secret Life of Walter Mitty (2013)",
+            "imdb": "7.3/10",
+            "why": "Inspiring adventure of self-discovery — perfect for riding moderate joy into motivation."
+          },
+          {
+            "type": "series",
+            "title": "Parks and Recreation",
+            "imdb": "8.6/10",
+            "why": "Feel-good comedy about passionate civic service; love for community mirrors moderate joy's social quality."
+          }
+        ],
+        "social": [
+          {
+            "item": "Organize a large gathering",
+            "why": "Group celebrations during moderate joy create collective memory anchors."
+          },
+          {
+            "item": "Share something positive on social media",
+            "why": "Sharing uplifts others and extends your own positive state through reciprocal validation."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Enroll in or start a challenging goal",
+            "why": "Moderate positive emotions literally expand cognitive scope — you see more possibilities and are more resilient to challenge."
+          },
+          {
+            "item": "Sign up for volunteer work",
+            "why": "Channeling peak positive energy into contribution creates eudaimonic happiness that outlasts hedonic pleasure."
+          }
+        ]
+      },
+      "intense": {
+        "spotify_playlists": [
+          {
+            "name": "Upbeat Workout",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX76Wlfdnj7AP",
+            "description": "Maximum energy for your peak moment",
+            "cover_emoji": "🔥"
+          },
+          {
+            "name": "Pop Rising",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWUa8ZRTfalHk",
+            "description": "Biggest hits riding the wave of pure elation",
+            "cover_emoji": "🚀"
+          }
+        ],
+        "food": [
+          {
+            "item": "Special celebration meal",
+            "why": "Milestone meals create lasting episodic memories that anchor positive identity for years."
+          },
+          {
+            "item": "Homemade cake or dessert",
+            "why": "Creating something celebratory extends engagement with the exceptional state."
+          }
+        ],
+        "places": {
+          "description": "Landmark experiences to match your peak joy",
+          "types": [
+            "rooftop restaurant",
+            "celebration venue",
+            "concert hall",
+            "scenic viewpoint"
+          ],
+          "search_queries": [
+            "rooftop restaurant",
+            "celebration venue",
+            "landmark viewpoint"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Organize a big celebration",
+            "why": "Collective joy amplifies individual joy exponentially — peak states deserve peak sharing."
+          },
+          {
+            "item": "Start something you have long dreamed of",
+            "why": "Peak positive states provide the activation energy for long-deferred dreams (Isen, 2001)."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Gold",
+            "hex": "#FFD700",
+            "why": "Gold symbolizes preciousness across all human cultures — activates implicit associations of being valued and celebrated."
+          },
+          {
+            "name": "Crimson",
+            "hex": "#D32F2F",
+            "why": "High-arousal red amplifies peak states; culturally universal signal of celebration and passion."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "Singin' in the Rain (1952)",
+            "imdb": "8.3/10",
+            "why": "Timeless peak musical joy — designed to produce the most infectious positive affect in cinema."
+          },
+          {
+            "type": "series",
+            "title": "Schitt's Creek",
+            "imdb": "8.5/10",
+            "why": "Multiple beautiful love stories and community joy — mirrors intense happiness's social and connective quality."
+          }
+        ],
+        "social": [
+          {
+            "item": "Reach out to the most important people in your life",
+            "why": "Peak joy shared with those who matter most creates the strongest relational memories."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Write down your biggest life goal and start it",
+            "why": "Peak joy creates the neurochemical conditions for maximum motivation and risk tolerance."
+          }
+        ]
+      }
+    },
+    "sadness": {
+      "mild": {
+        "spotify_playlists": [
+          {
+            "name": "Sad Songs",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX7qK8ma5wgG1",
+            "description": "Emotional ballads that hold space for your feelings",
+            "cover_emoji": "🌧️"
+          },
+          {
+            "name": "Life Sucks",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX3YSRoSdA634",
+            "description": "Raw, honest music for when things feel heavy",
+            "cover_emoji": "💧"
+          }
+        ],
+        "food": [
+          {
+            "item": "Warm chamomile tea",
+            "why": "Apigenin binds GABA receptors, producing anxiolytic effect. Warmth activates social safety circuits (IJzerman & Semin, 2009)."
+          },
+          {
+            "item": "Oatmeal + banana",
+            "why": "Complex carbs stabilize blood sugar; banana provides tryptophan — a direct serotonin precursor, clinically validated for mild low mood."
+          },
+          {
+            "item": "Dark chocolate",
+            "why": "Serotonin and endorphin release; small quantities effectively shift reward circuitry from loss to pleasure."
+          }
+        ],
+        "places": {
+          "description": "Calming, restorative spaces where you can breathe and reflect",
+          "types": [
+            "forest park",
+            "lakeside",
+            "quiet cafe",
+            "library",
+            "bookshop"
+          ],
+          "search_queries": [
+            "nature park",
+            "lakeside walk",
+            "quiet cafe",
+            "public library"
+          ]
+        },
+        "activities": [
+          {
+            "item": "15-minute walk in sunlight",
+            "why": "Sunlight boosts serotonin production and regulates circadian rhythm — proven antidepressant effect."
+          },
+          {
+            "item": "Write about your feelings for 10 minutes",
+            "why": "Expressive writing reduces amygdala reactivity; Pennebaker (1997) showed lasting mood improvement after just 3 sessions."
+          },
+          {
+            "item": "Do restorative yoga",
+            "why": "Activates parasympathetic nervous system; increases GABA — mild sadness responds strongly within single session."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Soft Coral Pink",
+            "hex": "#FF8A80",
+            "why": "Baker-Miller Pink has documented calming effects. Soft coral provides warmth without overstimulation — most dignifying shade for sadness."
+          },
+          {
+            "name": "Sage Green",
+            "hex": "#8BC34A",
+            "why": "Nature's most healing color. Green is processed without chromatic aberration, reducing eye strain — the physiological burden of sadness."
+          },
+          {
+            "name": "Warm Terracotta",
+            "hex": "#E64A19",
+            "why": "Earthy, grounded tones activate a sense of primal safety and belonging — evolutionary connotations of shelter and home."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "Inside Out (2015)",
+            "imdb": "8.1/10",
+            "why": "Validates the necessity and value of sadness itself — the only film designed to make you comfortable with this emotion."
+          },
+          {
+            "type": "film",
+            "title": "About Time (2013)",
+            "imdb": "7.8/10",
+            "why": "Bittersweet meditation on presence and love — teaches savoring without requiring forced positivity."
+          },
+          {
+            "type": "series",
+            "title": "After Life (Ricky Gervais)",
+            "imdb": "8.0/10",
+            "why": "Honest depiction of grief with moments of warmth; validates feeling without wallowing."
+          }
+        ],
+        "social": [
+          {
+            "item": "Message a trusted friend",
+            "why": "Social connection is the single strongest predictor of emotional recovery — even a brief message helps."
+          },
+          {
+            "item": "Be quietly around others rather than alone",
+            "why": "Social presence without social demand allows emotional processing without isolation."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Write a deep journal entry",
+            "why": "Sad states provide access to psychological material defended against in ordinary states — rich time for self-knowledge."
+          },
+          {
+            "item": "Do a self-compassion exercise",
+            "why": "Neff (2011): treating yourself as you'd treat a good friend in pain is more effective than self-esteem for navigating sadness."
+          }
+        ]
+      },
+      "moderate": {
+        "spotify_playlists": [
+          {
+            "name": "Sad Indie",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX59HcpNmPbT9",
+            "description": "Reflective indie tracks that sit with you in the grey",
+            "cover_emoji": "🌫️"
+          },
+          {
+            "name": "Dark & Stormy",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX6ALfRKlHn1t",
+            "description": "Deep introspection music for heavier moments",
+            "cover_emoji": "⛈️"
+          }
+        ],
+        "food": [
+          {
+            "item": "Salmon or tuna",
+            "why": "EPA/DHA omega-3s: meta-analysis of 13 RCTs shows antidepressant-comparable effects (Grosso et al., 2014)."
+          },
+          {
+            "item": "Warm chicken soup",
+            "why": "Warm liquid raises core temperature, mimicking social warmth's effect on belonging circuits."
+          },
+          {
+            "item": "Lentil soup",
+            "why": "Folate, iron, protein — nutritional deficiencies significantly worsen moderate depressive symptoms."
+          }
+        ],
+        "places": {
+          "description": "Nature and peaceful environments proven to reduce rumination",
+          "types": [
+            "forest walk",
+            "waterside",
+            "art museum",
+            "small garden",
+            "river path"
+          ],
+          "search_queries": [
+            "forest park hiking",
+            "riverside walk",
+            "art museum",
+            "botanical garden"
+          ]
+        },
+        "activities": [
+          {
+            "item": "20–30 minute brisk walk",
+            "why": "Aerobic exercise increases BDNF — functions like natural antidepressant. Single walk shifts neurochemistry."
+          },
+          {
+            "item": "Warm bath with lavender oil",
+            "why": "Combined thermotherapy + aromatherapy; lavender in RCTs reduces depressive symptoms within 20 minutes."
+          },
+          {
+            "item": "Have a voice call with someone you trust",
+            "why": "Verbal emotional expression reduces limbic activation more than written expression (James-Lange theory application)."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Dusty Blue",
+            "hex": "#78909C",
+            "why": "Honors the emotional state while dignifying it. Dusty blue says 'this is real' without deepening depression."
+          },
+          {
+            "name": "Warm Peach",
+            "hex": "#FFCCBC",
+            "why": "Skin-adjacent tones activate social safety perceptions at a pre-cognitive level — deeply reassuring to the saddened nervous system."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "The Shawshank Redemption (1994)",
+            "imdb": "9.3/10",
+            "why": "Hope against despair — emotionally cathartic without bypassing sadness; models resilience without toxic positivity."
+          },
+          {
+            "type": "series",
+            "title": "Normal People",
+            "imdb": "8.2/10",
+            "why": "Intense but beautiful exploration of love and sadness — validates complexity without resolution."
+          }
+        ],
+        "social": [
+          {
+            "item": "Talk to someone who has experienced similar pain",
+            "why": "Shared experience of sadness creates the deepest social communion — reduces isolating feeling that 'no one understands.'"
+          },
+          {
+            "item": "Go to someone who loves you",
+            "why": "Receiving care during sadness activates the attachment system — most direct neurological path from aloneness to belonging."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Seek a therapist or counselor",
+            "why": "CBT and IPT have the highest evidence base for moderate depressive states — professional support is advanced self-care."
+          },
+          {
+            "item": "Express yourself through art or music",
+            "why": "Art therapy meta-analyses show significant reduction in depression scores. Non-verbal expression accesses unreachable emotional material."
+          }
+        ]
+      },
+      "intense": {
+        "spotify_playlists": [
+          {
+            "name": "Peaceful Piano",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO",
+            "description": "Gentle piano to hold the weight of difficult emotions",
+            "cover_emoji": "🎹"
+          },
+          {
+            "name": "Classical for Relaxation",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWVFeEut75IAL",
+            "description": "Orchestral comfort for when words are not enough",
+            "cover_emoji": "🎻"
+          }
+        ],
+        "food": [
+          {
+            "item": "Warm milk + honey + cinnamon",
+            "why": "Tryptophan in milk; honey glucose aids brain transport. Traditional comfort food has biochemical basis."
+          },
+          {
+            "item": "Banana + peanut butter",
+            "why": "Tryptophan + healthy fat combination; eating is itself a self-care act when deeply sad."
+          }
+        ],
+        "places": {
+          "description": "Safe, comforting spaces for rest and gentle recovery",
+          "types": [
+            "cozy cafe",
+            "home",
+            "quiet park bench",
+            "chapel or peaceful space",
+            "library reading room"
+          ],
+          "search_queries": [
+            "cozy cafe",
+            "quiet park",
+            "peaceful garden",
+            "community center"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Let yourself cry — do not suppress it",
+            "why": "Emotional tears contain stress hormones including cortisol; crying is a physiological self-regulation mechanism."
+          },
+          {
+            "item": "Use a weighted blanket",
+            "why": "Deep pressure stimulation reduces cortisol and increases serotonin and dopamine — clinically studied intervention."
+          },
+          {
+            "item": "Seek professional support",
+            "why": "Intense or prolonged sadness beyond 2 weeks affecting daily function warrants professional support — not weakness."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Ivory White",
+            "hex": "#FFF8E1",
+            "why": "Maximum luminosity, minimum threat. Creates 'clean slate' cognitions that counter hopelessness patterns."
+          },
+          {
+            "name": "Lavender",
+            "hex": "#CE93D8",
+            "why": "Lavender's unique dual properties slightly energize while calming — prevents the flatness of purely cool colors."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "Eternal Sunshine of the Spotless Mind (2004)",
+            "imdb": "8.3/10",
+            "why": "Profound exploration of loss and memory — provides companionship in the deepest grief."
+          },
+          {
+            "type": "series",
+            "title": "Six Feet Under",
+            "imdb": "8.7/10",
+            "why": "Award-winning meditation on grief and meaning — the most honest portrayal of intense sadness on television."
+          }
+        ],
+        "social": [
+          {
+            "item": "Call your closest trusted person — now",
+            "why": "Co-regulation: nervous system calms faster in presence of a regulated, caring other."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Complete one small task",
+            "why": "Micro-accomplishments restore tiny amounts of self-efficacy which compound meaningfully over time."
+          }
+        ]
+      }
+    },
+    "anger": {
+      "mild": {
+        "spotify_playlists": [
+          {
+            "name": "Beast Mode",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWWjGdmHm4h6P",
+            "description": "Channel your energy into controlled power",
+            "cover_emoji": "⚡"
+          },
+          {
+            "name": "Metal Classics",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWWOaP4H0w5b0",
+            "description": "Heavy metal catharsis — matches anger to release it",
+            "cover_emoji": "🎸"
+          }
+        ],
+        "food": [
+          {
+            "item": "Cold water (large glass)",
+            "why": "Hydration reduces physical arousal; cold temperature activates dive reflex, slowing heart rate within seconds."
+          },
+          {
+            "item": "Crunchy carrots or celery",
+            "why": "Crunching provides physical outlet for jaw tension; magnesium in vegetables reduces arousal response."
+          },
+          {
+            "item": "Green tea (for L-theanine)",
+            "why": "L-theanine promotes alpha brainwave activity — calm alertness without the sedation that prevents functional resolution."
+          }
+        ],
+        "places": {
+          "description": "Open, energetic spaces to move and metabolize anger",
+          "types": [
+            "gym",
+            "running track",
+            "forest trail",
+            "open hilltop",
+            "sports court"
+          ],
+          "search_queries": [
+            "gym fitness center",
+            "running trail",
+            "sports court",
+            "hiking trail"
+          ]
+        },
+        "activities": [
+          {
+            "item": "10-minute fast walk or run",
+            "why": "Physical movement metabolizes adrenaline and cortisol that sustain anger. 90-second rule: neurochemical anger lasts only 90 seconds without rumination."
+          },
+          {
+            "item": "4-7-8 breathing exercise",
+            "why": "Extended exhale activates vagus nerve; parasympathetic activation interrupts anger within 90 seconds."
+          },
+          {
+            "item": "Submerge your face in cold water",
+            "why": "Mammalian dive reflex: cold water on face reduces heart rate up to 25% within seconds — fastest physiological intervention."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Calm Navy Blue",
+            "hex": "#1565C0",
+            "why": "Blue is the most physiologically calming color. Navy rooms shown to reduce heart rate and cortisol within minutes of exposure."
+          },
+          {
+            "name": "Forest Green",
+            "hex": "#2E7D32",
+            "why": "Deep natural green activates parasympathetic system. In studies, green environments reduced aggressive behavior by 30%."
+          },
+          {
+            "name": "Stone Gray",
+            "hex": "#78909C",
+            "why": "Neutral gray creates psychological distance from anger's heat — ego-stabilizing and proprioceptively calming."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "The Dark Knight (2008)",
+            "imdb": "9.0/10",
+            "why": "Channels moral rage into principled action — models transforming anger into meaningful force."
+          },
+          {
+            "type": "series",
+            "title": "Breaking Bad",
+            "imdb": "9.5/10",
+            "why": "Study of what happens when anger and pride go unchecked — cathartically warns against the very state you're in."
+          }
+        ],
+        "social": [
+          {
+            "item": "Do NOT contact the person you are angry at yet",
+            "why": "Hot cognition impairs perspective-taking. The 90-second rule: wait until physiological anger has fully subsided."
+          },
+          {
+            "item": "Call a calm friend — just to be heard",
+            "why": "Seek presence, not vengeance-validation. Friends who agree amplify rather than regulate anger."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Write down which of your values or boundaries was violated",
+            "why": "Anger is always a signal of a violated value or need. Identifying it converts reactive emotion to actionable information."
+          },
+          {
+            "item": "Research assertiveness training",
+            "why": "Chronic anger often accumulates in people who have difficulty expressing boundaries — assertiveness is the preventive skill."
+          }
+        ]
+      },
+      "moderate": {
+        "spotify_playlists": [
+          {
+            "name": "Rage",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWVTrNgIUMBIk",
+            "description": "High-intensity release music for moderate anger",
+            "cover_emoji": "🌋"
+          },
+          {
+            "name": "Workout Beats",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWZq91oLsHZvy",
+            "description": "Channel anger into physical power",
+            "cover_emoji": "💪"
+          }
+        ],
+        "food": [
+          {
+            "item": "Ice cold water — immediately",
+            "why": "Cold water interrupts acute anger arousal cycle physiologically."
+          },
+          {
+            "item": "Dark chocolate (small piece)",
+            "why": "Phenylethylamine and endorphins counter anger's stress chemistry."
+          },
+          {
+            "item": "Oatmeal",
+            "why": "Complex carbs support serotonin synthesis which counteracts anger's dopaminergic dominance."
+          }
+        ],
+        "places": {
+          "description": "High-energy spaces to safely metabolize intense anger",
+          "types": [
+            "boxing gym",
+            "kickboxing studio",
+            "hammam/spa",
+            "rocky coastline",
+            "mountain trail"
+          ],
+          "search_queries": [
+            "boxing gym",
+            "hammam spa",
+            "mountain trail",
+            "sports facility"
+          ]
+        },
+        "activities": [
+          {
+            "item": "30-minute intense run or sport",
+            "why": "Most reliable anger regulator: aerobic exercise metabolizes cortisol and adrenaline completely."
+          },
+          {
+            "item": "Write it all out (do not send!)",
+            "why": "Uninhibited anger writing reduces limbic activation; not sending preserves relationships — catharsis with zero collateral."
+          },
+          {
+            "item": "Kickboxing or boxing training",
+            "why": "Structured physical aggression metabolizes anger hormones. Research: metal music listeners have better acute anger regulation."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Cool Lavender",
+            "hex": "#9575CD",
+            "why": "Unique dual properties: violet slightly energizes while blue calms. Prevents flatness while cooling moderate anger."
+          },
+          {
+            "name": "Teal",
+            "hex": "#009688",
+            "why": "Balance between blue's calm and green's energy — ideal for maintaining functionality while cooling moderate anger."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "Parasite (2019)",
+            "imdb": "8.5/10",
+            "why": "Transforms class anger into riveting cinema — validates the emotion while providing narrative distance from personal triggers."
+          },
+          {
+            "type": "series",
+            "title": "The Wire",
+            "imdb": "9.3/10",
+            "why": "Righteous anger at systemic failure beautifully examined — channels frustration into systemic thinking."
+          }
+        ],
+        "social": [
+          {
+            "item": "Go for sports or a walk — with a friend",
+            "why": "Physical co-regulation with a friend provides metabolic catharsis plus social support — dual regulation mechanism."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Learn Nonviolent Communication (NVC)",
+            "why": "Rosenberg (2003): NVC converts anger into productive boundary expression — the language of needs rather than accusations."
+          },
+          {
+            "item": "Develop conflict resolution skills",
+            "why": "Conflict resolution is a learnable skill. Invest in the skill, not just the venting of the feeling."
+          }
+        ]
+      },
+      "intense": {
+        "spotify_playlists": [
+          {
+            "name": "Hard Rock Workout",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX76t638V6CA8",
+            "description": "Maximum intensity to match and release peak anger",
+            "cover_emoji": "🔥"
+          },
+          {
+            "name": "Anger Management",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DXdwmD5Q7Gvdp",
+            "description": "Then: calm ambient transition after the storm",
+            "cover_emoji": "🌪️"
+          }
+        ],
+        "food": [
+          {
+            "item": "Hold an ice cube (in hand)",
+            "why": "Intense cold interrupts anger loop by triggering competing cold signal — immediate physiological interrupt."
+          },
+          {
+            "item": "Cold water — small sips",
+            "why": "Slow deliberate drinking interrupts anger behavior pattern and shifts focus."
+          }
+        ],
+        "places": {
+          "description": "Isolation and physical release spaces for peak anger",
+          "types": [
+            "empty gym",
+            "running track",
+            "open field",
+            "private space",
+            "cold shower"
+          ],
+          "search_queries": [
+            "gym 24 hour",
+            "open running track",
+            "sports complex"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Stay alone in a safe place",
+            "why": "Removing social context reduces risk of relationship damage during peak anger state."
+          },
+          {
+            "item": "Sprint or maximum physical exertion",
+            "why": "Maximum physical exertion is the fastest way to metabolize acute anger hormones completely."
+          },
+          {
+            "item": "Box breathing: 4-4-4-4 — do it now",
+            "why": "Fastest non-pharmacological autonomic regulator. Used in emergency medicine and by Navy SEALs."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Ice Blue",
+            "hex": "#B3E5FC",
+            "why": "The coldest, most physiologically calming color available. Maximum cooling effect for peak anger state."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "Mad Max: Fury Road (2015)",
+            "imdb": "8.1/10",
+            "why": "Kinetic, visceral — safely processes aggressive energy through vicarious action at maximum intensity."
+          }
+        ],
+        "social": [
+          {
+            "item": "Remove yourself from everyone — now",
+            "why": "At peak anger, prefrontal cortex is significantly less active. Most important intervention: create time and space before any contact."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Consider schema therapy or professional support",
+            "why": "If same situations repeatedly trigger disproportionate anger, schema-level work can permanently reduce chronic irritability."
+          }
+        ]
+      }
+    },
+    "fear": {
+      "mild": {
+        "spotify_playlists": [
+          {
+            "name": "Deep Focus",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWZeKCadgRdKQ",
+            "description": "Calm instrumental focus to ground your mind",
+            "cover_emoji": "🧘"
+          },
+          {
+            "name": "Nature Sounds",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX4PP3DA4J0N8",
+            "description": "Restorative natural soundscapes for the anxious mind",
+            "cover_emoji": "🌿"
+          }
+        ],
+        "food": [
+          {
+            "item": "Chamomile tea",
+            "why": "Apigenin binds GABA receptors, producing mild anxiolytic effect comparable to low-dose benzodiazepines."
+          },
+          {
+            "item": "Green tea (for L-theanine)",
+            "why": "L-theanine promotes alpha brainwave activity — calm alertness without drowsiness."
+          },
+          {
+            "item": "Avocado + spinach",
+            "why": "Magnesium-rich; deficiency is directly linked to heightened anxiety sensitivity and panic threshold."
+          }
+        ],
+        "places": {
+          "description": "Safe, familiar environments that signal security to the nervous system",
+          "types": [
+            "favorite park",
+            "local cafe",
+            "community center",
+            "botanical garden",
+            "familiar neighborhood"
+          ],
+          "search_queries": [
+            "peaceful park",
+            "botanical garden",
+            "community center",
+            "quiet cafe"
+          ]
+        },
+        "activities": [
+          {
+            "item": "4-7-8 breathing exercise",
+            "why": "Slow exhalation activates vagus nerve; parasympathetic activation within 2-3 breaths (Jerath et al., 2006)."
+          },
+          {
+            "item": "5-4-3-2-1 grounding exercise",
+            "why": "Identify 5 seen, 4 heard, 3 touched, 2 smelled, 1 tasted — redirects attention from threat anticipation to present reality."
+          },
+          {
+            "item": "Aromatherapy with lavender oil",
+            "why": "Lavender in multiple RCTs reduces state anxiety within 10 minutes — one of the most replicated natural interventions."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Soft Baby Blue",
+            "hex": "#B3E5FC",
+            "why": "Lightest blues most effectively activate the parasympathetic system — signals safety at pre-cognitive level."
+          },
+          {
+            "name": "Warm Peach",
+            "hex": "#FFCCBC",
+            "why": "Skin-adjacent tones activate social safety perceptions — deeply reassuring to the fear-aroused nervous system."
+          },
+          {
+            "name": "Pale Yellow",
+            "hex": "#FFF9C4",
+            "why": "Low-saturation yellow provides luminosity without overstimulating already-hyperaroused systems."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "My Neighbor Totoro (1988)",
+            "imdb": "8.2/10",
+            "why": "Gentle, safe, magical — specifically designed to reset nervous system through pure warmth and wonder."
+          },
+          {
+            "type": "series",
+            "title": "The Good Place",
+            "imdb": "8.2/10",
+            "why": "Light, philosophical and deeply reassuring about morality and meaning — optimal safe comfort viewing."
+          }
+        ],
+        "social": [
+          {
+            "item": "Call the person you trust most",
+            "why": "Hearing a familiar calm voice activates the safe social engagement system (Polyvagal Theory: ventral vagal)."
+          },
+          {
+            "item": "Have a voice call — not text",
+            "why": "Voice contact with a safe person reduces acute fear faster than text — prosodic cues signal safety at biological level."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Write out your fear to make it concrete",
+            "why": "Writing externalizes internal threats; research shows writing reduces catastrophizing by making fear concrete and bounded."
+          },
+          {
+            "item": "Research the actual statistics about your fear",
+            "why": "Cognitive therapy: fear almost always overestimates probability of threat. Research shows actual base rates."
+          }
+        ]
+      },
+      "moderate": {
+        "spotify_playlists": [
+          {
+            "name": "Peace",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX1s9knjP51Oa",
+            "description": "Tranquil ambient music to calm moderate anxiety",
+            "cover_emoji": "🕊️"
+          },
+          {
+            "name": "Meditation",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWZd79rJ6a7lp",
+            "description": "Breath-paced meditation music for the anxious mind",
+            "cover_emoji": "🌙"
+          }
+        ],
+        "food": [
+          {
+            "item": "Warm linden tea + honey",
+            "why": "Linden has mild anxiolytic properties; honey's glucose provides immediate brain fuel for anxious mental activity."
+          },
+          {
+            "item": "Magnesium-rich foods (pumpkin seeds, spinach)",
+            "why": "Magnesium deficiency worsens anxiety; pumpkin seeds and spinach are the most bioavailable food sources."
+          },
+          {
+            "item": "Probiotic kefir",
+            "why": "Lactobacillus rhamnosus shown to reduce anxiety in human trials — gut microbiome modulates HPA stress axis."
+          }
+        ],
+        "places": {
+          "description": "Gentle nature and comforting spaces for anxious recovery",
+          "types": [
+            "duck pond park",
+            "gentle woodland",
+            "home garden",
+            "soft-lit cafe",
+            "library"
+          ],
+          "search_queries": [
+            "peaceful park nature",
+            "garden cafe",
+            "library",
+            "quiet park"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Guided meditation (10–20 minutes)",
+            "why": "MBSR has the strongest evidence base for anxiety reduction across all non-pharmacological interventions."
+          },
+          {
+            "item": "30-minute moderate-pace exercise",
+            "why": "Moderate aerobic exercise reduces anxiety symptoms as effectively as medication in several controlled trials."
+          },
+          {
+            "item": "Use a weighted blanket",
+            "why": "Deep pressure stimulation reduces cortisol and increases serotonin; clinically studied for anxiety disorders."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Warm White",
+            "hex": "#FFF8E1",
+            "why": "Maximum luminosity, minimum threat. Activates 'clean slate' cognitions that counter anxious catastrophizing patterns."
+          },
+          {
+            "name": "Dusty Blue",
+            "hex": "#78909C",
+            "why": "Blue's calming with gray's grounding — dignifies anxiety without reinforcing it."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "Paddington (2014)",
+            "imdb": "7.3/10",
+            "why": "Deeply comforting, safe and kind — precisely the emotional register needed for moderate fear reduction."
+          },
+          {
+            "type": "series",
+            "title": "Planet Earth (BBC)",
+            "imdb": "9.4/10",
+            "why": "Awe-inducing nature footage transitions fear to wonder through vastness and beauty."
+          }
+        ],
+        "social": [
+          {
+            "item": "Tell someone your fear — out loud",
+            "why": "Voicing fear to a trusted other is one of the most effective fear-reduction strategies — hippocampus updates threat assessment."
+          },
+          {
+            "item": "Be physically present with the person who calms you",
+            "why": "Physical co-presence with a calm other is physiologically the fastest anxiety reducer."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Build a fear hierarchy and approach it step by step",
+            "why": "Gold-standard CBT: systematic graduated approach to feared stimuli — each approach reduces future fear (exposure hierarchy)."
+          },
+          {
+            "item": "Set a daily 'worry window' (20 minutes)",
+            "why": "Designating worry time reduces hypervigilance and trains the brain to contain rather than suppress fear."
+          }
+        ]
+      },
+      "intense": {
+        "spotify_playlists": [
+          {
+            "name": "Classical for Relaxation",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWVFeEut75IAL",
+            "description": "Predictable, safe orchestral music for peak fear",
+            "cover_emoji": "🎼"
+          },
+          {
+            "name": "White Noise & Ambience",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWTLSN7iG21kG",
+            "description": "Continuous safe sound to mask unpredictable triggers",
+            "cover_emoji": "🌊"
+          }
+        ],
+        "food": [
+          {
+            "item": "Small sips of cold water",
+            "why": "Slow deliberate drinking provides something concrete to focus on during acute fear — grounds attention."
+          },
+          {
+            "item": "Hold an ice cube (in your hand)",
+            "why": "Intense cold interrupts panic loop by competing with it for sensory attention — clinical TIPP technique."
+          }
+        ],
+        "places": {
+          "description": "Your safest, most familiar spaces only — no novelty during peak fear",
+          "types": [
+            "home",
+            "trusted friend's home",
+            "quiet familiar space"
+          ],
+          "search_queries": [
+            "home",
+            "trusted space"
+          ]
+        },
+        "activities": [
+          {
+            "item": "BOX BREATHING: inhale 4 — hold 4 — exhale 4 — hold 4",
+            "why": "Used in Navy SEALs and emergency rooms — fastest clinical autonomic regulator available without medication."
+          },
+          {
+            "item": "Submerge your face in cold water — 30 seconds",
+            "why": "Dive reflex activation: fastest non-pharmacological heart rate reducer. Clinically used for panic attacks."
+          },
+          {
+            "item": "Call someone you trust — immediately",
+            "why": "Voice contact with a safe person reduces acute fear faster than any solo regulation technique."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Ivory White",
+            "hex": "#FFF8E1",
+            "why": "Maximum safety signal. White universally reduces threat appraisal and activates clean-slate cognitions."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "series",
+            "title": "Brooklyn Nine-Nine",
+            "imdb": "8.4/10",
+            "why": "Warm comedy creating total atmosphere of safety — absolute opposite of threat. Physiologically de-escalating."
+          }
+        ],
+        "social": [
+          {
+            "item": "Call the person you trust most right now",
+            "why": "At peak fear, attachment figure activation is the most powerful physiological regulator available."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "For recurring intense fear: research CBT panic protocol",
+            "why": "CBT for panic disorder has 80%+ success rate — most evidence-based treatment for recurring intense fear."
+          }
+        ]
+      }
+    },
+    "love": {
+      "mild": {
+        "spotify_playlists": [
+          {
+            "name": "Acoustic Love",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX9xiNkB9tzZt",
+            "description": "Soft acoustic ballads to nurture tender feelings",
+            "cover_emoji": "🌹"
+          },
+          {
+            "name": "Timeless Love Songs",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWXnj6nqeniqP",
+            "description": "Classic love songs across eras — the soundtrack of the heart",
+            "cover_emoji": "💕"
+          }
+        ],
+        "food": [
+          {
+            "item": "Dark chocolate",
+            "why": "Phenylethylamine — the 'love chemical' — is naturally present in cacao. Directly mimics attraction neurochemistry."
+          },
+          {
+            "item": "Strawberries",
+            "why": "Associated with romance across cultures; vitamin C supports cardiovascular health and energy for connection."
+          },
+          {
+            "item": "Honey yogurt",
+            "why": "Sweetness + richness mirrors emotional warmth; honey has cross-cultural love associations in all major traditions."
+          }
+        ],
+        "places": {
+          "description": "Warm, intimate settings to deepen connection and tenderness",
+          "types": [
+            "romantic cafe",
+            "flower garden",
+            "waterside walk",
+            "cozy restaurant",
+            "museum"
+          ],
+          "search_queries": [
+            "romantic restaurant",
+            "flower garden",
+            "waterside cafe",
+            "art museum"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Leave a handwritten note for someone you love",
+            "why": "Handwritten notes activate more emotional circuits than digital messages — tangibility signals effort and care."
+          },
+          {
+            "item": "Cook together",
+            "why": "Collaborative creation is one of the highest-quality bonding activities; shared goal increases oxytocin."
+          },
+          {
+            "item": "Hug for 20 seconds",
+            "why": "A 20-second hug floods both people with oxytocin and measurably reduces cortisol in both bodies."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Blush Pink",
+            "hex": "#F8BBD9",
+            "why": "Activates nurturing care responses. Pink environments decrease aggressive behavior and increase tenderness (Schauss, 1979)."
+          },
+          {
+            "name": "Deep Rose Red",
+            "hex": "#E91E63",
+            "why": "Red enhances romantic attraction — Elliot & Niesta (2008) across 7 experiments confirmed the landmark 'red effect.'"
+          },
+          {
+            "name": "Warm Gold",
+            "hex": "#FFC107",
+            "why": "Gold activates implicit associations of preciousness and being valued — universally recognized across all human cultures."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "When Harry Met Sally (1989)",
+            "imdb": "7.7/10",
+            "why": "Definitive romantic comedy — explores how friendship becomes love; mirrors the warm, familiar quality of mild love."
+          },
+          {
+            "type": "series",
+            "title": "Outlander",
+            "imdb": "8.4/10",
+            "why": "Sweeping historical romance series — the most committed love story in prestige television."
+          }
+        ],
+        "social": [
+          {
+            "item": "Directly express your feelings to the person you love",
+            "why": "Love unexpressed creates emotional distance. Both giving and receiving direct love expressions increase relationship satisfaction."
+          },
+          {
+            "item": "Call someone who loves you — right now",
+            "why": "Love state is optimal for deepening existing bonds rather than forming new ones — invest in depth."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Practice loving-kindness meditation",
+            "why": "Metta meditation literally enlarges the capacity for love and reduces implicit bias (Hutcherson et al., 2008)."
+          },
+          {
+            "item": "Research your attachment style",
+            "why": "Understanding your attachment style provides a map for becoming a more secure, loving partner and friend."
+          }
+        ]
+      },
+      "moderate": {
+        "spotify_playlists": [
+          {
+            "name": "Dinner Party Jazz",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWVs1hJ52k9hn",
+            "description": "Intimate jazz for close connection and warmth",
+            "cover_emoji": "🕯️"
+          },
+          {
+            "name": "Love Pop",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWZxD1wheZGx9",
+            "description": "Romantic pop hits to soundtrack your love",
+            "cover_emoji": "❤️"
+          }
+        ],
+        "food": [
+          {
+            "item": "Strawberries + dark chocolate",
+            "why": "Classic romance combination: phenylethylamine mirrors love neurochemistry; vitamin C supports cardiovascular function."
+          },
+          {
+            "item": "Special dinner",
+            "why": "Shared meals create the strongest relationship memories — communal eating is humanity's oldest bonding ritual."
+          }
+        ],
+        "places": {
+          "description": "Memorable, romantic experiences for deepening love",
+          "types": [
+            "rooftop restaurant",
+            "sunset viewpoint",
+            "romantic garden",
+            "intimate concert",
+            "couples cooking class"
+          ],
+          "search_queries": [
+            "rooftop restaurant romantic",
+            "sunset viewpoint",
+            "romantic garden",
+            "cooking class"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Stargaze together",
+            "why": "Shared awe + physical proximity + silence creates profound intimacy. Awe experiences deepen love (Keltner, 2023)."
+          },
+          {
+            "item": "Truly and actively listen to your partner",
+            "why": "Active listening is the most powerful intimacy builder — Gottman's research shows it predicts relationship quality."
+          },
+          {
+            "item": "Slow dance together",
+            "why": "Physical synchrony through dance is one of the strongest bonding activities — 'muscle bonding' increases mutual attraction."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Deep Burgundy",
+            "hex": "#880E4F",
+            "why": "Communicates seriousness of feeling — 'this is not superficial.' Physiologically stimulating without the alarm of pure red."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "Pride and Prejudice (2005)",
+            "imdb": "7.8/10",
+            "why": "Literary romance at its most satisfying — models love as slow, earned, and profound."
+          },
+          {
+            "type": "series",
+            "title": "Normal People",
+            "imdb": "8.2/10",
+            "why": "The most honest portrayal of young love on television — mirrors the vulnerability of moderate love."
+          }
+        ],
+        "social": [
+          {
+            "item": "Try something new together",
+            "why": "Novel shared experiences increase dopamine in both partners — Aron et al. (2000): novelty renews love."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Read about Love Languages and discover yours",
+            "why": "Chapman's framework: love as skillful action, not just feeling. Expressing love in the other's language is learnable."
+          }
+        ]
+      },
+      "intense": {
+        "spotify_playlists": [
+          {
+            "name": "Romantic Evening",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX4E3UdUs7fUx",
+            "description": "Peak romance playlist for intense, passionate love",
+            "cover_emoji": "🌹"
+          },
+          {
+            "name": "Soul Music Classics",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWYkaDif7Ztbp",
+            "description": "Deep soul designed to express the full emotional range of love",
+            "cover_emoji": "🎷"
+          }
+        ],
+        "food": [
+          {
+            "item": "Special celebration meal",
+            "why": "Peak love deserves peak celebration; milestone meals anchor positive relational identity."
+          },
+          {
+            "item": "Homemade dessert or cake",
+            "why": "Creative love expression at peak intensity — time and effort communicate value beyond words."
+          }
+        ],
+        "places": {
+          "description": "Peak romantic experiences to match intense love's depth",
+          "types": [
+            "special destination restaurant",
+            "scenic private spot",
+            "live music venue",
+            "meaningful place for you both"
+          ],
+          "search_queries": [
+            "special romantic restaurant",
+            "scenic overlook",
+            "live music venue"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Express your deep feelings with vulnerability",
+            "why": "Vulnerability during positive states reduces fear of judgment — Brown (2010): vulnerability is prerequisite for deepest love."
+          },
+          {
+            "item": "Create a big shared memory together",
+            "why": "Peak love states create the strongest episodic memories — consciously document them."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Crimson Red",
+            "hex": "#B71C1C",
+            "why": "The universal signal of passionate love — peak physiological arousal color that matches the intensity of the state."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "Casablanca (1942)",
+            "imdb": "8.5/10",
+            "why": "Timeless peak love story with depth and sacrifice — the gold standard of cinema's treatment of intense love."
+          }
+        ],
+        "social": [
+          {
+            "item": "Express your deep feelings to someone important — today",
+            "why": "Peak love states provide the courage for vulnerability that ordinary states inhibit. Act now."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Read Brené Brown on vulnerability",
+            "why": "Vulnerability is the prerequisite for the deepest form of love and belonging — the most important love skill."
+          }
+        ]
+      }
+    },
+    "surprise": {
+      "mild": {
+        "spotify_playlists": [
+          {
+            "name": "Discover Weekly",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M",
+            "description": "Your personalized new music discoveries — perfect for surprise's openness",
+            "cover_emoji": "🔭"
+          },
+          {
+            "name": "Fresh Finds",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX2pSTOxoPbx9",
+            "description": "Emerging independent artists — embrace the unknown",
+            "cover_emoji": "✨"
+          }
+        ],
+        "food": [
+          {
+            "item": "Try a new flavor or food",
+            "why": "Novelty matches the surprise state; trying something new during surprise encodes positive memory — capitalize on openness."
+          },
+          {
+            "item": "Exotic fruit (kiwi, mango, papaya)",
+            "why": "Unusual yet refreshing; novelty of familiar-yet-different is cognitively satisfying during surprise state."
+          },
+          {
+            "item": "A snack from a different cuisine",
+            "why": "Cultural novelty extends surprise state's openness to new experience (Kashdan & Steger, 2007)."
+          }
+        ],
+        "places": {
+          "description": "Novel environments to extend surprise's curiosity window",
+          "types": [
+            "unfamiliar neighborhood",
+            "international food hall",
+            "interactive museum",
+            "pop-up market",
+            "new gallery"
+          ],
+          "search_queries": [
+            "interactive museum",
+            "international food market",
+            "contemporary art gallery",
+            "pop-up market"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Immediately follow the curiosity that surprise brings",
+            "why": "Surprise opens a brief window of cognitive openness — dopamine is specifically released at moments of surprise."
+          },
+          {
+            "item": "Make a spontaneous decision",
+            "why": "Surprise state reduces overthinking; spontaneous decisions made during surprise are often the most honest."
+          },
+          {
+            "item": "Walk somewhere you have never been before",
+            "why": "Embodied novelty-seeking creates positive feedback loop of curiosity and discovery (Berlyne, 1971)."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Electric Teal",
+            "hex": "#00BFA5",
+            "why": "Combines alertness of blue with energy of green — associated with creative thinking and openness to new experiences."
+          },
+          {
+            "name": "Vivid Orange",
+            "hex": "#FF6D00",
+            "why": "High-saturation orange activates approach motivation and excitement — mirrors the high-arousal quality of surprise."
+          },
+          {
+            "name": "Bright White",
+            "hex": "#F5F5F5",
+            "why": "'Blank canvas' effect — visual openness mirrors cognitive openness. Paradoxically stimulating in its minimalism."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "Inception (2010)",
+            "imdb": "8.8/10",
+            "why": "Mind-bending narrative mirrors the 'what just happened?' quality of surprise — extends cognitive openness."
+          },
+          {
+            "type": "series",
+            "title": "Black Mirror",
+            "imdb": "8.8/10",
+            "why": "Consistently surprising technology morality tales — each episode uses the surprise window for deep reflection."
+          }
+        ],
+        "social": [
+          {
+            "item": "Share the surprise with someone — now",
+            "why": "Surprise shared is surprise doubled. Social transmission of surprising information is how communities update world models."
+          },
+          {
+            "item": "Talk to someone from a different culture or background",
+            "why": "Surprise opens mind to genuine otherness — cross-cultural conversations during surprise produce the most fruitful exchanges."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Reflect and write about why you did not expect this",
+            "why": "Metafeedback on your own surprise calibration builds epistemic awareness — improves future pattern recognition."
+          },
+          {
+            "item": "Research something you have long been curious about",
+            "why": "Surprise neuroplasticity window: surprised brain is maximally open to new information and long-term retention."
+          }
+        ]
+      },
+      "moderate": {
+        "spotify_playlists": [
+          {
+            "name": "New Music Friday",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX4JAvHpjipBk",
+            "description": "Weekly new releases to match your curious, open state",
+            "cover_emoji": "🎵"
+          },
+          {
+            "name": "Jazz Fusion",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DXdwmD5Q7Gvdp",
+            "description": "Unexpected harmonic progressions mirror the state of surprise",
+            "cover_emoji": "🎺"
+          }
+        ],
+        "food": [
+          {
+            "item": "Japanese, Korean, or Mexican snacks",
+            "why": "International snacks combine novelty + accessibility — perfect surprise state food."
+          },
+          {
+            "item": "Mochi ice cream",
+            "why": "Unusual texture + unexpected temperature combination mirrors surprise's distinctive quality."
+          }
+        ],
+        "places": {
+          "description": "Active exploration to maximize surprise's learning window",
+          "types": [
+            "escape room",
+            "science museum",
+            "cultural district",
+            "innovative restaurant",
+            "street art area"
+          ],
+          "search_queries": [
+            "escape room",
+            "science museum",
+            "cultural center",
+            "innovative restaurant"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Learn something immediately — related to what surprised you",
+            "why": "Surprise primes brain for learning; information absorbed now is better retained (elevated dopamine enhances memory consolidation)."
+          },
+          {
+            "item": "Join an improv or theater workshop",
+            "why": "Improv directly trains responsiveness to the unexpected — the core cognitive challenge of a surprised state."
+          },
+          {
+            "item": "Write 50 wild ideas in 10 minutes",
+            "why": "Surprised brain has loosened cognitive constraints — optimal time for radical ideation and creative breakthrough."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Chartreuse",
+            "hex": "#C6FF00",
+            "why": "Most attention-capturing color in human vision (peak cone sensitivity). Wear it to stay at center of activity."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "Everything Everywhere All at Once (2022)",
+            "imdb": "7.8/10",
+            "why": "Wild, surprising multiverse adventure — maximizes the cognitive openness window of moderate surprise."
+          },
+          {
+            "type": "series",
+            "title": "Westworld (Season 1)",
+            "imdb": "9.0/10",
+            "why": "Every episode redefines what you thought you knew — the most systematically surprising prestige series."
+          }
+        ],
+        "social": [
+          {
+            "item": "Surprise someone else",
+            "why": "Prosocial extension of surprise state creates connection and shared joy — altruism amplifies positive arousal."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Question something you have long believed to be true",
+            "why": "Surprise is the emotion that most naturally facilitates belief revision. Ask: 'What if I am wrong about X?'"
+          }
+        ]
+      },
+      "intense": {
+        "spotify_playlists": [
+          {
+            "name": "Epic Cinematic",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX7K31D69s4M1",
+            "description": "Dramatic orchestral intensity to match intense surprise",
+            "cover_emoji": "🎬"
+          },
+          {
+            "name": "Eclectic Playlist",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX0hvSv9Rf41p",
+            "description": "Complete unpredictability to match and extend intense surprise",
+            "cover_emoji": "🔀"
+          }
+        ],
+        "food": [
+          {
+            "item": "Strong coffee or tea",
+            "why": "Cognitive arousal matches intensity of surprise state — sustains the processing energy needed."
+          },
+          {
+            "item": "Water — drink immediately",
+            "why": "Intense surprise triggers mild adrenaline release; hydration supports processing."
+          }
+        ],
+        "places": {
+          "description": "Vast, perspective-giving spaces to integrate intense surprise",
+          "types": [
+            "observation tower",
+            "planetarium",
+            "science museum",
+            "high viewpoint"
+          ],
+          "search_queries": [
+            "observation tower",
+            "planetarium",
+            "science center",
+            "viewpoint"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Take a deep breath and feel your whole body",
+            "why": "Intense surprise disrupts breathing; conscious breath re-integrates the experience somatically."
+          },
+          {
+            "item": "Take a photo or record it — now",
+            "why": "Intense surprise creates the strongest episodic memories; documenting anchors them permanently."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Deep Indigo",
+            "hex": "#1A237E",
+            "why": "Deep blue-violet mirrors the vastness experienced during intense surprise — supports cognitive reorientation."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "film",
+            "title": "Arrival (2016)",
+            "imdb": "7.9/10",
+            "why": "Surprising non-linear narrative about time and language — perfect for processing intense cognitive surprise."
+          }
+        ],
+        "social": [
+          {
+            "item": "You need someone to process this with — talk to them",
+            "why": "Intense surprise benefits from social sensemaking — shared processing reduces cognitive overwhelm."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Reflect on how you were wrong — update your belief map",
+            "why": "Intense surprise triggers a neurological reset. How you respond in the minutes after determines whether it becomes growth."
+          }
+        ]
+      }
+    },
+    "neutral": {
+      "mild": {
+        "spotify_playlists": [
+          {
+            "name": "Lo-Fi Beats",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn",
+            "description": "Gentle background music for focused, neutral days",
+            "cover_emoji": "☕"
+          },
+          {
+            "name": "Atmospheric Calm",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX4E3UdUs7fUx",
+            "description": "Ambient soundscapes for balanced, centered presence",
+            "cover_emoji": "🌿"
+          }
+        ],
+        "food": [
+          {
+            "item": "Balanced plate (protein + vegetables + carbohydrates)",
+            "why": "Nutritional completeness supports stable mood maintenance — neutral is ideal time to nourish baseline function."
+          },
+          {
+            "item": "Green tea",
+            "why": "L-theanine supports calm focus; gentle caffeine maintains alertness without anxiety."
+          },
+          {
+            "item": "Avocado toast",
+            "why": "Healthy fat + complex carb — sustained energy without blood sugar swings that disrupt neutral baseline."
+          }
+        ],
+        "places": {
+          "description": "Comfortable, purposeful spaces for productive neutral days",
+          "types": [
+            "coffee shop for working",
+            "library",
+            "local park walk",
+            "bookshop",
+            "community space"
+          ],
+          "search_queries": [
+            "coffee shop wifi",
+            "library",
+            "local park",
+            "bookshop"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Plan and organize your tasks",
+            "why": "Neutral states are ideal for decision-making; use the cognitive clarity that emotional states disrupt."
+          },
+          {
+            "item": "Learn a new skill",
+            "why": "Neutral arousal is optimal for skill acquisition and retention — best learning state (Yerkes-Dodson curve)."
+          },
+          {
+            "item": "Write three things in a gratitude journal",
+            "why": "Gratitude practice during neutral states builds positive resilience for difficult emotional periods."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Warm Sand",
+            "hex": "#F5DEB3",
+            "why": "Warm neutral creates comfortable focus state without emotional loading — perfect for neutral day clarity."
+          },
+          {
+            "name": "Sage Green",
+            "hex": "#8BC34A",
+            "why": "Nature's optimal environment color — activates restorative attention without emotional activation."
+          },
+          {
+            "name": "Soft Blue",
+            "hex": "#90CAF9",
+            "why": "The most focus-enhancing color — activates sustained attention without emotional arousal."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "series",
+            "title": "Downton Abbey",
+            "imdb": "8.7/10",
+            "why": "Rich, safe world with human drama — optimal neutral viewing: engaging without emotional demands."
+          },
+          {
+            "type": "film",
+            "title": "Julie & Julia (2009)",
+            "imdb": "7.0/10",
+            "why": "Warm, joyful story about passion and cooking — gentle positive influence on neutral state."
+          }
+        ],
+        "social": [
+          {
+            "item": "Offer to help someone",
+            "why": "Prosocial behavior improves helper's wellbeing more reliably than any self-directed pleasure (Dunn et al., 2008)."
+          },
+          {
+            "item": "Call someone you haven't connected with in a long time",
+            "why": "Neutral states are ideal for relationship maintenance — no emotional agenda, pure genuine connection."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Review your long-term goals",
+            "why": "Neutral state provides the cognitive distance needed for strategic thinking — least biased planning state."
+          },
+          {
+            "item": "Check and audit your sleep and exercise routine",
+            "why": "Sleep is the most underrated mood regulator — neutral is the optimal time to audit lifestyle foundations."
+          }
+        ]
+      },
+      "moderate": {
+        "spotify_playlists": [
+          {
+            "name": "Deep Focus",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DWZeKCadgRdKQ",
+            "description": "Flow state music for productive moderate neutral",
+            "cover_emoji": "🎯"
+          },
+          {
+            "name": "Bossa Nova Classics",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DXd9rSDyQguIk",
+            "description": "Warm, unhurried, sophisticated — elevated neutral state music",
+            "cover_emoji": "🎶"
+          }
+        ],
+        "food": [
+          {
+            "item": "Lentil soup",
+            "why": "Iron + folate + protein — deficiencies in any of these flatten mood; neutral is the time to build reserves."
+          },
+          {
+            "item": "Fish (omega-3 source)",
+            "why": "Omega-3 is foundational for emotional regulation — neutral is optimal time to build neurological reserves."
+          }
+        ],
+        "places": {
+          "description": "Stimulating, purposeful environments for productive neutral energy",
+          "types": [
+            "coworking space",
+            "museum",
+            "walking meeting route",
+            "inspiring architecture",
+            "market"
+          ],
+          "search_queries": [
+            "coworking space",
+            "museum",
+            "architecture walk",
+            "market"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Digital detox (1 hour)",
+            "why": "Reducing information load during neutral states restores cognitive resources and creative capacity."
+          },
+          {
+            "item": "Start a difficult conversation",
+            "why": "Difficult conversations are best had during neutral emotional states — minimum bias, maximum effectiveness."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Olive Green",
+            "hex": "#827717",
+            "why": "Sophisticated, grounded neutral — activates sense of purposeful stability perfectly suited to moderate neutral days."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "series",
+            "title": "Abstract: The Art of Design",
+            "imdb": "8.5/10",
+            "why": "Inspiring documentary about creative genius — activates aspiration and curiosity during neutral productive state."
+          }
+        ],
+        "social": [
+          {
+            "item": "Have a long, uninterrupted conversation with friends",
+            "why": "Neutral state conversations tend to be most honest and wide-ranging — least distorted by emotional agendas."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Set a big goal — now",
+            "why": "Peak neutral clarity is the best time for ambitious goal-setting — least influenced by temporary emotional states."
+          }
+        ]
+      },
+      "intense": {
+        "spotify_playlists": [
+          {
+            "name": "Classical Essentials",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX4vth7idTQch",
+            "description": "Landmark orchestral works for deep, purposeful focus",
+            "cover_emoji": "🎼"
+          },
+          {
+            "name": "Instrumental Hits",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX2mJKqHRyTEy",
+            "description": "High-energy instrumental for peak neutral productivity",
+            "cover_emoji": "🎸"
+          }
+        ],
+        "food": [
+          {
+            "item": "Meal with friends",
+            "why": "Social eating during neutral states deepens relationships proactively — no emotional interference."
+          },
+          {
+            "item": "Try a new recipe",
+            "why": "Behavioral activation during neutral states creates positive memories and breaks automatic routines."
+          }
+        ],
+        "places": {
+          "description": "Ambitious environments for peak neutral's flow state potential",
+          "types": [
+            "innovation hub",
+            "scenic hiking trail",
+            "cultural institution",
+            "new city district"
+          ],
+          "search_queries": [
+            "innovation center",
+            "hiking trail",
+            "cultural district",
+            "gallery district"
+          ]
+        },
+        "activities": [
+          {
+            "item": "Start your most challenging project — now",
+            "why": "Intense neutral is a flow-adjacent state. Channel it into most ambitious work — optimal conditions for deep work."
+          }
+        ],
+        "colors": [
+          {
+            "name": "Charcoal Gray",
+            "hex": "#455A64",
+            "why": "Sophisticated depth without emotional loading — intensifies neutral's clarity and purposefulness."
+          }
+        ],
+        "shows_movies": [
+          {
+            "type": "series",
+            "title": "Cosmos: A Spacetime Odyssey",
+            "imdb": "9.3/10",
+            "why": "Cosmic perspective series — transforms intense neutral into awe-motivated purposefulness."
+          }
+        ],
+        "social": [
+          {
+            "item": "Meet your mentor or someone who inspires you",
+            "why": "Intense neutral is the optimal state for mentorship conversations — maximum receptivity with minimum emotional interference."
+          }
+        ],
+        "personal_development": [
+          {
+            "item": "Draw a flow map of your life",
+            "why": "Intense neutral offers the rarest perspective: seeing your life clearly without emotional distortion."
+          }
+        ]
+      }
+    }
+  }
+}
