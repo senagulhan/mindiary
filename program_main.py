@@ -100,19 +100,35 @@ def _column_exists(cur, table, column):
         "WHERE TABLE_NAME=%s AND COLUMN_NAME=%s", (table, column))
     return cur.fetchone()['count'] > 0
 
-def init_db():
+def init_db(reset=False):
     conn = get_db()
     cur  = conn.cursor()
 
+    # --- 1. VERİTABANINI TAMAMEN SIFIRLAMA (WIPE) BÖLÜMÜ ---
+    if reset:
+        print("⚠️ DİKKAT: Veritabanı tamamen sıfırlanıyor...")
+        cur.execute("""
+            DROP TABLE IF EXISTS user_feedback CASCADE;
+            DROP TABLE IF EXISTS surveys CASCADE;
+            DROP TABLE IF EXISTS recommendations CASCADE;
+            DROP TABLE IF EXISTS emotions CASCADE;
+            DROP TABLE IF EXISTS entries CASCADE;
+            DROP TABLE IF EXISTS users CASCADE;
+        """)
+        conn.commit()
+        print("🗑️ Tüm tablolar temizlendi, veri ortamı sıfırlandı.")
+
+    # --- 2. TABLOLARI YENİDEN OLUŞTURMA BÖLÜMÜ ---
     if not _table_exists(cur, 'users'):
         cur.execute("""
             CREATE TABLE IF NOT EXISTS users (
-    id         SERIAL PRIMARY KEY,
-    username   VARCHAR(150) UNIQUE NOT NULL,
-    pw_hash    VARCHAR(64)  NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+                id         SERIAL PRIMARY KEY,
+                username   VARCHAR(150) UNIQUE NOT NULL,
+                pw_hash    VARCHAR(64)  NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
         """)
+        
     if not _table_exists(cur, 'entries'):
         cur.execute("""
             CREATE TABLE entries (
@@ -180,14 +196,13 @@ def init_db():
             )
         """)
 
+    # ALTER TABLE kontrolleri
     if not _column_exists(cur, 'recommendations', 'why'):
         cur.execute("ALTER TABLE recommendations ADD COLUMN why TEXT DEFAULT ''")
     if not _column_exists(cur, 'entries', 'mood_score'):
         cur.execute("ALTER TABLE entries ADD COLUMN mood_score FLOAT DEFAULT NULL")
     if not _column_exists(cur, 'entries', 'card_feedback'):
         cur.execute("ALTER TABLE entries ADD COLUMN card_feedback TEXT DEFAULT '{}'")
-
-
 
     conn.commit()
     conn.close()
@@ -1689,7 +1704,7 @@ def add_cors_headers(response):
     return response
 
 if __name__ == '__main__':
-    init_db()
+    init_db(reset=True)
     train_model()
     print("🚀 Server running → http://localhost:5000")
     app.run(debug=False, port=5000)
