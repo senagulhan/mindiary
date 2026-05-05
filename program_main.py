@@ -822,73 +822,85 @@ def send_email_reminder(to_email, username):
         print(f"⚠️ MAİL HATASI: {e}")
 
 def reminder_worker():
+    import time
+    from datetime import datetime
+    import urllib.request
+    import json
+    import os
+    import psycopg2
 
+    db_url = os.environ.get('DATABASE_URL')
 
     while True:
         try:
             suan = datetime.now().strftime("%H:%M")
-            print(f"👀 Postaci kontrol ediyor: Saat {suan} | Liste: {active_reminders}")
+            print(f"👀 Postaci DB kontrol ediyor: Saat {suan}")
             
-            for user, info in list(active_reminders.items()):
-                if info['time'] == suan:
-                    print(f"🚀 {user} icin saat geldi! Brevo API ile mail gonderiliyor...")
-                    
-                    try:
-                        api_key = os.environ.get('BREVO_API_KEY')
-                        if not api_key:
-                            print("❌ HATA: BREVO_API_KEY Render'da bulunamadi!")
-                            continue
-                            
-                        # --- İŞTE O ZARİF MINDIARY ŞABLONUN ---
-                        html_template = f"""
-                        <div style="background-color: #FDF9F1; padding: 40px 20px; font-family: 'Georgia', serif; color: #2C1A12; text-align: center;">
-                            <div style="max-width: 500px; margin: 0 auto; background-color: #FDF9F1;">
-                                <h1 style="font-size: 24px; letter-spacing: 4px; margin-bottom: 10px;">MINDIARY</h1>
-                                <hr style="border: none; border-top: 1px solid #D4C4A8; width: 50px; margin: 0 auto 30px auto;">
+            # Veritabanına bağlanıp o saatin alarmlarını çekiyoruz
+            if db_url:
+                conn = psycopg2.connect(db_url)
+                cur = conn.cursor()
+                cur.execute("SELECT username, email FROM reminders WHERE reminder_time = %s", (suan,))
+                alarmlar = cur.fetchall()
+                conn.close()
+            else:
+                alarmlar = []
+            
+            for row in alarmlar:
+                user = row[0]
+                user_email = row[1]
+                print(f"🚀 {user} icin saat geldi! Brevo API ile DB'den mail gonderiliyor...")
+                
+                try:
+                    api_key = os.environ.get('BREVO_API_KEY')
+                    if not api_key:
+                        continue
+                        
+                    html_template = f"""
+                    <div style="background-color: #FDF9F1; padding: 40px 20px; font-family: 'Georgia', serif; color: #2C1A12; text-align: center;">
+                        <div style="max-width: 500px; margin: 0 auto; background-color: #FDF9F1;">
+                            <h1 style="font-size: 24px; letter-spacing: 4px; margin-bottom: 10px;">MINDIARY</h1>
+                            <hr style="border: none; border-top: 1px solid #D4C4A8; width: 50px; margin: 0 auto 30px auto;">
 
-                                <div style="text-align: left; font-size: 16px; line-height: 1.6;">
-                                    <p style="font-weight: bold; font-size: 18px;">Hi {user},</p>
-                                    <p>It's time to pause and check in with yourself. Your blank page is ready.</p>
-                                    <p>Whether today was filled with joy, frustration, or just quiet moments, putting your thoughts into words can bring incredible clarity. Mindiary is here to listen and help you understand your emotional landscape.</p>
-                                </div>
+                            <div style="text-align: left; font-size: 16px; line-height: 1.6;">
+                                <p style="font-weight: bold; font-size: 18px;">Hi {user},</p>
+                                <p>It's time to pause and check in with yourself. Your blank page is ready.</p>
+                                <p>Whether today was filled with joy, frustration, or just quiet moments, putting your thoughts into words can bring incredible clarity. Mindiary is here to listen and help you understand your emotional landscape.</p>
+                            </div>
 
-                                <a href="https://mindiary-7xe8.onrender.com" style="display: inline-block; background-color: #331A0B; color: #FFFFFF; text-decoration: none; padding: 15px 30px; margin-top: 30px; font-family: sans-serif; letter-spacing: 2px; font-size: 12px; font-weight: bold;">OPEN MY DIARY</a>
+                            <a href="https://mindiary-7xe8.onrender.com" style="display: inline-block; background-color: #331A0B; color: #FFFFFF; text-decoration: none; padding: 15px 30px; margin-top: 30px; font-family: sans-serif; letter-spacing: 2px; font-size: 12px; font-weight: bold;">OPEN MY DIARY</a>
 
-                                <div style="margin-top: 40px; font-style: italic; color: #5A4A42;">
-                                    <p style="margin: 5px 0;">Take a deep breath,</p>
-                                    <p style="margin: 5px 0; font-weight: bold;">The Mindiary</p>
-                                </div>
+                            <div style="margin-top: 40px; font-style: italic; color: #5A4A42;">
+                                <p style="margin: 5px 0;">Take a deep breath,</p>
+                                <p style="margin: 5px 0; font-weight: bold;">The Mindiary</p>
                             </div>
                         </div>
-                        """
-                        
-                        url = "https://api.brevo.com/v3/smtp/email"
-                        payload = {
-                            "sender": {
-                                "name": "Mindiary",
-                                "email": "serifenursenagulhan07@gmail.com"  # Burası çalıştırdığın mail adresi olarak kalsın
-                            },
-                            "to": [{"email": info['email'], "name": user}],
-                            "subject": "Mindiary: Your Blank Page is Ready 🖋️",
-                            "htmlContent": html_template
-                        }
-                        
-                        data = json.dumps(payload).encode('utf-8')
-                        
-                        req = urllib.request.Request(url, data=data)
-                        req.add_header("accept", "application/json")
-                        req.add_header("api-key", api_key)
-                        req.add_header("content-type", "application/json")
-                        
-                        with urllib.request.urlopen(req) as response:
-                            print(f"✅ MUHTEŞEM ZAFER! {info['email']} adresine şık tasarımlı mail uçtu!")
-                        
-                        del active_reminders[user]
-                        
-                    except Exception as inner_e:
-                        print(f"❌ API GONDERIM HATASI ({user}): {str(inner_e)}")
-                        del active_reminders[user]
-                        
+                    </div>
+                    """
+                    
+                    url = "https://api.brevo.com/v3/smtp/email"
+                    payload = {
+                        "sender": {
+                            "name": "Mindiary",
+                            "email": "serifenursenagulhan07@gmail.com"
+                        },
+                        "to": [{"email": user_email, "name": user}],
+                        "subject": "Mindiary: Your Blank Page is Ready 🖋️",
+                        "htmlContent": html_template
+                    }
+                    
+                    data = json.dumps(payload).encode('utf-8')
+                    req = urllib.request.Request(url, data=data)
+                    req.add_header("accept", "application/json")
+                    req.add_header("api-key", api_key)
+                    req.add_header("content-type", "application/json")
+                    
+                    with urllib.request.urlopen(req) as response:
+                        print(f"✅ MUHTEŞEM ZAFER! {user_email} adresine DB üzerinden şık mail uçtu!")
+                    
+                except Exception as inner_e:
+                    print(f"❌ API GONDERIM HATASI ({user}): {str(inner_e)}")
+                    
         except Exception as e:
             print(f"❌ POSTACI COKTU: {str(e)}")
             
@@ -1423,6 +1435,27 @@ def not_found(e):
 def method_not_allowed(e):
     return jsonify({"error": "Method not allowed", "status": "error"}), 405
 
+@app.route('/gizli-alarm-tablosu')
+def gizli_alarm_tablosu():
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS reminders (
+                id SERIAL PRIMARY KEY,
+                username VARCHAR(150) NOT NULL,
+                email VARCHAR(150) NOT NULL,
+                reminder_time VARCHAR(10) NOT NULL
+            );
+        """)
+        conn.commit()
+        return "✅ Reminders (Alarmlar) tablosu veritabanına başarıyla eklendi!"
+    except Exception as e:
+        conn.rollback()
+        return f"❌ Hata oluştu: {str(e)}"
+    finally:
+        conn.close()
+
 @app.route('/places/suggest', methods=['POST'])
 def suggest_places():
     data     = request.get_json()
@@ -1824,33 +1857,40 @@ worker_started = False
 @app.route('/api/reminder/set', methods=['POST'])
 def set_reminder():
     global worker_started
-    # Eğer postacı işçi henüz bu klonda başlamadıysa, hemen başlat!
     if not worker_started:
+        import threading
         threading.Thread(target=reminder_worker, daemon=True).start()
         worker_started = True
-        print("🚀 Postaci isci bu sunucu klonunda uyandirildi ve goreve basladi!")
 
     data = request.get_json()
     username = data.get('username')
     email = data.get('email')
-    time_str = data.get('time') # "21:00" formatında gelecek
+    time_str = data.get('time') 
 
-    # Basit bir format kontrolü ve güvenlik
     if not username or not email or not time_str:
         return jsonify({"error": "Missing information"}), 400
 
-    # Saatin sadece "HH:MM" formatında olduğundan emin ol
     time_parts = time_str.split(":")
-    if len(time_parts) >= 2:
-        clean_time_str = f"{time_parts[0]}:{time_parts[1]}"
-    else:
-        clean_time_str = time_str
+    clean_time_str = f"{time_parts[0]}:{time_parts[1]}" if len(time_parts) >= 2 else time_str
 
-    # Alarmı RAM'e kaydet
-    active_reminders[username] = {'email': email, 'time': clean_time_str}
+    # Veritabanına (Kalıcı Hafızaya) Kaydet
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        # Eski alarmı varsa sil (Günde 1 alarm mantığı)
+        cur.execute("DELETE FROM reminders WHERE username = %s", (username,))
+        # Yeni alarmı ekle
+        cur.execute("INSERT INTO reminders (username, email, reminder_time) VALUES (%s, %s, %s)", 
+                    (username, email, clean_time_str))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
     
-    print(f"⏰ REMINDER SET: Emails will be sent to {email} daily at {clean_time_str} for {username}.")
-    return jsonify({"status": "ok", "message": "Reminder set successfully."})
+    print(f"💾 KALICI ALARM KURULDU: {email} | Saat: {clean_time_str}")
+    return jsonify({"status": "ok", "message": "Reminder safely stored in DB."})
 
 # CORS header on every response
 
