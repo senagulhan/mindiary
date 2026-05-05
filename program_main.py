@@ -21,6 +21,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 from email.mime.text import MIMEText
 from datetime import datetime
+import urllib.request
+
 
 
 
@@ -820,11 +822,7 @@ def send_email_reminder(to_email, username):
         print(f"⚠️ MAİL HATASI: {e}")
 
 def reminder_worker():
-    import time
-    from datetime import datetime
-    import urllib.request
-    import json
-    import os
+
 
     while True:
         try:
@@ -836,37 +834,55 @@ def reminder_worker():
                     print(f"🚀 {user} icin saat geldi! Brevo API ile mail gonderiliyor...")
                     
                     try:
-                        # 1. Render'ın kasasından sihirli anahtarımızı alıyoruz
                         api_key = os.environ.get('BREVO_API_KEY')
                         if not api_key:
                             print("❌ HATA: BREVO_API_KEY Render'da bulunamadi!")
                             continue
                             
-                        # 2. Brevo'nun posta merkezine gidecek paketi (JSON) hazırlıyoruz
+                        # --- İŞTE O ZARİF MINDIARY ŞABLONUN ---
+                        html_template = f"""
+                        <div style="background-color: #FDF9F1; padding: 40px 20px; font-family: 'Georgia', serif; color: #2C1A12; text-align: center;">
+                            <div style="max-width: 500px; margin: 0 auto; background-color: #FDF9F1;">
+                                <h1 style="font-size: 24px; letter-spacing: 4px; margin-bottom: 10px;">MINDIARY</h1>
+                                <hr style="border: none; border-top: 1px solid #D4C4A8; width: 50px; margin: 0 auto 30px auto;">
+
+                                <div style="text-align: left; font-size: 16px; line-height: 1.6;">
+                                    <p style="font-weight: bold; font-size: 18px;">Hi {user},</p>
+                                    <p>It's time to pause and check in with yourself. Your blank page is ready.</p>
+                                    <p>Whether today was filled with joy, frustration, or just quiet moments, putting your thoughts into words can bring incredible clarity. Mindiary is here to listen and help you understand your emotional landscape.</p>
+                                </div>
+
+                                <a href="https://mindiary-7xe8.onrender.com" style="display: inline-block; background-color: #331A0B; color: #FFFFFF; text-decoration: none; padding: 15px 30px; margin-top: 30px; font-family: sans-serif; letter-spacing: 2px; font-size: 12px; font-weight: bold;">OPEN MY DIARY</a>
+
+                                <div style="margin-top: 40px; font-style: italic; color: #5A4A42;">
+                                    <p style="margin: 5px 0;">Take a deep breath,</p>
+                                    <p style="margin: 5px 0; font-weight: bold;">The Mindiary</p>
+                                </div>
+                            </div>
+                        </div>
+                        """
+                        
                         url = "https://api.brevo.com/v3/smtp/email"
                         payload = {
                             "sender": {
                                 "name": "Mindiary",
-                                "email": "mindiary.support@gmail.com"  # Kendi gmail adresini yazabilirsin
+                                "email": "serifenursenagulhan07@gmail.com"  # Burası çalıştırdığın mail adresi olarak kalsın
                             },
                             "to": [{"email": info['email'], "name": user}],
-                            "subject": "Mindiary Günlük Hatırlatıcısı 🌸",
-                            "htmlContent": f"<p>Merhaba <b>{user}</b>, günlük yazma vaktin geldi! 💖</p><p>Hemen düşüncelerini kağıda dök: <a href='https://mindiary-7xe8.onrender.com'>Mindiary'e Git</a></p>"
+                            "subject": "Mindiary: Your Blank Page is Ready 🖋️",
+                            "htmlContent": html_template
                         }
                         
                         data = json.dumps(payload).encode('utf-8')
                         
-                        # 3. Render'ın engelleyemeyeceği HTTPS (Port 443) üzerinden isteği yolluyoruz
                         req = urllib.request.Request(url, data=data)
                         req.add_header("accept", "application/json")
                         req.add_header("api-key", api_key)
                         req.add_header("content-type", "application/json")
                         
-                        print("⏳ Brevo API'ye güvenli istek atiliyor (Port 443)...")
                         with urllib.request.urlopen(req) as response:
-                            print(f"✅ MUHTEŞEM ZAFER! {info['email']} adresine mail başarıyla uçtu!")
+                            print(f"✅ MUHTEŞEM ZAFER! {info['email']} adresine şık tasarımlı mail uçtu!")
                         
-                        # Mail gittikten sonra listeden siliyoruz
                         del active_reminders[user]
                         
                     except Exception as inner_e:
