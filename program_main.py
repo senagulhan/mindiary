@@ -847,7 +847,7 @@ def reminder_worker():
                         payload = {
                             "sender": {
                                 "name": "Mindiary",
-                                "email": "mindiary.app@gmail.com"  # Kendi gmail adresini yazabilirsin
+                                "email": "mindiary.support@gmail.com"  # Kendi gmail adresini yazabilirsin
                             },
                             "to": [{"email": info['email'], "name": user}],
                             "subject": "Mindiary Günlük Hatırlatıcısı 🌸",
