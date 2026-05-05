@@ -881,9 +881,9 @@ def reminder_worker():
                     url = "https://api.brevo.com/v3/smtp/email"
                     payload = {
                         "sender": {
-                            "name": "Mindiary",
-                            "email": "serifenursenagulhan07@gmail.com"
-                        },
+                                    "name": "Mindiary",
+                                    "email": "mindiary.support@11161912.brevosend.com"  # İŞTE BİZİ GOOGLE'DAN GEÇİRECEK SİHİRLİ ADRES!
+                                },
                         "to": [{"email": user_email, "name": user}],
                         "subject": "Mindiary: Your Blank Page is Ready 🖋️",
                         "htmlContent": html_template
