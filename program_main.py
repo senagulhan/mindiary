@@ -1623,8 +1623,88 @@ def health():
 
 @app.route('/gizli-reset')
 def gizli_reset():
-    init_db(reset=True)
-    return "✅ Veritabani basariyla sifirlandi ve tablolar kuruldu! Artik siteyi kullanabilirsin."
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        # 1. Eski her şeyi acımasızca yok et
+        cur.execute("""
+            DROP TABLE IF EXISTS user_feedback CASCADE;
+            DROP TABLE IF EXISTS surveys CASCADE;
+            DROP TABLE IF EXISTS recommendations CASCADE;
+            DROP TABLE IF EXISTS emotions CASCADE;
+            DROP TABLE IF EXISTS entries CASCADE;
+            DROP TABLE IF EXISTS users CASCADE;
+        """)
+        
+        # 2. Tabloları tek bir seferde, sırasıyla ve eksiksiz kur
+        cur.execute("""
+            CREATE TABLE users (
+                id         SERIAL PRIMARY KEY,
+                username   VARCHAR(150) UNIQUE NOT NULL,
+                pw_hash    VARCHAR(64)  NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            
+            CREATE TABLE entries (
+                id            SERIAL PRIMARY KEY,
+                user_id       INT           NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                page_number   INT           NOT NULL DEFAULT 1,
+                entry_date    VARCHAR(30)   NOT NULL,
+                location      VARCHAR(255),
+                entry_text    TEXT          NOT NULL,
+                wellness_note TEXT,
+                mood_score    FLOAT         DEFAULT NULL,
+                card_feedback TEXT          DEFAULT '{}',
+                created_at    TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+                updated_at    TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
+            );
+            
+            CREATE TABLE emotions (
+                id       SERIAL PRIMARY KEY,
+                entry_id INT          NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+                emotion  VARCHAR(50)  NOT NULL,
+                score    FLOAT        NOT NULL
+            );
+            
+            CREATE TABLE recommendations (
+                id       SERIAL PRIMARY KEY,
+                entry_id INT          NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+                category VARCHAR(50)  NOT NULL,
+                item     TEXT         NOT NULL,
+                why      TEXT         DEFAULT ''
+            );
+            
+            CREATE TABLE surveys (
+                id             SERIAL PRIMARY KEY,
+                user_id        INT          NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                entry_id       INT,
+                survey_date    VARCHAR(30)  NOT NULL,
+                mood_score     INT          NOT NULL CHECK (mood_score BETWEEN 1 AND 10),
+                liked_items    TEXT         DEFAULT '[]',
+                disliked_items TEXT         DEFAULT '[]',
+                free_text      TEXT         DEFAULT '',
+                created_at     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+            );
+            
+            CREATE TABLE user_feedback (
+                id            SERIAL PRIMARY KEY,
+                user_id       INT          NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                item_text     TEXT         NOT NULL,
+                category      VARCHAR(50)  NOT NULL,
+                did_it        BOOLEAN      NOT NULL,
+                stars         INT          DEFAULT 0,
+                feedback_text TEXT         DEFAULT '',
+                emotion       VARCHAR(50),
+                created_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
+        conn.commit()
+        return "✅ Veritabani kusursuz bir sekilde sifirlandi ve tum tablolar kuruldu! Artik siteye donup kullanabilirsin."
+    except Exception as e:
+        conn.rollback()
+        return f"❌ Hata olustu: {str(e)}"
+    finally:
+        conn.close()
 
 @app.route('/')
 def home():
