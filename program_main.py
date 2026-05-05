@@ -19,6 +19,9 @@ import threading
 import time
 from datetime import datetime
 from dotenv import load_dotenv
+from email.mime.text import MIMEText
+from datetime import datetime
+
 
 
 load_dotenv()
@@ -817,28 +820,53 @@ def send_email_reminder(to_email, username):
         print(f"⚠️ MAİL HATASI: {e}")
 
 def reminder_worker():
-    import time
-    from datetime import datetime
-    
+
+
     while True:
         try:
-            # Postacının her dakika ne gördüğünü loglara yazdıralım
             suan = datetime.now().strftime("%H:%M")
             print(f"👀 Postaci kontrol ediyor: Saat {suan} | Liste: {active_reminders}")
             
-            # --- SENİN MEVCUT MAİL KONTROL VE GÖNDERME KODLARIN ---
-            # for user, info in list(active_reminders.items()):
-            #     if info['time'] == suan:
-            #         send_email(...) vb...
-            # (Sakın bu kısımları silme, sadece bu bloğun içinde kalsın)
-            # ------------------------------------------------------
-            
-        except Exception as e:
-            # Eğer Gmail veya başka bir şey sistemi çökertirse, sessizce ölmek yerine bağıracak!
-            print(f"❌ MAIL GÖNDERİRKEN KRİTİK HATA ÇIKTI: {str(e)}")
-            
-        time.sleep(60) # 60 saniyede bir kontrol et
+            # Listeyi kopyalayarak dönelim ki döngü sırasında silme işlemi hata vermesin
+            for user, info in list(active_reminders.items()):
+                if info['time'] == suan:
+                    print(f"🚀 {user} icin saat geldi! Mail gonderme basliyor...")
+                    
+                    try:
+                        # Kendi kullandığın gönderici mail adresini buraya yaz
+                        sender_email = os.environ.get('EMAIL_USER', 'mindiary.app@gmail.com') 
+                        sender_password = os.environ.get('EMAIL_PASS', 'senin_sifren') 
+                        
+                        msg = MIMEText(f"Merhaba {user}, günlük yazma vaktin geldi! Hadi Mindiary'e gel: https://mindiary-7xe8.onrender.com")
+                        msg['Subject'] = 'Mindiary Günlük Hatırlatıcısı 🌸'
+                        msg['From'] = sender_email
+                        msg['To'] = info['email']
 
+                        print("⏳ 1. Adim: Gmail sunucusuna baglaniliyor (Timeout ayarli)...")
+                        # timeout=10 sayesinde sistem sonsuza kadar donup kalmayacak!
+                        server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10)
+                        
+                        print("🔐 2. Adim: Sifre ile giris yapiliyor...")
+                        server.login(sender_email, sender_password)
+                        
+                        print("📨 3. Adim: Mail gonderiliyor...")
+                        server.send_message(msg)
+                        server.quit()
+                        
+                        print(f"✅ BAŞARILI: {info['email']} adresine mail uctu!")
+                        
+                        # Maili attıktan sonra listeden silelim ki aynı dakika içinde 50 kere atmasın
+                        del active_reminders[user]
+                        
+                    except Exception as inner_e:
+                        print(f"❌ GMAIL BAGLANTI HATASI ({user}): {str(inner_e)}")
+                        # Hata alırsak listeden silelim ki sürekli takılıp kalmasın
+                        del active_reminders[user]
+                        
+        except Exception as e:
+            print(f"❌ POSTACI COKTU: {str(e)}")
+            
+        time.sleep(60)
 
 def compute_wellness_score(emotions: list) -> float:
     if not emotions: return 5.0
