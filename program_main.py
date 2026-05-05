@@ -830,8 +830,7 @@ def reminder_worker():
 
         time.sleep(60) # Sistemi yormamak için 60 saniyede bir kontrol et
 
-# Sunucu başlarken arka plan işçisini de başlatıyoruz
-threading.Thread(target=reminder_worker, daemon=True).start()
+
 
 def compute_wellness_score(emotions: list) -> float:
     if not emotions: return 5.0
@@ -1757,8 +1756,18 @@ def get_feedback(username):
     finally:
         conn.close()
 
+# İşçinin sadece 1 kere başlatıldığından emin olmak için bir bayrak
+worker_started = False
+
 @app.route('/api/reminder/set', methods=['POST'])
 def set_reminder():
+    global worker_started
+    # Eğer postacı işçi henüz bu klonda başlamadıysa, hemen başlat!
+    if not worker_started:
+        threading.Thread(target=reminder_worker, daemon=True).start()
+        worker_started = True
+        print("🚀 Postaci isci bu sunucu klonunda uyandirildi ve goreve basladi!")
+
     data = request.get_json()
     username = data.get('username')
     email = data.get('email')
@@ -1768,14 +1777,14 @@ def set_reminder():
     if not username or not email or not time_str:
         return jsonify({"error": "Missing information"}), 400
 
-    # Saatin sadece "HH:MM" formatında olduğundan emin ol (HTML time input'u saniye de gönderebilir)
+    # Saatin sadece "HH:MM" formatında olduğundan emin ol
     time_parts = time_str.split(":")
     if len(time_parts) >= 2:
         clean_time_str = f"{time_parts[0]}:{time_parts[1]}"
     else:
         clean_time_str = time_str
 
-    # Alarmı RAM'e (veya ileride veritabanına) kaydet
+    # Alarmı RAM'e kaydet
     active_reminders[username] = {'email': email, 'time': clean_time_str}
     
     print(f"⏰ REMINDER SET: Emails will be sent to {email} daily at {clean_time_str} for {username}.")
