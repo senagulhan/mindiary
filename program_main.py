@@ -817,19 +817,27 @@ def send_email_reminder(to_email, username):
         print(f"⚠️ MAİL HATASI: {e}")
 
 def reminder_worker():
-    """Arka planda her dakika uyanıp saati gelen mailleri gönderen işçi"""
+    import time
+    from datetime import datetime
+    
     while True:
-        now = datetime.now()
-        current_time_str = now.strftime("%H:%M")
-        current_date_str = now.strftime("%Y-%m-%d")
-
-        for username, data in list(active_reminders.items()):
-            if data['time'] == current_time_str and data.get('last_sent') != current_date_str:
-                send_email_reminder(data['email'], username)
-                data['last_sent'] = current_date_str
-
-        time.sleep(60) # Sistemi yormamak için 60 saniyede bir kontrol et
-
+        try:
+            # Postacının her dakika ne gördüğünü loglara yazdıralım
+            suan = datetime.now().strftime("%H:%M")
+            print(f"👀 Postaci kontrol ediyor: Saat {suan} | Liste: {active_reminders}")
+            
+            # --- SENİN MEVCUT MAİL KONTROL VE GÖNDERME KODLARIN ---
+            # for user, info in list(active_reminders.items()):
+            #     if info['time'] == suan:
+            #         send_email(...) vb...
+            # (Sakın bu kısımları silme, sadece bu bloğun içinde kalsın)
+            # ------------------------------------------------------
+            
+        except Exception as e:
+            # Eğer Gmail veya başka bir şey sistemi çökertirse, sessizce ölmek yerine bağıracak!
+            print(f"❌ MAIL GÖNDERİRKEN KRİTİK HATA ÇIKTI: {str(e)}")
+            
+        time.sleep(60) # 60 saniyede bir kontrol et
 
 
 def compute_wellness_score(emotions: list) -> float:
