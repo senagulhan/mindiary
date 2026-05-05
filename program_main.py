@@ -1854,6 +1854,18 @@ def get_feedback(username):
 # İşçinin sadece 1 kere başlatıldığından emin olmak için bir bayrak
 worker_started = False
 
+# Bu kod, siteye herhangi bir istek (tıklama, sayfa yenileme) geldiğinde çalışır
+@app.before_request
+def wake_up_postaci():
+    global worker_started
+    if not worker_started:
+        import threading
+        # Postacıyı uyandırıyoruz
+        threading.Thread(target=reminder_worker, daemon=True).start()
+        worker_started = True
+        print("🚀 Postaci uyandirildi ve DB nöbetine başladi!")
+
+# --- AŞAĞIDAKİ SET REMINDER İÇİNDEKİ ESKİ UYANDIRMA KODUNU SİLEBİLİRSİN ---
 @app.route('/api/reminder/set', methods=['POST'])
 def set_reminder():
     global worker_started
