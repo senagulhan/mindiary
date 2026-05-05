@@ -1232,7 +1232,7 @@ def save_feedback():
             INSERT INTO user_feedback 
                 (user_id, item_text, category, did_it, stars, feedback_text, emotion)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (user['id'], item_text, category, 1 if did_it else 0, stars, feedback_text, emotion))
+        """, (user['id'], item_text, category, True if did_it else False, stars, feedback_text, emotion))
         conn.commit()
         return jsonify({"message": "Feedback saved successfully.", "status": "ok"}), 200
     finally:
@@ -1266,7 +1266,7 @@ def analyze():
                 cur.execute("""
                     SELECT item_text 
                     FROM user_feedback 
-                    WHERE user_id=%s AND did_it=1
+                    WHERE user_id=%s AND did_it=TRUE
                     GROUP BY item_text
                     HAVING AVG(CAST(stars AS FLOAT)) >= 3.0
                 """, (user_id,))
