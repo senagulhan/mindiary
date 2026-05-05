@@ -1621,6 +1621,11 @@ def health():
         "labels":       EMOTION_LABELS,
     })
 
+@app.route('/gizli-reset')
+def gizli_reset():
+    init_db(reset=True)
+    return "✅ Veritabani basariyla sifirlandi ve tablolar kuruldu! Artik siteyi kullanabilirsin."
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -1652,6 +1657,8 @@ def update_card_feedback(username, page_number):
         return jsonify({"status": "ok"})
     finally:
         conn.close()
+
+
 
 @app.route('/feedback/<username>', methods=['GET'])
 def get_feedback(username):
