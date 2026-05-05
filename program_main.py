@@ -1905,6 +1905,56 @@ def set_reminder():
     return jsonify({"status": "ok", "message": "Reminder safely stored in DB."})
 
 # CORS header on every response
+@app.route('/test-mail')
+def test_mail():
+    import urllib.request
+    import json
+    import os
+    
+    try:
+        api_key = os.environ.get('BREVO_API_KEY')
+        
+        html_template = """
+        <div style="background-color: #FDF9F1; padding: 40px 20px; font-family: 'Georgia', serif; color: #2C1A12; text-align: center;">
+            <div style="max-width: 500px; margin: 0 auto; background-color: #FDF9F1;">
+                <h1 style="font-size: 24px; letter-spacing: 4px; margin-bottom: 10px;">MINDIARY</h1>
+                <hr style="border: none; border-top: 1px solid #D4C4A8; width: 50px; margin: 0 auto 30px auto;">
+                <div style="text-align: left; font-size: 16px; line-height: 1.6;">
+                    <p style="font-weight: bold; font-size: 18px;">Hi Sena,</p>
+                    <p>It's time to pause and check in with yourself. Your blank page is ready.</p>
+                    <p>Whether today was filled with joy, frustration, or just quiet moments, putting your thoughts into words can bring incredible clarity.</p>
+                </div>
+                <a href="https://mindiary-7xe8.onrender.com" style="display: inline-block; background-color: #331A0B; color: #FFFFFF; text-decoration: none; padding: 15px 30px; margin-top: 30px; font-family: sans-serif; letter-spacing: 2px; font-size: 12px; font-weight: bold;">OPEN MY DIARY</a>
+                <div style="margin-top: 40px; font-style: italic; color: #5A4A42;">
+                    <p style="margin: 5px 0;">Take a deep breath,</p>
+                    <p style="margin: 5px 0; font-weight: bold;">The Mindiary</p>
+                </div>
+            </div>
+        </div>
+        """
+        
+        url = "https://api.brevo.com/v3/smtp/email"
+        payload = {
+            "sender": {
+                "name": "Mindiary",
+                "email": "mindiary.support@11161912.brevosend.com"  # O sihirli adresi kullandık
+            },
+            "to": [{"email": "serifenursenagulhan07@gmail.com", "name": "Sena"}],
+            "subject": "Mindiary: Test Başarılı! 🌸",
+            "htmlContent": html_template
+        }
+        
+        data = json.dumps(payload).encode('utf-8')
+        req = urllib.request.Request(url, data=data)
+        req.add_header("accept", "application/json")
+        req.add_header("api-key", api_key)
+        req.add_header("content-type", "application/json")
+        
+        with urllib.request.urlopen(req) as response:
+            return "<h1 style='color: green;'>✅ HARİKA! Mail başarıyla uçtu, lütfen gelen kutunu kontrol et!</h1>"
+            
+    except Exception as e:
+        return f"<h1 style='color: red;'>❌ HATA: {str(e)}</h1>"
 
 @app.after_request
 def add_cors_headers(response):
