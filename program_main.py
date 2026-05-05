@@ -820,47 +820,57 @@ def send_email_reminder(to_email, username):
         print(f"⚠️ MAİL HATASI: {e}")
 
 def reminder_worker():
-
+    import time
+    from datetime import datetime
+    import urllib.request
+    import json
+    import os
 
     while True:
         try:
             suan = datetime.now().strftime("%H:%M")
             print(f"👀 Postaci kontrol ediyor: Saat {suan} | Liste: {active_reminders}")
             
-            # Listeyi kopyalayarak dönelim ki döngü sırasında silme işlemi hata vermesin
             for user, info in list(active_reminders.items()):
                 if info['time'] == suan:
-                    print(f"🚀 {user} icin saat geldi! Mail gonderme basliyor...")
+                    print(f"🚀 {user} icin saat geldi! Brevo API ile mail gonderiliyor...")
                     
                     try:
-                        # Kendi kullandığın gönderici mail adresini buraya yaz
-                        sender_email = os.environ.get('EMAIL_USER', 'mindiary.app@gmail.com') 
-                        sender_password = os.environ.get('EMAIL_PASS', 'senin_sifren') 
+                        # 1. Render'ın kasasından sihirli anahtarımızı alıyoruz
+                        api_key = os.environ.get('BREVO_API_KEY')
+                        if not api_key:
+                            print("❌ HATA: BREVO_API_KEY Render'da bulunamadi!")
+                            continue
+                            
+                        # 2. Brevo'nun posta merkezine gidecek paketi (JSON) hazırlıyoruz
+                        url = "https://api.brevo.com/v3/smtp/email"
+                        payload = {
+                            "sender": {
+                                "name": "Mindiary",
+                                "email": "mindiary.app@gmail.com"  # Kendi gmail adresini yazabilirsin
+                            },
+                            "to": [{"email": info['email'], "name": user}],
+                            "subject": "Mindiary Günlük Hatırlatıcısı 🌸",
+                            "htmlContent": f"<p>Merhaba <b>{user}</b>, günlük yazma vaktin geldi! 💖</p><p>Hemen düşüncelerini kağıda dök: <a href='https://mindiary-7xe8.onrender.com'>Mindiary'e Git</a></p>"
+                        }
                         
-                        msg = MIMEText(f"Merhaba {user}, günlük yazma vaktin geldi! Hadi Mindiary'e gel: https://mindiary-7xe8.onrender.com")
-                        msg['Subject'] = 'Mindiary Günlük Hatırlatıcısı 🌸'
-                        msg['From'] = sender_email
-                        msg['To'] = info['email']
-
-                        print("⏳ 1. Adim: Gmail sunucusuna baglaniliyor (Timeout ayarli)...")
-                        # timeout=10 sayesinde sistem sonsuza kadar donup kalmayacak!
-                        server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10)
+                        data = json.dumps(payload).encode('utf-8')
                         
-                        print("🔐 2. Adim: Sifre ile giris yapiliyor...")
-                        server.login(sender_email, sender_password)
+                        # 3. Render'ın engelleyemeyeceği HTTPS (Port 443) üzerinden isteği yolluyoruz
+                        req = urllib.request.Request(url, data=data)
+                        req.add_header("accept", "application/json")
+                        req.add_header("api-key", api_key)
+                        req.add_header("content-type", "application/json")
                         
-                        print("📨 3. Adim: Mail gonderiliyor...")
-                        server.send_message(msg)
-                        server.quit()
+                        print("⏳ Brevo API'ye güvenli istek atiliyor (Port 443)...")
+                        with urllib.request.urlopen(req) as response:
+                            print(f"✅ MUHTEŞEM ZAFER! {info['email']} adresine mail başarıyla uçtu!")
                         
-                        print(f"✅ BAŞARILI: {info['email']} adresine mail uctu!")
-                        
-                        # Maili attıktan sonra listeden silelim ki aynı dakika içinde 50 kere atmasın
+                        # Mail gittikten sonra listeden siliyoruz
                         del active_reminders[user]
                         
                     except Exception as inner_e:
-                        print(f"❌ GMAIL BAGLANTI HATASI ({user}): {str(inner_e)}")
-                        # Hata alırsak listeden silelim ki sürekli takılıp kalmasın
+                        print(f"❌ API GONDERIM HATASI ({user}): {str(inner_e)}")
                         del active_reminders[user]
                         
         except Exception as e:
