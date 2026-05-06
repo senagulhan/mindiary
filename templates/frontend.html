@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mindiary — Wellness Journal</title>
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%235A181E'/><text x='50' y='75' font-family='Georgia, serif' font-size='70' font-weight='bold' fill='%23D4AF37' text-anchor='middle'>M</text></svg>">
+
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cinzel:wght@400;500;600&family=Raleway:wght@200;300;400;500&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
 <style>
 /* ══════════════════════════════════════════════════════════
@@ -1542,10 +1545,6 @@ let currentRecs = null, currentTier = 'mild', currentEmotions = [];
 const EMOJI_MAP = {joy:'☀️',love:'🌹',anger:'🌋',sadness:'🌧️',fear:'🌙',surprise:'⭐',neutral:'🍃'};
 const CLS_MAP   = {joy:'c-joy',love:'c-love',anger:'c-anger',sadness:'c-sadness',fear:'c-fear',surprise:'c-surprise',neutral:'c-neutral'};
 
-// ════════════════════════════════════════════════════════════
-// RAG FEEDBACK STORE  (localStorage per user)
-// ════════════════════════════════════════════════════════════
-
 function guessCategory(card) {
   if(!card) return 'general';
   if(card.classList.contains('food-card')) return 'food';
@@ -1607,7 +1606,6 @@ function ragRecord(itemText, didIt, stars, feedback, emotion){
   saveRag(db);
 }
 
-// Sayfa yüklendiğinde kullanıcının eski maili varsa kutuya otomatik yazar
 document.addEventListener('DOMContentLoaded', () => {
     const savedEmail = localStorage.getItem('mindiary_saved_email');
     if(savedEmail) {
@@ -1618,14 +1616,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Kur ve Kaydet butonuna basıldığında çalışır
 function saveMailReminder() {
     if (!curUser) {
         alert("Hatırlatıcı kurmak için önce giriş yapmalısınız.");
         return;
     }
 
-    const timeVal = document.getElementById('remTime').value; // Örn: "21:30"
+    const timeVal = document.getElementById('remTime').value; 
     const emailVal = document.getElementById('remEmail').value;
     const rememberMe = document.getElementById('remRememberMe').checked;
 
@@ -1634,19 +1631,17 @@ function saveMailReminder() {
         return;
     }
 
-    // "Beni Hatırla" seçiliyse tarayıcı hafızasına (localStorage) kaydet, değilse sil.
     if (rememberMe) {
         localStorage.setItem('mindiary_saved_email', emailVal);
     } else {
         localStorage.removeItem('mindiary_saved_email');
     }
 
-    // Python Backend'e alarmı kurması için veri gönderiyoruz
     fetch(`${API}/api/reminder/set`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            username: curUser, // BUG BURADAYDI: curUser.username yerine sadece curUser olmalı
+            username: curUser, 
             email: emailVal,
             time: timeVal
         })
@@ -1655,7 +1650,6 @@ function saveMailReminder() {
     .then(data => {
         if(data.status === 'ok') {
             alert(`Harika! Her gün saat ${timeVal}'da ${emailVal} adresine hatırlatıcı gönderilecek.`);
-            // Arayüzdeki alt metni de güncellemek istersen:
             const statusEl = document.getElementById('dailyReminderStatus');
             if(statusEl) statusEl.textContent = `✓ Reminder set for ${timeVal} daily.`;
         } else {
@@ -1847,7 +1841,7 @@ function renderAll() {
   renderTabs();
   renderLeft();
   renderRight();
-  renderRecPanel(); // Bu fonksiyon artık güncel değişkenlerle çalışacak
+  renderRecPanel(); 
   updateNums();
 }
 function toRoman(n){const v=['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'],d2=[1000,900,500,400,100,90,50,40,10,9,5,4,1];let r='';for(let i=0;i<d2.length;i++)while(n>=d2[i]){r+=v[i];n-=d2[i];}return r.toLowerCase();}
@@ -1974,9 +1968,6 @@ function hideWordWarning(){
 
 function editEntry(){const p=pages[idx];p.analyzed=false;p.emotions=[];p.recommendations={};p.wellness_note=null;p.tier='mild';saveLocal();renderAll();}
 
-// ════════════════════════════════════════════════════════════
-// FLIP (ANIMASYON VE KURDELE GÜNCELLEMESİ)
-// ════════════════════════════════════════════════════════════
 function doFlip(dir, target){
   if(flipping) return;
   const ni=target!==undefined?target:idx+dir;
@@ -2111,7 +2102,6 @@ function drawEmoBars(emotions){
 }
 
 function drawWellNote(note){
-  // "A gentle note" özelliğini tamamen iptal ettik
   const el = document.getElementById('wellNote');
   if(el) {
       el.classList.remove('show');
@@ -2178,7 +2168,6 @@ function makeWhyCard(cssClass, titleHTML, why, itemText){
   setTimeout(()=>restoreCardState(c, itemText||''), 0);
   return c;
 }
-// Updated buildFoodPane with English labels and groupings
 function buildFoodPane(items){
   const el = document.getElementById('food-content'); 
   el.innerHTML = '';
@@ -2215,9 +2204,7 @@ const renderGroup = (groupItems, title, icon, color) => {
      secTitle.innerHTML = `<span style="font-size: 14px;">${icon}</span> ${title}`;
      el.appendChild(secTitle);
 
-     // Kartların dizildiği Grid yapısı
      const grid = document.createElement('div');
-     /* auto-fill yerine "1fr 1fr" yazarak 2 sütuna kilitliyoruz */
      grid.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px; align-content:start;';
      groupItems.forEach(i => {
         const itemData = typeof i === 'string' ? {item: i, why: ''} : i;
@@ -2228,10 +2215,8 @@ const renderGroup = (groupItems, title, icon, color) => {
         const cardTitle = `<div class="rec-card-title" style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">🍃 ${itemData.item} ${timeBadge}</div>`;
         const card = makeWhyCard('food-card', cardTitle, itemData.why, itemData.item);
         
-        // YEMEK TARİFİ ARAMA BUTONU BURADA EKLENİYOR
         const btnWrap = document.createElement('div');
         btnWrap.style.margin = "8px 0";
-        // Backend'den URL geldiyse onu kullan, gelmediyse Google'da aramaya zorla
         const searchUrl = itemData.url ? itemData.url : `https://www.google.com/search?q=${encodeURIComponent(itemData.item + ' recipe')}`;
         
         btnWrap.innerHTML = `<a href="${searchUrl}" target="_blank" rel="noopener" class="action-btn" style="text-decoration:none; color:#823214; border-color:#823214; background:rgba(130,50,20,0.05); padding: 4px 10px;">
@@ -2256,7 +2241,6 @@ const renderGroup = (groupItems, title, icon, color) => {
   renderGroup(other, 'Recommended Recipes', '🍃', 'rgba(100, 60, 20, 0.85)');
 }
 
-// Ensure buildShowsPane also uses English labels
 function buildShowsPane(shows){
   const el=document.getElementById('shows_movies-content'); el.innerHTML='';
   el.appendChild(makeTierBadge(currentTier));
@@ -2500,7 +2484,6 @@ function toggleWhy(btn){
   
   const isOpen = tip.classList.contains('open');
   
-  // Sadece tıklanan kutuyu aç veya kapat (Diğerlerine dokunma)
   if(isOpen){
     tip.classList.remove('open');
     btn.textContent = '?';
@@ -2514,7 +2497,6 @@ function toggleColorWhy(btn){
   const tip = btn.nextElementSibling;
   const isOpen = tip.classList.contains('open');
   
-  // Sadece tıklanan renk kutusunu aç veya kapat
   if(isOpen){
     tip.classList.remove('open');
     btn.textContent = '? Why this color';
@@ -2731,7 +2713,7 @@ function saveCardState(itemText, patch){
   const key = cardStateKey(itemText);
   pages[idx].cardFeedback[key] = Object.assign({}, pages[idx].cardFeedback[key]||{}, patch);
   saveLocal();
-  syncCardFeedbackToServer(pages[idx].page_number, pages[idx].cardFeedback); // EKLENEN SATIR
+  syncCardFeedbackToServer(pages[idx].page_number, pages[idx].cardFeedback); 
 }
 
 function getCardState(itemText){
@@ -2749,7 +2731,6 @@ function restoreCardState(card, itemText){
     card.classList.add('crossed-out');
   } else if(state.action === 'didit'){
     if(didItBtn) didItBtn.classList.add('active');
-    // Restore sticky note
     showStickyNote(card, itemText, state);
   }
 }
@@ -2931,7 +2912,6 @@ function drawTopFeedback(){
 function setDailyReminder(){
   const time = document.getElementById('dailyTimeSelect')?.value || '08:00 PM';
   const statusEl = document.getElementById('dailyReminderStatus');
-  // Store preference
   try{ localStorage.setItem(`sched-daily-${curUser}`, time); } catch{}
   if(statusEl) statusEl.textContent = `✓ Reminder set for ${time} daily.`;
 }
@@ -2954,8 +2934,8 @@ function generateWeeklyReport(){
 
 let dashPeriod = 'daily';
 let reminderInterval = null;
-let reminderTime = null; // { h, m } in 24h
-let lastReminderFired = null; // track "YYYY-MM-DD HH:MM" so we only fire once per minute
+let reminderTime = null; 
+let lastReminderFired = null; 
 
 const EMO_COLORS_DASH = {
   joy: '#c8a040', love: '#a85060', anger: '#a04028',
@@ -3008,7 +2988,6 @@ function renderDash() {
   const analyzed = filtered.filter(p => p.analyzed && p.emotions && p.emotions.length);
   const allAnalyzed = (pages || []).filter(p => p.analyzed && p.emotions && p.emotions.length);
 
-  // Emotion frequency for period
   const freq = {};
   analyzed.forEach(p => {
     (p.emotions || []).forEach(e => {
@@ -3020,13 +2999,10 @@ function renderDash() {
   const totalEmoScore = sortedEmo.reduce((s,[,v]) => s+v, 0) || 1;
   const dominant = sortedEmo[0]?.[0] || 'neutral';
 
-  // Top wellness items
-// Seçili zaman dilimine (Günlük/Haftalık/Aylık vb.) ait sayfaların verilerini tarıyoruz
   const periodFeedback = {};
   filtered.forEach(p => {
     if (p.cardFeedback) {
       const labels = {};
-      // Önerilerin ekrandaki orijinal metinlerini (label) yakalıyoruz
       if (p.recommendations) {
         Object.entries(p.recommendations).forEach(([cat, catData]) => {
           if (cat === 'places' && catData && catData.maps_search) {
@@ -3040,7 +3016,6 @@ function renderDash() {
         });
       }
       
-      // Sadece o sayfanın yazıldığı tarih aralığındaki geri bildirimleri hesaplıyoruz
       Object.entries(p.cardFeedback).forEach(([key, data]) => {
         if (data.action === 'didit' && data.stars > 0) {
           if (!periodFeedback[key]) periodFeedback[key] = { label: labels[key] || key, count: 0, totalStars: 0 };
@@ -3051,7 +3026,6 @@ function renderDash() {
     }
   });
 
-  // Ortalaması 3 yıldız ve üzeri olanları en yüksekten düşüğe sıralayıp ilk 5'i alıyoruz
   const topItems = Object.values(periodFeedback)
     .filter(v => (v.totalStars / v.count) >= 3)
     .sort((a, b) => (b.totalStars / b.count) - (a.totalStars / a.count))
@@ -3171,7 +3145,7 @@ function renderSparkline(analyzed) {
   const points = analyzed.map(p => {
     const n = p.emotions[0]?.name || p.emotions[0]?.[0] || 'neutral';
     return { name: n, v: VALENCE[n] || 3, color: EMO_COLORS_DASH[n] || '#888' };
-  }).slice(-20); // last 20
+  }).slice(-20); 
 
   if (points.length < 2) return renderEmpty('Need at least 2 analyzed entries.');
 
@@ -3343,7 +3317,7 @@ function scheduleReminderCheck() {
       lastReminderFired = key;
       showReminderPopup();
     }
-  }, 15000); // check every 15 seconds
+  }, 15000); 
 }
 
 function showReminderPopup() {

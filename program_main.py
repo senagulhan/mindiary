@@ -82,9 +82,7 @@ def load_wellness_data():
 WELLNESS_DATA = load_wellness_data()
 
 def get_db():
-    # Bu URL'i .env dosyandan çekeceğiz
     conn_url = os.getenv("DATABASE_URL")
-    # RealDictCursor sayesinde fetchone() ve fetchall() sonuçları otomatik dictionary döner
     return psycopg2.connect(conn_url, cursor_factory=RealDictCursor)
 
 def fetchone_dict(cursor):
@@ -109,7 +107,6 @@ def init_db(reset=False):
     conn = get_db()
     cur  = conn.cursor()
 
-    # --- 1. VERİTABANINI TAMAMEN SIFIRLAMA (WIPE) BÖLÜMÜ ---
     if reset:
         print("⚠️ DİKKAT: Veritabanı tamamen sıfırlanıyor...")
         cur.execute("""
@@ -123,7 +120,6 @@ def init_db(reset=False):
         conn.commit()
         print("🗑️ Tüm tablolar temizlendi, veri ortamı sıfırlandı.")
 
-    # --- 2. TABLOLARI YENİDEN OLUŞTURMA BÖLÜMÜ ---
     if not _table_exists(cur, 'users'):
         cur.execute("""
             CREATE TABLE IF NOT EXISTS users (
@@ -201,7 +197,6 @@ def init_db(reset=False):
             )
         """)
 
-    # ALTER TABLE kontrolleri
     if not _column_exists(cur, 'recommendations', 'why'):
         cur.execute("ALTER TABLE recommendations ADD COLUMN why TEXT DEFAULT ''")
     if not _column_exists(cur, 'entries', 'mood_score'):
@@ -216,10 +211,9 @@ def init_db(reset=False):
 def hash_password(pw: str) -> str:
     return hashlib.sha256(pw.encode()).hexdigest()
 
-# TF-IDF + LOGISTIC REGRESSION MODEL
 
 tfidf_vectorizer  = None
-tfidf_classifiers = {}   # label → trained LogisticRegression
+tfidf_classifiers = {}   
 
 BEST_C = {
     'joy':      5.0,
@@ -233,31 +227,24 @@ BEST_C = {
 
 STRONG_KEYWORDS = {
     'sadness': [
-        # feel bad / negative state (kısa kalıplar)
         'feel bad', 'feel terrible', 'feel awful', 'feel horrible', 'feel sick',
         'feel off', 'feel down', 'feel low', 'feel blue',
         'feeling bad', 'feeling terrible', 'feeling awful', 'feeling horrible',
         'feeling down', 'feeling low', 'feeling blue', 'feeling sick',
         'felt bad', 'felt terrible', 'felt awful', 'felt horrible',
-        # isolation / emptiness
         'feel lonely', 'feel empty', 'feel lost', 'feel broken', 'feel hollow',
         'feel numb', 'feel hopeless', 'feel worthless', 'feel useless',
         'feeling lonely', 'feeling empty', 'feeling lost', 'feeling broken',
         'feeling numb', 'feeling hopeless', 'feeling worthless',
-        # exhaustion
         'feel tired', 'feel exhausted', 'feel drained', 'feel worn out',
         'feeling tired', 'feeling exhausted', 'feeling drained',
-        # depression
         'feel depressed', 'feeling depressed', 'feel miserable', 'feeling miserable',
-        # crying / grief
         'i cried', 'i am crying', 'i was crying', 'i keep crying',
         'miss her', 'miss him', 'miss them', 'miss you', 'i miss',
         'so sad', 'i am sad', 'i feel sad', 'feeling sad',
         'hurts so much', 'it hurts', 'my heart hurts',
         'i found myself crying', 'tears down', 'tears in my eyes',
         'not good enough', 'hate myself',
-        
-        # --- EKLENEN KÖK KELİMELER ---
         'heartbroken', 'devastated', 'miserable', 'depressed', 'lonely',
         'hopeless', 'worthless', 'grief', 'sorrow', 'crying', 'tears', 'suicidal'
     ],
@@ -273,8 +260,6 @@ STRONG_KEYWORDS = {
         'drives me crazy', 'drives me mad', 'drives me nuts',
         'pissed off', 'fed up', 'sick of this', 'tired of this',
         'so unfair', 'not fair', 'i am outraged', 'makes me furious',
-        
-        # --- EKLENEN KÖK KELİMELER ---
         'furious', 'infuriating', 'blood boil', 'ruined', 'derailed',
         'frustrating', 'stupid', 'outraged', 'pissed', 'resentful', 'rage'
     ],
@@ -291,8 +276,6 @@ STRONG_KEYWORDS = {
         'heart is pounding', 'heart is racing', 'cannot breathe',
         'panic attack', 'freaking out', 'on edge', 'i dread',
         'i am petrified', 'filled with dread', 'losing my mind',
-        
-        # --- EKLENEN KÖK KELİMELER ---
         'terrified', 'anxious', 'panic', 'dread', 'petrified', 'scared',
         'afraid', 'nervous', 'overwhelmed', 'nightmare', 'spiraling'
     ],
@@ -309,8 +292,6 @@ STRONG_KEYWORDS = {
         'best day', 'great day', 'wonderful day', 'amazing day',
         'over the moon', 'on top of the world', 'could not be happier',
         'made me smile', 'made me laugh', 'cheered me up',
-        
-        # --- EKLENEN KÖK KELİMELER ---
         'thrilled', 'ecstatic', 'overjoyed', 'amazing', 'fantastic',
         'grateful', 'blessed', 'delighted', 'joyful', 'cheerful', 'awesome'
     ],
@@ -321,8 +302,6 @@ STRONG_KEYWORDS = {
         'feel love', 'feeling love', 'feel loved', 'feeling loved',
         'so much love', 'full of love', 'so in love',
         'my heart belongs', 'you mean everything', 'everything to me',
-        
-        # --- EKLENEN KÖK KELİMELER ---
         'adore', 'cherish', 'affection', 'devoted', 'beloved', 'soulmate'
     ],
     'surprise': [
@@ -332,8 +311,6 @@ STRONG_KEYWORDS = {
         'blown away', 'mind blown', 'caught off guard',
         'completely unexpected', 'never saw it coming', 'took me by surprise',
         'so surprised', 'i was surprised', 'i am surprised',
-        
-        # --- EKLENEN KÖK KELİMELER ---
         'shocked', 'stunned', 'astonished', 'amazed', 'astounded',
         'unexpected', 'unbelievable', 'wow'
     ],
@@ -342,8 +319,6 @@ STRONG_KEYWORDS = {
         'normal day', 'routine day', 'nothing special', 'as usual',
         'regular day', 'ordinary day', 'did not do much', 'pretty uneventful',
         'nothing happened', 'typical day', 'same old',
-        
-        # --- EKLENEN KÖK KELİMELER ---
         'uneventful', 'routine', 'typical', 'ordinary', 'average', 'whatever', 'okay'
     ],
 
@@ -428,11 +403,9 @@ def train_model():
 
     print("✅  TF-IDF model trained.")
 
-# EMOTION PREDICTION — HYBRID (TF-IDF + Keyword)
 
 
 def _get_ml_scores(text: str) -> dict:
-    """TF-IDF + LR'dan pozitif sınıf olasılığı al."""
     if tfidf_vectorizer is None or not tfidf_classifiers:
         return {l: 1.0 / len(EMOTION_LABELS) for l in EMOTION_LABELS}
 
@@ -446,7 +419,6 @@ def _get_ml_scores(text: str) -> dict:
         scores[label] = float(p[pos_idx])
     return scores
 
-# 1. Zıtlık belirten İngilizce bağlaçların listesi
 CONTRAST_CONJUNCTIONS = [
     r'\buntil\b', r'\bbut\b', r'\bhowever\b', 
     r'\balthough\b', r'\beven though\b', r'\byet\b'
@@ -481,34 +453,28 @@ def _get_keyword_scores(text_chunk_lower: str) -> dict:
                 try:
                     idx = words.index(kw_first_word)
                     is_negated = False
-                    # Kelimenin 1 veya 2 kelime öncesinde olumsuzluk var mı? (örn: "not very happy")
                     if idx > 0 and words[idx-1] in NEGATION_WORDS:
                         is_negated = True
                     elif idx > 1 and words[idx-2] in NEGATION_WORDS:
                         is_negated = True
                         
                     if is_negated:
-                        scores[label] -= 0.5  # Olumsuzsa puanını kır
+                        scores[label] -= 0.5  
                     else:
-                        scores[label] += 1.0  # Normal eşleşme
+                        scores[label] += 1.0  
                 except ValueError:
                     scores[label] += 1.0
                     
-    return {k: max(0.0, v) for k, v in scores.items()} # Eksiye düşmesini engelle
+    return {k: max(0.0, v) for k, v in scores.items()} 
 
 def predict_emotions(text: str) -> list:
-    """
-    Zaman Serisi (Progressive) Duygu Analizi:
-    Metni parçalara böler ve sona doğru ilerledikçe duyguların ağırlığını katlayarak artırır.
-    """
     try:
         clean = contractions.fix(text)
     except Exception:
         clean = text
 
-    # 1. Metni noktalama işaretlerinden (.!?) veya geçiş bağlaçlarından (but, until) PARÇALARA BÖL
     chunks = re.split(r'(?<=[.!?])\s+|\b(?:but|until|however|although)\b', clean, flags=re.IGNORECASE)
-    chunks = [c.strip() for c in chunks if len(c.strip()) > 2] # Boş parçaları temizle
+    chunks = [c.strip() for c in chunks if len(c.strip()) > 2] 
     
     if not chunks:
         chunks = [clean]
@@ -516,17 +482,15 @@ def predict_emotions(text: str) -> list:
     total_scores = {l: 0.0 for l in EMOTION_LABELS}
     num_chunks = len(chunks)
     
-    # 2. Her parçayı sırasıyla analiz et ve KONUMSAL AĞIRLIK uygula
     for i, chunk in enumerate(chunks):
-        pos_ratio = (i + 1) / num_chunks  # Parçanın konumu (0.0 ile 1.0 arası)
+        pos_ratio = (i + 1) / num_chunks  
         
-        # --- SİHRİN GERÇEKLEŞTİĞİ YER (RECENCY BIAS) ---
         if pos_ratio == 1.0:
-            weight = 5.0   # EN SON PARÇA: Dev çarpan (Nihai duygu her şeyi domine eder)
+            weight = 5.0   
         elif pos_ratio > 0.6:
-            weight = 1.5   # GELİŞME KISMI: Normalden biraz daha etkili
+            weight = 1.5   
         else:
-            weight = 0.2   # KURULUM KISMI: Çok zayıflatılır (Baştaki "Joy" puanlarını ezer)
+            weight = 0.2   
             
         chunk_lower = re.sub(r"[^a-z0-9' ]", " ", chunk.lower())
         kw_scores = _get_keyword_scores(chunk_lower)
@@ -539,17 +503,14 @@ def predict_emotions(text: str) -> list:
         else:
             chunk_final = ml_scores
             
-        # Parçanın skorunu zaman ağırlığıyla çarparak ana toplama ekle
         for l in EMOTION_LABELS:
             total_scores[l] += chunk_final.get(l, 0) * weight
 
-    # 3. Sonuçları normalize et ve top 3'ü döndür
     sorted_probs = sorted(total_scores.items(), key=lambda x: -x[1])
     top3  = sorted_probs[:3]
     total = sum(s for _, s in top3) or 1.0
     
     return [(e, round(s / total, 3)) for e, s in top3]
-# KEYWORD FALLBACK (ML yoksa)
 
 EMOTION_KEYWORDS = {
     "joy": [
@@ -651,7 +612,6 @@ def keyword_fallback(text: str) -> list:
             if b in w: m = max(m, f)
         return m
 
-    # Pass 1: phrases
     for emotion, kw_list in EMOTION_KEYWORDS.items():
         multi = sorted([(k, w) for k, w in kw_list if len(k.split()) > 1], key=lambda x: -len(x[0]))
         for keyword, base_w in multi:
@@ -664,7 +624,6 @@ def keyword_fallback(text: str) -> list:
                     raw[emotion] += -w * 0.5 if negated(start) else w
                     consumed.update(positions)
 
-    # Pass 2: single words
     for emotion, kw_list in EMOTION_KEYWORDS.items():
         singles = [(k, w) for k, w in kw_list if len(k.split()) == 1]
         for keyword, base_w in singles:
@@ -716,23 +675,16 @@ EMOTION_VALENCE = {
     "fear":    -0.6,
     "anger":   -0.8,
 }
-# --- MAİL VE HATIRLATICI SİSTEMİ ---
-# GÜVENLİK NOTU: Gerçek bir projede bu şifreler kodun içine yazılmaz, ortam değişkeninden (.env) çekilir!
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 465
-# Artık şifreleri koddan değil, güvenli .env dosyasından çekiyoruz
 SENDER_EMAIL = os.getenv("SENDER_EMAIL") 
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
-
-# Kullanıcıların alarm verilerini RAM'de tuttuğumuz geçici sözlük
-# Örn: {'Sena': {'email': 'sena@mail.com', 'time': '21:00', 'last_sent': '2026-04-23'}}
 active_reminders = {}
 base_url = os.getenv("BASE_URL", "http://localhost:5000")
 
 def send_email_reminder(to_email, username):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = "Take a moment for yourself today 🌿"
-    # SENDER_EMAIL'i güvenli .env kasasından çekiyoruz
     sender_email = os.getenv("SENDER_EMAIL")
     msg["From"] = f"Mindiary <{sender_email}>"
     msg["To"] = to_email
@@ -814,7 +766,6 @@ def send_email_reminder(to_email, username):
     try:
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT, context=context) as server:
-            # Şifreyi de .env kasasından çekiyoruz
             server.login(sender_email, os.getenv("SENDER_PASSWORD"))
             server.sendmail(sender_email, to_email, msg.as_string())
         print(f"📧 BAŞARILI: {to_email} adresine hatırlatıcı maili uçuruldu!")
@@ -836,7 +787,6 @@ def reminder_worker():
             suan = datetime.now().strftime("%H:%M")
             print(f"👀 Postaci DB kontrol ediyor: Saat {suan}")
             
-            # Veritabanına bağlanıp o saatin alarmlarını çekiyoruz
             if db_url:
                 conn = psycopg2.connect(db_url)
                 cur = conn.cursor()
@@ -882,7 +832,7 @@ def reminder_worker():
                     payload = {
                         "sender": {
                                     "name": "Mindiary",
-                                    "email": "mindiary.support@gmail.com"  # İŞTE BİZİ GOOGLE'DAN GEÇİRECEK SİHİRLİ ADRES!
+                                    "email": "mindiary.support@gmail.com" 
                                 },
                         "to": [{"email": user_email, "name": user}],
                         "subject": "Mindiary: Your Blank Page is Ready 🖋️",
@@ -935,16 +885,15 @@ def get_dynamic_movies(emotion: str) -> list:
     
     
     genre_map = {
-        'joy': '35',            # Komedi
-        'sadness': '18',        # Drama
-        'anger': '28,10759',    # Aksiyon (Film 28, Dizi 10759)
-        'fear': '16,10751',     # Animasyon, Aile
-        'surprise': '878,10765',# Bilim Kurgu (Film 878, Dizi 10765)
-        'love': '10749,18',     # Romantik
-        'neutral': '99'         # Belgesel
+        'joy': '35',            
+        'sadness': '18',       
+        'anger': '28,10759', 
+        'fear': '16,10751',   
+        'surprise': '878,10765',
+        'love': '10749,18',     
+        'neutral': '99'         
     }
     
-    # API anahtarını gizli .env dosyasından çekiyoruz
     api_key = os.getenv("TMDB_API_KEY")
     
     if not api_key or api_key == "SENIN_TMDB_API_ANAHTARIN":
@@ -952,23 +901,18 @@ def get_dynamic_movies(emotion: str) -> list:
 
     genres = genre_map.get(emotion, '35')
     
-    # 1. Hem FİLM hem DİZİ (TV) için ayrı iki istek hazırlıyoruz
     movie_url = f"https://api.themoviedb.org/3/discover/movie?api_key={api_key}&with_genres={genres}&vote_average.gte=7.0&sort_by=popularity.desc"
     tv_url = f"https://api.themoviedb.org/3/discover/tv?api_key={api_key}&with_genres={genres}&vote_average.gte=7.0&sort_by=popularity.desc"
     
     try:
-        # 2. İki API'ye de aynı anda istek atıyoruz
         movies = requests.get(movie_url, timeout=3).json().get('results', [])
         shows = requests.get(tv_url, timeout=3).json().get('results', [])
         
-        # 3. Hangi verinin ne olduğunu Frontend anlasın diye etiketliyoruz
         for m in movies: m['media_type'] = 'film'
         for s in shows: s['media_type'] = 'series'
         
-        # 4. Tüm dizi ve filmleri TEK BİR HAVUZDA birleştiriyoruz
         combined_pool = movies + shows
         
-        # 5. Bu büyük havuzdan rastgele 4 tane seçiyoruz (Böylece hep karışık gelecek)
         selected = random.sample(combined_pool, min(4, len(combined_pool)))
         
         results = []
@@ -977,7 +921,6 @@ def get_dynamic_movies(emotion: str) -> list:
             imdb = str(round(item.get('vote_average', 0.0), 1)) + "/10"
             m_type = item['media_type']
             
-            # Google linki için uygun arama terimi ekliyoruz
             search_suffix = "tv show" if m_type == "series" else "movie"
             search_query = urllib.parse.quote(f"{title} {search_suffix}")
             google_url = f"https://www.google.com/search?q={search_query}"
@@ -1008,7 +951,6 @@ def get_dynamic_food(emotion: str) -> list:
         'neutral': ['avocado', 'lentil', 'chicken', 'toast', 'egg']
     }
     
-    # API anahtarını gizli .env dosyasından çekiyoruz
     api_key = os.getenv("SPOONACULAR_API_KEY")
     
     if not api_key or api_key == "SENIN_SPOONACULAR_API_ANAHTARIN":
@@ -1022,7 +964,6 @@ def get_dynamic_food(emotion: str) -> list:
     print(f"🍳 SPOONACULAR ZAMAN-BAZLI ARAMA TETİKLENDİ")
     
     for query in selected_ingredients:
-        # addRecipeInformation=true ile tarif sürelerini (readyInMinutes) de çekiyoruz!
         url = f"https://api.spoonacular.com/recipes/complexSearch?query={query}&number=8&addRecipeInformation=true&apiKey={api_key}"
         
         try:
@@ -1030,7 +971,6 @@ def get_dynamic_food(emotion: str) -> list:
             if resp.status_code == 200:
                 data = resp.json().get('results', [])
                 
-                # 30 dk ve altı olanları HIZLI, 30 dk üstü olanları YAVAŞ/TERAPİ olarak ayırıyoruz
                 easy_cands = [r for r in data if r.get('readyInMinutes', 999) <= 30]
                 hard_cands = [r for r in data if r.get('readyInMinutes', 0) > 30]
                 
@@ -1108,7 +1048,6 @@ def get_full_recommendations(text: str, emotions: list, location: str = "", rag_
             if items:
                 shuffled = list(items)
                 rng.shuffle(shuffled)
-                # Boost RAG-favoured items to front
                 shuffled.sort(key=lambda x: -rag_score(x))
                 return shuffled[:n]
         neutral_block = db.get("neutral", {})
@@ -1142,14 +1081,11 @@ def get_full_recommendations(text: str, emotions: list, location: str = "", rag_
             }
             continue
 
-        # Dizi ve Filmler için Dinamik API Entegrasyonu
         if cat == "shows_movies":
             dynamic_shows = get_dynamic_movies(dominant_emotion)
-            # Eğer API'den film geldiyse onu kullan
             if dynamic_shows:
                 recs[cat] = dynamic_shows
             else:
-                # API başarısız olursa veya key yoksa eski JSON yedeğine (Fallback) dön
                 pool = {}
                 for emo_name, emo_score in normalized[:2]:
                     for item in pick_from(emo_name, cat, n=4):
@@ -1179,14 +1115,11 @@ def get_full_recommendations(text: str, emotions: list, location: str = "", rag_
             continue
 
 
-        # food & activity — blend top-3 emotions
-        # YEMEKLER İÇİN DİNAMİK API
         if cat == "food":
             dynamic_food = get_dynamic_food(dominant_emotion)
             if dynamic_food:
                 recs[cat] = dynamic_food
             else:
-                # API başarısız olursa JSON'a (Fallback) dön
                 pool = {}
                 for emo_name, emo_score in normalized[:3]:
                     for item in pick_from(emo_name, cat, n=3):
@@ -1197,7 +1130,6 @@ def get_full_recommendations(text: str, emotions: list, location: str = "", rag_
                 recs[cat] = [v["item"] for v in sorted_items[:3]]
             continue
 
-        # AKTİVİTELER İÇİN ESKİ JSON MANTIĞI
         if cat == "activity":
             pool = {}
             for emo_name, emo_score in normalized[:3]:
@@ -1311,7 +1243,6 @@ def save_feedback():
     finally:
         conn.close()
 
-# ANALYZE + SAVE ENTRY
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
@@ -1510,7 +1441,6 @@ def get_pages(username):
             rec_rows = fetchall_dict(cur)
 
             recs = {}
-            # EKLENEN KISIM: Veritabanındaki önerileri (recommendations) çözüp frontend'e yolluyoruz.
             for r in rec_rows:
                 try:
                     recs[r['category']] = json.loads(r['item'])
@@ -1533,7 +1463,7 @@ def get_pages(username):
                 "analyzed":        True,
                 "emotions":        [{"name": r['emotion'], "score": r['score']} for r in emotions_rows],
                 "recommendations": recs,
-                "cardFeedback":    cf,  # <--- BU SATIRI EKLEYİN
+                "cardFeedback":    cf, 
                 "tier": _intensity_tier(entry['mood_score']) if entry.get('mood_score') is not None else "mild",                "created_at":      entry['created_at'],
                 "updated_at":      entry['updated_at'],
             })
@@ -1655,7 +1585,6 @@ def get_stats(username):
         emotion_rows = fetchall_dict(cur)
 
         cur.execute("SELECT COUNT(*) AS n FROM entries WHERE user_id=%s", (user['id'],))
-        # total_entries = cur.fetchone()[0] YERİNE:
         total_entries = cur.fetchone()['n']
 
         cur.execute("""
@@ -1720,7 +1649,6 @@ def gizli_reset():
     conn = get_db()
     cur = conn.cursor()
     try:
-        # 1. Eski her şeyi acımasızca yok et
         cur.execute("""
             DROP TABLE IF EXISTS user_feedback CASCADE;
             DROP TABLE IF EXISTS surveys CASCADE;
@@ -1730,7 +1658,6 @@ def gizli_reset():
             DROP TABLE IF EXISTS users CASCADE;
         """)
         
-        # 2. Tabloları tek bir seferde, sırasıyla ve eksiksiz kur
         cur.execute("""
             CREATE TABLE users (
                 id         SERIAL PRIMARY KEY,
@@ -1804,7 +1731,6 @@ def gizli_reset():
 def home():
     return render_template('index.html')
 
-# frontend.html sayfasını sunmak için gereken yönlendirme (route)
 @app.route('/frontend.html')
 def frontend_page():
     return render_template('frontend.html')
@@ -1851,21 +1777,17 @@ def get_feedback(username):
     finally:
         conn.close()
 
-# İşçinin sadece 1 kere başlatıldığından emin olmak için bir bayrak
 worker_started = False
 
-# Bu kod, siteye herhangi bir istek (tıklama, sayfa yenileme) geldiğinde çalışır
 @app.before_request
 def wake_up_postaci():
     global worker_started
     if not worker_started:
         import threading
-        # Postacıyı uyandırıyoruz
         threading.Thread(target=reminder_worker, daemon=True).start()
         worker_started = True
         print("🚀 Postaci uyandirildi ve DB nöbetine başladi!")
 
-# --- AŞAĞIDAKİ SET REMINDER İÇİNDEKİ ESKİ UYANDIRMA KODUNU SİLEBİLİRSİN ---
 @app.route('/api/reminder/set', methods=['POST'])
 def set_reminder():
     global worker_started
@@ -1885,13 +1807,10 @@ def set_reminder():
     time_parts = time_str.split(":")
     clean_time_str = f"{time_parts[0]}:{time_parts[1]}" if len(time_parts) >= 2 else time_str
 
-    # Veritabanına (Kalıcı Hafızaya) Kaydet
     conn = get_db()
     cur = conn.cursor()
     try:
-        # Eski alarmı varsa sil (Günde 1 alarm mantığı)
         cur.execute("DELETE FROM reminders WHERE username = %s", (username,))
-        # Yeni alarmı ekle
         cur.execute("INSERT INTO reminders (username, email, reminder_time) VALUES (%s, %s, %s)", 
                     (username, email, clean_time_str))
         conn.commit()
@@ -1904,7 +1823,6 @@ def set_reminder():
     print(f"💾 KALICI ALARM KURULDU: {email} | Saat: {clean_time_str}")
     return jsonify({"status": "ok", "message": "Reminder safely stored in DB."})
 
-# CORS header on every response
 @app.route('/test-mail')
 def test_mail():
     import urllib.request
@@ -1937,7 +1855,7 @@ def test_mail():
         payload = {
             "sender": {
                 "name": "Mindiary",
-                "email": "mindiary.support@11161912.brevosend.com"  # O sihirli adresi kullandık
+                "email": "mindiary.support@11161912.brevosend.com"  
             },
             "to": [{"email": "serifenursenagulhan07@gmail.com", "name": "Sena"}],
             "subject": "Mindiary: Test Başarılı! 🌸",
