@@ -1295,6 +1295,12 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
           <input type="password" id="cIn" placeholder="repeat" onkeydown="if(event.key==='Enter')doAuth()">
         </div>
       </div>
+
+      <div style="margin-bottom: 15px; text-align: left; display: flex; align-items: center; gap: 8px;" id="rememberField">
+        <input type="checkbox" id="loginRememberMe" style="cursor: pointer; accent-color: #8a5020;">
+        <label for="loginRememberMe" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:rgba(60,40,20,.6);cursor:pointer;user-select:none;">Remember Me</label>
+      </div>
+
       <button class="submit-btn" onclick="doAuth()"><span id="submitTxt">Open Mindiary</span></button>
       <div class="switch-line" id="switchLine">First time? <b onclick="setAuthMode('register')">Create account</b></div>
     </div>
@@ -1318,10 +1324,8 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
   <div class="main-layout">
     <div class="open-book" id="openBook">
 
-      <!-- ── VELVET BOOKMARK ── -->
       <div class="bookmark" id="bookmark"></div>
 
-      <!-- ── BOOKMARK BUTTON (clickable) ── -->
       <button class="bookmark-btn" id="bookmarkBtn" onclick="openWellnessDash()" title="Open Wellness Dashboard" style="display:none;">
         <div class="bookmark-btn-ring">
           <span class="bookmark-btn-icon">📊</span>
@@ -1329,7 +1333,6 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
         <span class="bookmark-btn-label">Analytics</span>
       </button>
 
-      <!-- ── LEFT PAGE ── -->
       <div class="pg pg-left">
         <div class="pg-body">
           <div class="pg-num" id="pgNumL">i</div>
@@ -1343,7 +1346,6 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
             <button class="pg-nav-btn" id="nextBtn" onclick="doFlip(1)">next →</button>
           </div>
 
-          <!-- Write mode -->
           <div id="writeMode" class="write-area">
             <div class="sec-label">Today's entry</div>
             <div class="empty-hint" id="emptyHint" onclick="openPen()">
@@ -1361,7 +1363,6 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
             </div>
           </div>
 
-          <!-- Entry view (after analysis) -->
           <div id="entryView" class="entry-view">
             <div class="sec-label">Entry</div>
             <div class="entry-text" id="entryText"></div>
@@ -1372,29 +1373,24 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
         
       </div>
 
-      <!-- ── GUTTER ── -->
       <div class="gutter">
         <div class="gutter-stitches"><div class="gs"></div><div class="gs"></div><div class="gs"></div><div class="gs"></div><div class="gs"></div></div>
       </div>
 
-      <!-- ── RIGHT PAGE ── -->
       <div class="pg pg-right">
         <div class="pg-body">
           <div class="pg-num pg-num-r" id="pgNumR">ii</div>
 
-          <!-- Idle state -->
           <div class="right-idle" id="rightIdle">
             <span style="font-size:22px;opacity:.25">🕯</span>
             <p>Write something on the left page.<br></p>
           </div>
 
-          <!-- Loading state -->
           <div class="loading-area" id="loadingArea">
             <div class="loading-quill">🪶</div>
             <div class="loading-txt">Reading the ink of your heart…</div>
           </div>
 
-          <!-- Results -->
           <div class="results-area" id="resultsArea">
             <div class="sec-label" style="flex-shrink:0;">Emotional landscape</div>
             <div class="emo-bars" id="emoBars"></div>
@@ -1433,7 +1429,6 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
         <div style="position:absolute;bottom:0;left:0;width:24px;height:24px;cursor:pointer;z-index:10;background:linear-gradient(225deg,transparent 50%,rgba(160,130,60,.15) 50%);" onclick="doFlip(-1)"></div>
       </div>
 
-      <!-- Flip overlay -->
       <div class="flip-wrap" id="flipWrap">
         <div class="flip-page" id="flipPage">
           <div class="fp-front"></div><div class="fp-back"></div>
@@ -1444,10 +1439,8 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
   </div>
 </div>
 
-<!-- ══ SCHEDULER FLOATER ══ -->
 <button class="sched-floater" id="schedFloater" onclick="toggleScheduler()" style="display:none;">📅 Wellness Schedule</button>
 
-<!-- ══ REMINDER POPUP ══ -->
 <div id="reminderPopup">
   <div class="popup-header">
     <div class="popup-title">✦ Daily Reminder</div>
@@ -1459,9 +1452,7 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
   <button class="popup-action" onclick="closeReminderPopup();openWellnessDash()">Open Wellness Dashboard →</button>
 </div>
 
-<!-- ══ WELLNESS DASHBOARD ══ -->
 <div id="wellnessDash">
-  <!-- Topbar -->
   <div class="dash-topbar">
     <div class="dash-logo">
       <div class="dash-logo-mark">📊</div>
@@ -1475,7 +1466,6 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
     </button>
   </div>
 
-  <!-- Period tabs -->
   <div class="dash-period-bar">
     <button class="dash-ptab active" data-period="daily" onclick="switchDashPeriod('daily')">Daily</button>
     <button class="dash-ptab" data-period="weekly" onclick="switchDashPeriod('weekly')">Weekly</button>
@@ -1483,31 +1473,25 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
     <button class="dash-ptab" data-period="all" onclick="switchDashPeriod('all')">All Time</button>
   </div>
 
-  <!-- Content -->
   <div class="dash-content" id="dashContent">
-    <!-- Rendered by JS -->
   </div>
 </div>
 
-<!-- ══ SCHEDULER PANEL ══ -->
 <div id="schedulerPanel">
   <div class="sched-handle" onclick="toggleScheduler()">
     <div class="sched-title">📅 Periodic Wellness Schedule</div>
     <button class="sched-toggle-btn" id="schedHandleBtn">Close ↓</button>
   </div>
   <div class="sched-body">
-    <!-- Overall mood trend -->
     <div class="sched-card" style="flex:2;min-width:220px;">
       <div class="sched-card-title">Emotional Trend</div>
       <p>Your overall emotional landscape across all journal entries.</p>
       <div id="moodTrendArea"><div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:rgba(100,70,20,.35);">Write at least 2 entries to see trends.</div></div>
     </div>
-    <!-- Daily reminder -->
     <div class="sched-card">
       <div class="sched-card-title">Daily Check-In</div>
       <p>Set a daily reminder to write in your diary.</p>
       
-      <!-- Kullanıcı istediği saati ve dakikayı özgürce seçebilir -->
       <input type="time" class="sched-select" id="remTime" value="20:00" required style="margin-bottom: 8px; width: 100%; font-family: 'Raleway', sans-serif; letter-spacing: 2px;">
       
       <input type="email" id="remEmail" placeholder="your@email.com" style="width: 100%; padding: 6px; margin-bottom: 6px; border-radius: 4px; border: 1px solid rgba(110,75,25,.2); box-sizing: border-box; background: rgba(255,255,255,0.6); font-family: inherit;">
@@ -1521,14 +1505,12 @@ textarea::placeholder{color:rgba(90,60,25,.15);font-style:italic;}
       
       <div id="dailyReminderStatus" style="margin-top:6px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(60,100,60,.7);"></div>
     </div>
-    <!-- Weekly report -->
     <div class="sched-card">
       <div class="sched-card-title">Weekly Review</div>
       <p>Generate a summary of your emotional week and top effective suggestions.</p>
       <button class="sched-btn" onclick="generateWeeklyReport()">Generate Report</button>
       <div id="weeklyReportArea" style="margin-top:8px;"></div>
     </div>
-    <!-- Feedback history -->
     <div class="sched-card" style="flex:1.5;min-width:200px;">
       <div class="sched-card-title">What Worked For You</div>
       <p>Suggestions you rated ★★★★☆ or above.</p>
@@ -1605,6 +1587,11 @@ function ragRecord(itemText, didIt, stars, feedback, emotion){
   }
   saveRag(db);
 }
+
+    const savedUser = localStorage.getItem('mindiary_active_user') || sessionStorage.getItem('mindiary_active_user');
+    if (savedUser) {
+        openJournal(savedUser);
+    }
 
 document.addEventListener('DOMContentLoaded', () => {
     const savedEmail = localStorage.getItem('mindiary_saved_email');
@@ -1743,6 +1730,13 @@ async function doAuth(){
       const r=await fetch(`${API}/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
       const d=await r.json(); if(!r.ok){showAuthErr(d.error||'Wrong username or password.');return;}
     }
+    
+    // --- HAFIZAYA KAYDETME KODU EKLENDİ ---
+    const rememberMe = document.getElementById('loginRememberMe')?.checked;
+    if (rememberMe) localStorage.setItem('mindiary_active_user', u);
+    else sessionStorage.setItem('mindiary_active_user', u);
+    // --------------------------------------
+
     openJournal(u);
   }catch(e){
     const lu=JSON.parse(localStorage.getItem('dlv4')||'{}');
@@ -1754,6 +1748,13 @@ async function doAuth(){
     }else{
       if(!lu[u]||btoa(p)!==lu[u].h){showAuthErr('Wrong username or password.');return;}
     }
+    
+    // --- HAFIZAYA KAYDETME KODU EKLENDİ (Çevrimdışı mod için) ---
+    const rememberMe = document.getElementById('loginRememberMe')?.checked;
+    if (rememberMe) localStorage.setItem('mindiary_active_user', u);
+    else sessionStorage.setItem('mindiary_active_user', u);
+    // --------------------------------------
+
     openJournal(u);
   }finally{btn.disabled=false;}
 }
@@ -1781,6 +1782,8 @@ function openJournal(username){
 }
 function logout(){
   curUser=null; pages=[];
+  localStorage.removeItem('mindiary_active_user');
+  sessionStorage.removeItem('mindiary_active_user');
   if(reminderInterval){ clearInterval(reminderInterval); reminderInterval=null; }
   const j=document.getElementById('journal');
   j.classList.remove('visible'); setTimeout(()=>j.classList.remove('show'),600);
@@ -2257,7 +2260,6 @@ function buildShowsPane(shows){
       <div class="show-imdb">IMDB ${item.imdb||''}</div>
       ${item.why?`<div class="why-text open" style="background:transparent; border:none; padding:0; margin-top:4px;">${item.why}</div>`:''}
       <div style="margin-top:10px;">
-        <!-- HATA BURADAYDI, URL BAĞLANTISI EKLENDİ -->
         <a href="${item.url}" target="_blank" rel="noopener" class="action-btn" style="text-decoration:none; color:#4a2b28; border-color:#4a2b28; background:rgba(74,43,40,0.05); padding: 4px 10px;">
           🔍 Search on Google
         </a>
@@ -3034,7 +3036,6 @@ function renderDash() {
   const historyEntries = [...(pages || [])].reverse();
 
   content.innerHTML = `
-    <!-- ── ROW 1: Stats ── -->
     <div class="dash-grid" style="margin-bottom:16px;">
       <div class="dash-card">
         <div class="dash-card-title">📖 Entries — ${periodLabel}</div>
@@ -3062,7 +3063,6 @@ function renderDash() {
       </div>
     </div>
 
-    <!-- ── ROW 2: Emotion landscape + mood chart ── -->
     <div class="dash-grid" style="margin-bottom:16px;">
       <div class="dash-card span2">
         <div class="dash-card-title">🎭 Emotional Landscape — ${periodLabel}</div>
@@ -3074,7 +3074,6 @@ function renderDash() {
       </div>
     </div>
 
-    <!-- ── ROW 3: History + Top items + Reminder ── -->
     <div class="dash-grid" style="margin-bottom:16px;">
       <div class="dash-card span2">
         <div class="dash-card-title">📜 Entry History — All Outputs</div>
@@ -3199,17 +3198,13 @@ function renderSparkline(analyzed) {
             <stop offset="100%" stop-color="${lastEmo.color}" stop-opacity="0.01"/>
           </linearGradient>
         </defs>
-        <!-- Grid lines -->
         ${[1,3,5].map(v => {
           const y = padY + iH - ((v-1)/4)*iH;
           return `<line x1="${padX}" y1="${y}" x2="${W-padX}" y2="${y}" stroke="rgba(180,150,70,.07)" stroke-width="1" stroke-dasharray="3,3"/>`;
         }).join('')}
         ${yLabels}
-        <!-- Area fill -->
         <path d="${areaD}" fill="url(#sparkGrad)"/>
-        <!-- Line -->
         <path d="${pathD}" fill="none" stroke="${lastEmo.color}" stroke-width="1.8" opacity="0.65" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- Dots -->
         ${dots}
       </svg>
     </div>
