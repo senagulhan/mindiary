@@ -1263,13 +1263,49 @@ def save_feedback():
         if not user:
             return jsonify({"error": "User not found."}), 404
 
+        # 1. Kullanıcının verdiği geri bildirimi (yıldızları) veritabanına kaydet
         cur.execute("""
             INSERT INTO user_feedback 
                 (user_id, item_text, category, did_it, stars, feedback_text, emotion)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, (user['id'], item_text, category, True if did_it else False, stars, feedback_text, emotion))
+        
+        # 2. TEZİN KALBİ: Geri Bildirime Dayalı Dinamik Wellness Score Hesaplaması
+        if did_it and int(stars) > 0:
+            # Kullanıcının BUGÜN yaptığı aktivitelerden aldığı ortalama yıldızı hesapla
+            cur.execute("""
+                SELECT AVG(stars) as avg_stars 
+                FROM user_feedback 
+                WHERE user_id=%s AND did_it=TRUE 
+                  AND DATE(created_at) = CURRENT_DATE
+            """, (user['id'],))
+            res = fetchone_dict(cur)
+            
+            if res and res['avg_stars']:
+                # 5 üzerinden olan yıldız ortalamasını 10 üzerinden olan Wellness Score'a çevir
+                # Örnek: Ortalama 4.5 yıldız -> 9.0 Wellness Score
+                new_wellness_score = round(float(res['avg_stars']) * 2, 1)
+                
+                # Kullanıcının en son yazdığı günlüğü bul ve skorunu bu gerçek veriyle ez (overwrite)
+                cur.execute("""
+                    UPDATE entries 
+                    SET mood_score = %s 
+                    WHERE id = (
+                        SELECT id FROM entries 
+                        WHERE user_id = %s 
+                        ORDER BY id DESC LIMIT 1
+                    )
+                """, (new_wellness_score, user['id']))
+
         conn.commit()
-        return jsonify({"message": "Feedback saved successfully.", "status": "ok"}), 200
+        return jsonify({
+            "message": "Feedback saved and Wellness Score dynamically updated.", 
+            "status": "ok"
+        }), 200
+    except Exception as e:
+        conn.rollback()
+        print(f"Feedback Update Error: {e}")
+        return jsonify({"error": "Database error", "details": str(e)}), 500
     finally:
         conn.close()
 
@@ -1914,5 +1950,5 @@ def add_cors_headers(response):
 if __name__ == '__main__':
     init_db(reset=True)
     train_model()
-    print("🚀 Server running → http://localhost:5000")
+    print("🚀 Server is running!")
     app.run(debug=False, port=5000)

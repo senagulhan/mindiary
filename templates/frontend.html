@@ -3094,6 +3094,23 @@ function renderDash() {
           <div class="dash-stat-sub">${calcLongestStreak()} day best streak</div>
         </div>
       </div>
+      <div class="dash-card">
+          <div class="dash-card-title">🔥 Writing Streak</div>
+          <div class="dash-stat">
+            <div class="dash-stat-num">${calcStreak()}</div>
+            <div class="dash-stat-label">Days in a Row</div>
+            <div class="dash-stat-sub">${calcLongestStreak()} day best streak</div>
+          </div>
+        </div>
+
+        <div class="dash-card" style="border-left: 4px solid #D4AF37;">
+          <div class="dash-card-title">✨ Wellness Score</div>
+          <div class="dash-stat">
+            <div class="dash-stat-num" style="color: #D4AF37;">${calcLatestScore()}</div>
+            <div class="dash-stat-label">Action-Based Rating</div>
+            <div class="dash-stat-sub">Dynamic feedback loop</div>
+          </div>
+        </div>
     </div>
 
     <div class="dash-grid" style="margin-bottom:16px;">
@@ -3262,6 +3279,19 @@ function calcLongestStreak() {
     else { cur = 1; }
   }
   return Math.max(best, unique.length ? 1 : 0);
+}
+
+function calcLatestScore() {
+  if (!pages || !pages.length) return "0.0";
+  // Günlükleri tarihe göre en yeniden eskiye sırala
+  const sorted = [...pages].sort((a,b) => new Date(b.date) - new Date(a.date));
+  const latest = sorted[0]; // En son yazılan günlük
+  
+  // Eğer veritabanından mood_score geldiyse 10 üzerinden virgüllü olarak göster
+  if (latest && latest.mood_score) {
+    return parseFloat(latest.mood_score).toFixed(1);
+  }
+  return "0.0";
 }
 
 function renderTopItems(items) {
