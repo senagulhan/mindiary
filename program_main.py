@@ -1272,21 +1272,19 @@ def save_feedback():
         
         # 2. TEZİN KALBİ: Geri Bildirime Dayalı Dinamik Wellness Score Hesaplaması
         if did_it and int(stars) > 0:
-            # Kullanıcının BUGÜN yaptığı aktivitelerden aldığı ortalama yıldızı hesapla
+            # DÜZELTME: CURRENT_DATE şartını kaldırdık, kullanıcının yaptığı son aktiviteleri baz alıyoruz
             cur.execute("""
                 SELECT AVG(stars) as avg_stars 
                 FROM user_feedback 
                 WHERE user_id=%s AND did_it=TRUE 
-                  AND DATE(created_at) = CURRENT_DATE
             """, (user['id'],))
             res = fetchone_dict(cur)
             
             if res and res['avg_stars']:
                 # 5 üzerinden olan yıldız ortalamasını 10 üzerinden olan Wellness Score'a çevir
-                # Örnek: Ortalama 4.5 yıldız -> 9.0 Wellness Score
                 new_wellness_score = round(float(res['avg_stars']) * 2, 1)
                 
-                # Kullanıcının en son yazdığı günlüğü bul ve skorunu bu gerçek veriyle ez (overwrite)
+                # SADECE EN SON GÜNLÜĞÜ GÜNCELLE (Tarih saatine bakmaksızın)
                 cur.execute("""
                     UPDATE entries 
                     SET mood_score = %s 
