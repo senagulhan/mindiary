@@ -425,7 +425,6 @@ CONTRAST_CONJUNCTIONS = [
 ]
 
 def _get_combined_raw_scores(text_chunk: str) -> dict:
-    """Verilen metin parçası için Keyword ve ML skorlarını hesaplayıp harmanlar."""
     if not text_chunk.strip():
         return {l: 0.0 for l in EMOTION_LABELS}
         
@@ -442,7 +441,6 @@ def _get_combined_raw_scores(text_chunk: str) -> dict:
 NEGATION_WORDS = {'not', 'never', 'no', "didn't", "don't", "doesn't", "wasn't", "isn't", "aren't"}
 
 def _get_keyword_scores(text_chunk_lower: str) -> dict:
-    """Verilen küçük bir metin parçası (cümle) içindeki kelimeleri olumsuzluk ekiyle kontrol eder."""
     scores = {l: 0.0 for l in EMOTION_LABELS}
     words = text_chunk_lower.split()
     
@@ -881,8 +879,6 @@ CAT_JSON_KEY = {
 ALL_CATEGORIES = list(CAT_JSON_KEY.keys())
 
 def get_dynamic_movies(emotion: str) -> list:
-    """TMDB API kullanarak anlık duyguya özel hem film hem DİZİ önerilerini KARIŞIK çeker."""
-    
     
     genre_map = {
         'joy': '35',            
@@ -942,13 +938,48 @@ def get_dynamic_food(emotion: str) -> list:
     
     
     ingredient_map = {
-        'joy': ['mango', 'strawberry', 'citrus', 'blueberry', 'peach'],
-        'sadness': ['dark chocolate', 'banana', 'oatmeal', 'soup', 'cinnamon'],
-        'anger': ['crunchy almond', 'green tea', 'carrot', 'apple', 'mint'],
-        'fear': ['chamomile', 'spinach', 'avocado', 'salmon', 'warm milk'],
-        'love': ['chocolate', 'honey', 'strawberry', 'cherry', 'vanilla'],
-        'surprise': ['spicy', 'curry', 'jalapeno', 'ginger', 'lime'],
-        'neutral': ['avocado', 'lentil', 'chicken', 'toast', 'egg']
+        'joy': [
+            'mango', 'strawberry', 'orange', 'blueberry', 'peach', 
+            'pineapple', 'coconut', 'watermelon', 'raspberry', 'pomegranate',
+            'banana', 'spinach', 'kale', 'turmeric', 'kefir', 
+            'salmon', 'sweet potato', 'quinoa', 'bell pepper', 'tomato'
+        ],
+        'sadness': [
+            'dark chocolate', 'banana', 'oatmeal', 'soup', 'cinnamon', 
+            'walnut', 'pumpkin seed', 'lentil', 'chia seed', 'egg', 
+            'turkey', 'chickpea', 'almond', 'brazil nut', 'cashew', 
+            'milk', 'whole wheat', 'maca', 'sweet potato', 'blueberry'
+        ],
+        'anger': [
+            'almond', 'green tea', 'carrot', 'apple', 'mint', 
+            'celery', 'pistachio', 'cucumber', 'broccoli', 'watermelon', 
+            'pear', 'fennel', 'popcorn', 'sunflower seed', 'zucchini', 
+            'coconut water', 'chamomile', 'ice', 'snap pea', 'radish'
+        ],
+        'fear': [
+            'chamomile', 'spinach', 'avocado', 'salmon', 'warm milk', 
+            'turkey', 'yogurt', 'matcha', 'asparagus', 'pumpkin seed', 
+            'almond', 'oat', 'cherry', 'egg', 'chia seed', 
+            'brazil nut', 'bone broth', 'lentil', 'dark chocolate', 'oyster'
+        ],
+        'love': [
+            'chocolate', 'honey', 'strawberry', 'cherry', 'vanilla', 
+            'fig', 'raspberry', 'cinnamon', 'rose', 'basil', 
+            'pomegranate', 'watermelon', 'avocado', 'asparagus', 'chili pepper', 
+            'peach', 'date', 'saffron', 'oyster', 'truffle'
+        ],
+        'surprise': [
+            'spicy', 'curry', 'jalapeno', 'ginger', 'lime', 
+            'wasabi', 'lemon', 'peppermint', 'chili', 'sriracha', 
+            'grapefruit', 'black pepper', 'horseradish', 'cayenne', 'kimchi', 
+            'kombucha', 'passion fruit', 'star anise', 'cardamom', 'tamarind'
+        ],
+        'neutral': [
+            'avocado', 'lentil', 'chicken', 'bread', 'egg', 
+            'quinoa', 'chickpea', 'rice', 'tofu', 'mushroom', 
+            'broccoli', 'olive oil', 'bean', 'sweet potato', 'apple', 
+            'oat', 'almond', 'yogurt', 'tuna', 'peanut'
+        ]
     }
     
     api_key = os.getenv("SPOONACULAR_API_KEY")
@@ -1030,7 +1061,6 @@ def get_full_recommendations(text: str, emotions: list, location: str = "", rag_
     rng  = random.Random(seed)
 
     def rag_score(item):
-        """Return a small boost score if item was previously rated highly."""
         label = ""
         if isinstance(item, dict):
             label = (item.get("item") or item.get("name") or item.get("title") or "").lower().strip()

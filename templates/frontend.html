@@ -2244,28 +2244,42 @@ const renderGroup = (groupItems, title, icon, color) => {
   renderGroup(other, 'Recommended Recipes', '🍃', 'rgba(100, 60, 20, 0.85)');
 }
 
-function buildShowsPane(shows){
-  const el=document.getElementById('shows_movies-content'); el.innerHTML='';
-  el.appendChild(makeTierBadge(currentTier));
-  if(!shows.length){el.innerHTML+='<div class="empty-cat">No viewing suggestions available.</div>';return;}
+function buildShowsPane(movies) {
+  const c = document.getElementById('showsContent'); // Senin HTML'indeki ilgili div'in ID'si neyse o olmalı
+  if (!c) return;
+  if (!movies || movies.length === 0) {
+    c.innerHTML = '<p style="font-style:italic; opacity:0.7;">No movie suggestions at this time.</p>';
+    return;
+  }
   
-  shows.forEach(item=>{
-    const c=document.createElement('div'); c.className='rec-card show-card'; c.style.position='relative';
-    const isTV = (item.why && item.why.includes('tv')) || item.type === 'series';
-    const typeLabel = isTV ? '📺 TV Show' : '🎬 Movie';
-    
-    c.innerHTML=`
-      <div class="show-type-badge ${isTV?'series':'film'}">${typeLabel}</div>
-      <div class="show-title">${item.title||''}</div>
-      <div class="show-imdb">IMDB ${item.imdb||''}</div>
-      ${item.why?`<div class="why-text open" style="background:transparent; border:none; padding:0; margin-top:4px;">${item.why}</div>`:''}
-      <div style="margin-top:10px;">
-        <a href="${item.url}" target="_blank" rel="noopener" class="action-btn" style="text-decoration:none; color:#4a2b28; border-color:#4a2b28; background:rgba(74,43,40,0.05); padding: 4px 10px;">
-          🔍 Search on Google
-        </a>
-      </div>`;
-    el.appendChild(c);
+  let html = '';
+  movies.forEach(m => {
+    const t = m.title || m.name || m.original_title || "Untitled";
+    const im = m.imdb || "N/A";
+    const u = m.url || "#";
+    const w = m.why || "";
+
+    html += `
+      <div class="rec-card" style="border-left: 4px solid #5A181E;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <strong style="font-family:'Cinzel',serif; color:#2A1408;">🎬 ${t}</strong>
+          <span style="font-size:0.85em; color:#888;">⭐ ${im}</span>
+        </div>
+        <p style="font-size:0.9em; margin:8px 0; font-style:italic; color:#555;">"${w}"</p>
+        <a href="${u}" target="_blank" class="action-link" style="font-size:0.85em; color:#5A181E; text-decoration:underline;">Watch Now</a>
+        
+        <div class="card-feedback-area" data-item="${t.replace(/"/g, '&quot;')}" data-cat="shows_movies" style="margin-top:12px; border-top:1px dashed #ccc; padding-top:10px;">
+          ${renderStars(t, 'shows_movies')}
+          <div style="margin-top:8px;">
+            <button class="did-btn" onclick="submitFeedback('${t.replace(/'/g, "\\'")}', 'shows_movies', true)">✓ I DID IT</button>
+            <button class="did-btn" style="background:#eee; color:#444;" onclick="submitFeedback('${t.replace(/'/g, "\\'")}', 'shows_movies', false)">✗ I DIDN'T</button>
+          </div>
+        </div>
+      </div>
+    `;
   });
+  
+  c.innerHTML = html;
 }
 
 
