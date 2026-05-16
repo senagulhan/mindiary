@@ -2243,28 +2243,60 @@ const renderGroup = (groupItems, title, icon, color) => {
   } 
   renderGroup(other, 'Recommended Recipes', '🍃', 'rgba(100, 60, 20, 0.85)');
 }
-
 function buildShowsPane(shows){
-  const el=document.getElementById('shows_movies-content'); el.innerHTML='';
+  const el = document.getElementById('shows_movies-content'); 
+  if(!el) return; // Güvenlik kontrolü
+  el.innerHTML = '';
   el.appendChild(makeTierBadge(currentTier));
-  if(!shows.length){el.innerHTML+='<div class="empty-cat">No viewing suggestions available.</div>';return;}
+  
+  if(!shows.length){
+    el.innerHTML += '<div class="empty-cat">No viewing suggestions available.</div>';
+    return;
+  }
   
   shows.forEach(item=>{
-    const c=document.createElement('div'); c.className='rec-card show-card'; c.style.position='relative';
+    const c = document.createElement('div'); 
+    c.className = 'rec-card show-card'; 
+    c.style.position = 'relative';
+    c.style.overflow = 'hidden'; // Yapışkan notun taşmaması için kritik
+    
     const isTV = (item.why && item.why.includes('tv')) || item.type === 'series';
     const typeLabel = isTV ? '📺 TV Show' : '🎬 Movie';
     
-    c.innerHTML=`
-      <div class="show-type-badge ${isTV?'series':'film'}">${typeLabel}</div>
-      <div class="show-title">${item.title||''}</div>
-      <div class="show-imdb">IMDB ${item.imdb||''}</div>
-      ${item.why?`<div class="why-text open" style="background:transparent; border:none; padding:0; margin-top:4px;">${item.why}</div>`:''}
+    const itemText = item.title || 'Untitled';
+    const safeText = itemText.replace(/'/g,"\\'");
+    
+    // Geçmişte izleyip yıldız verdiyse RAG etiketini (✦) ekle
+    const ragScore = ragGetScore(itemText);
+    let ragBadge = '';
+    if(ragScore && ragScore.avg >= 3){
+      const stars = '★'.repeat(Math.round(ragScore.avg)) + '☆'.repeat(5 - Math.round(ragScore.avg));
+      ragBadge = `<div class="rag-badge" style="margin-bottom:6px;"><span class="rag-star">✦</span> Watched ${ragScore.count}x · ${stars}</div>`;
+    }
+
+    c.innerHTML = `
+      ${ragBadge}
+      <div class="show-type-badge ${isTV ? 'series' : 'film'}">${typeLabel}</div>
+      <div class="show-title">${itemText}</div>
+      <div class="show-imdb">IMDB ${item.imdb || ''}</div>
+      ${item.why ? `<div class="why-text open" style="background:transparent; border:none; padding:0; margin-top:4px;">${item.why}</div>` : ''}
       <div style="margin-top:10px;">
         <a href="${item.url}" target="_blank" rel="noopener" class="action-btn" style="text-decoration:none; color:#4a2b28; border-color:#4a2b28; background:rgba(74,43,40,0.05); padding: 4px 10px;">
           🔍 Search on Google
         </a>
-      </div>`;
+      </div>
+      
+      <div class="card-action-row" style="margin-top: 12px; border-top: 1px dashed rgba(110,75,25,.2); padding-top: 8px;">
+        <button class="action-btn did-it" onclick="cardDidIt(this,'${safeText}')">✓ I watched it</button>
+        <button class="action-btn didnt" onclick="cardDidntDo(this,'${safeText}')">✗ I didn't</button>
+      </div>
+      <div class="sticky-note-wrap"></div>
+    `;
+    
     el.appendChild(c);
+    
+    // Sayfa yenilendiğinde eski yıldızları/butonları hatırlaması için
+    setTimeout(() => restoreCardState(c, itemText), 0);
   });
 }
 
