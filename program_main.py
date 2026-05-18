@@ -22,7 +22,7 @@ from dotenv import load_dotenv
 from email.mime.text import MIMEText
 from datetime import datetime
 import urllib.request
-
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 
 
@@ -326,51 +326,78 @@ STRONG_KEYWORDS = {
 
 MODEL_CACHE = 'tfidf_model.pkl'
 
-def train_model():
+def train_model(force_retrain=False):
     global tfidf_vectorizer, tfidf_classifiers
 
     if not ML_AVAILABLE:
         print("⚠️  scikit-learn not available — keyword fallback only.")
         return
 
-    if os.path.exists(MODEL_CACHE):
+    # If a cached model exists, load it unless retraining is forced
+    if os.path.exists(MODEL_CACHE) and not force_retrain:
         try:
             with open(MODEL_CACHE, 'rb') as f:
                 cache = pickle.load(f)
-            tfidf_vectorizer  = cache['vectorizer']
+
+            tfidf_vectorizer = cache['vectorizer']
             tfidf_classifiers = cache['classifiers']
+
             print("✅ TF-IDF model loaded from cache.")
             return
-        except Exception as e:
-            print(f"⚠️  Cache load failed ({e}), re-training…")
 
+        except Exception as e:
+            print(f"⚠️  Cache load failed ({e}), re-training...")
+
+    # Locate dataset file
     csv_candidates = [
         'emotion_multilabel_balanced_dataset.csv',
         'emotion_multilabel_balanced.csv'
     ]
+
     csv_path = None
     for name in csv_candidates:
         if os.path.exists(name):
             csv_path = name
             break
+
     if csv_path is None:
         print("⚠️  No emotion CSV found — keyword fallback only.")
         return
 
     print(f"📂  Training on: {csv_path}")
+
+    # Load and clean dataset
     df = pd.read_csv(csv_path)
+
+    if 'text' not in df.columns:
+        print("⚠️  Missing required column: text")
+        return
+
     df = df.drop_duplicates(subset='text').reset_index(drop=True)
 
     missing = [c for c in EMOTION_LABELS if c not in df.columns]
     if missing:
-        print(f"⚠️  Missing columns: {missing}")
+        print(f"⚠️  Missing emotion columns: {missing}")
         return
 
     X = df['text'].astype(str).values
     y = df[EMOTION_LABELS].values.astype(int)
 
-    print(f"📊  {len(df)} samples, {len(EMOTION_LABELS)} labels")
+    print(f"📊 Dataset size after duplicate removal: {len(df)} samples")
+    print(f"🏷️ Emotion labels: {EMOTION_LABELS}")
 
+    # Train-test split for performance evaluation
+    X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=0.20,
+        random_state=42
+    )
+
+    print(f"🧪 Train samples: {len(X_train)}")
+    print(f"🧪 Test samples: {len(X_test)}")
+
+    # TF-IDF vectorization
     tfidf_vectorizer = TfidfVectorizer(
         ngram_range=(1, 2),
         max_features=20000,
@@ -380,9 +407,16 @@ def train_model():
         token_pattern=r'\b[a-zA-Z][a-zA-Z]+\b',
         min_df=2,
     )
-    X_vec = tfidf_vectorizer.fit_transform(X)
 
-    print("🧠  Training per-label classifiers…")
+    X_train_vec = tfidf_vectorizer.fit_transform(X_train)
+    X_test_vec = tfidf_vectorizer.transform(X_test)
+
+    print("🧠 Training and evaluating per-label Logistic Regression classifiers...")
+
+    tfidf_classifiers = {}
+    results = {}
+
+    # Train one classifier for each emotion label
     for i, label in enumerate(EMOTION_LABELS):
         clf = LogisticRegression(
             C=BEST_C.get(label, 1.0),
@@ -390,19 +424,57 @@ def train_model():
             class_weight='balanced',
             solver='lbfgs',
         )
-        clf.fit(X_vec, y[:, i])
-        tfidf_classifiers[label] = clf
-        print(f"   ✓ {label}")
 
+        clf.fit(X_train_vec, y_train[:, i])
+        y_pred = clf.predict(X_test_vec)
+
+        results[label] = {
+            "accuracy": round(accuracy_score(y_test[:, i], y_pred), 4),
+            "precision": round(precision_score(y_test[:, i], y_pred, zero_division=0), 4),
+            "recall": round(recall_score(y_test[:, i], y_pred, zero_division=0), 4),
+            "f1_score": round(f1_score(y_test[:, i], y_pred, zero_division=0), 4),
+        }
+
+        tfidf_classifiers[label] = clf
+        print(f"   ✓ {label}: {results[label]}")
+
+    # Average evaluation results
+    avg_results = {
+        "accuracy": round(sum(r["accuracy"] for r in results.values()) / len(results), 4),
+        "precision": round(sum(r["precision"] for r in results.values()) / len(results), 4),
+        "recall": round(sum(r["recall"] for r in results.values()) / len(results), 4),
+        "f1_score": round(sum(r["f1_score"] for r in results.values()) / len(results), 4),
+    }
+
+    results["average"] = avg_results
+
+    print("📈 Average evaluation results:")
+    print(avg_results)
+
+    # Save evaluation results for thesis reporting
+    try:
+        with open("model_evaluation_results.json", "w", encoding="utf-8") as f:
+            json.dump(results, f, indent=4)
+
+        print("📄 Evaluation results saved to model_evaluation_results.json")
+
+    except Exception as e:
+        print(f"⚠️  Evaluation result save failed: {e}")
+
+    # Cache trained model
     try:
         with open(MODEL_CACHE, 'wb') as f:
-            pickle.dump({'vectorizer': tfidf_vectorizer, 'classifiers': tfidf_classifiers}, f)
-        print(f"💾  Model cached to {MODEL_CACHE}")
+            pickle.dump({
+                'vectorizer': tfidf_vectorizer,
+                'classifiers': tfidf_classifiers
+            }, f)
+
+        print(f"💾 Model cached to {MODEL_CACHE}")
+
     except Exception as e:
         print(f"⚠️  Cache save failed: {e}")
 
-    print("✅  TF-IDF model trained.")
-
+    print("✅ TF-IDF + Logistic Regression model trained and evaluated.")
 
 
 def _get_ml_scores(text: str) -> dict:
@@ -1911,8 +1983,9 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, Accept"
     return response
 
+
 if __name__ == '__main__':
-    init_db(reset=True)
-    train_model()
+    init_db(reset=False)
+    train_model(force_retrain=False)
     print("🚀 Server running → http://localhost:5000")
     app.run(debug=False, port=5000)
