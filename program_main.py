@@ -48,6 +48,10 @@ CORS(app,
      supports_credentials=False
 )
 
+@app.route("/ping")
+def ping():
+    return "ok", 200
+
 @app.before_request
 def handle_preflight():
     from flask import request as req
